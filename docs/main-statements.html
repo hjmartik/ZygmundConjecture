@@ -36,8 +36,8 @@ define the maximal operator</p>
   \frac1{|I|}\int_I |f(y)|\,dy.\]</div>
 <p>For <span class="math-inline">\(\mathcal G\subset\mathcal D\)</span>, define the overlap function and shadow by</p>
 <div class="math-display">\[h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
-\qquad \operatorname{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.\]</div>
-<p>The family has finite shadow if <span class="math-inline">\(|\operatorname{sh}(\mathcal G)|&lt;\infty\)</span>.</p>
+\qquad \mathrm{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.\]</div>
+<p>The family has finite shadow if <span class="math-inline">\(|\mathrm{sh}(\mathcal G)|&lt;\infty\)</span>.</p>
 <p>It is <strong>incomparable</strong> if no two distinct members contain one another.
 For <span class="math-inline">\(0&lt;\eta\leq1\)</span>, it is <strong><span class="math-inline">\(\eta\)</span>-sparse</strong> if there are pairwise disjoint
 measurable sets <span class="math-inline">\(E_I\subset I\)</span>, <span class="math-inline">\(I\in\mathcal G\)</span>, with <span class="math-inline">\(|E_I|\geq\eta|I|\)</span>.</p>
@@ -54,12 +54,12 @@ measurable sets <span class="math-inline">\(E_I\subset I\)</span>, <span class="
 with finite shadow. Then</p>
 <div class="math-display">\[\|h_{\mathcal G}\|_q
 \leq C_{m,d}\eta^{-1}q^{m-1}
-      |\operatorname{sh}(\mathcal G)|^{1/q},
+      |\mathrm{sh}(\mathcal G)|^{1/q},
 \qquad q\geq2,\]</div>
 <p>and</p>
-<div class="math-display">\[\int_{\operatorname{sh}(\mathcal G)}
+<div class="math-display">\[\int_{\mathrm{sh}(\mathcal G)}
 \left[\exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)-1\right]dx
-\leq C_{m,d}|\operatorname{sh}(\mathcal G)|.\]</div>
+\leq C_{m,d}|\mathrm{sh}(\mathcal G)|.\]</div>
 <p>The positive constants depend only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.</p>
 <p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L39">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionOverlap.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/Overlap.lean.html#L100">Theorem in the main development</a>.</p>
 <h2 id="maximal-and-overlap-estimates-under-weaker-containment">Maximal and overlap estimates under weaker containment</h2>
@@ -127,9 +127,9 @@ be the family of rectangles with side-length tuple</p>
 \qquad (k_1,\ldots,k_{m-1})\in\mathbb Z^{m-1}.\]</div>
 <p>If <span class="math-inline">\(\mathcal G\subset\mathcal Z_\Phi\)</span> is <span class="math-inline">\(\eta\)</span>-sparse with finite
 shadow, where <span class="math-inline">\(0&lt;\eta\leq1\)</span>, then</p>
-<div class="math-display">\[\int_{\operatorname{sh}(\mathcal G)}
+<div class="math-display">\[\int_{\mathrm{sh}(\mathcal G)}
 \left[\exp\!\left(c h_{\mathcal G}^{1/(m-1)}\right)-1\right]dx
-\leq C|\operatorname{sh}(\mathcal G)|,\]</div>
+\leq C|\mathrm{sh}(\mathcal G)|,\]</div>
 <p>where <span class="math-inline">\(c,C&gt;0\)</span> depend only on <span class="math-inline">\(m\)</span>, <span class="math-inline">\(d\)</span> and <span class="math-inline">\(\eta\)</span>, not on <span class="math-inline">\(\Phi\)</span>
 or the dyadic grids.</p>
 <p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L108">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionPhiSparse.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/PhiSparse.lean.html#L51">Theorem in the main development</a>.</p>
@@ -139,9 +139,9 @@ or the dyadic grids.</p>
 <div class="math-display">\[\Phi(k_1,\ldots,k_{m-1})=k_1+\cdots+k_{m-1}.\]</div>
 <p>There are finite incomparable <span class="math-inline">\(\eta\)</span>-sparse families
 <span class="math-inline">\(\mathcal G_N\subset\mathcal Z_\Phi\)</span>, <span class="math-inline">\(N\geq2\)</span>, with
-<span class="math-inline">\(|\operatorname{sh}(\mathcal G_N)|=1\)</span>, such that</p>
+<span class="math-inline">\(|\mathrm{sh}(\mathcal G_N)|=1\)</span>, such that</p>
 <div class="math-display">\[\lim_{N\to\infty}
-\int_{\operatorname{sh}(\mathcal G_N)}
+\int_{\mathrm{sh}(\mathcal G_N)}
 \left[\exp\!\left(c h_{\mathcal G_N}^{\beta}\right)-1\right]dx
 =\infty
 \quad\text{for every }c&gt;0,\quad\beta&gt;\frac1{m-1}.\]</div>

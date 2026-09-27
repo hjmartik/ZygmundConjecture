@@ -81,7 +81,7 @@ a point, and the shadow is their union:
 ```math
 h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
 \qquad
-\operatorname{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.
+\mathrm{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.
 ```
 
 The maximal function is the supremum of the averages of $`|f|`$ over rectangles
@@ -173,8 +173,8 @@ The cross-coordinate average $`X_{K^{A_j}}`$ is the sum of the averaging
 operators over this partition, acting in coordinate $`j`$, where
 $`A_j=\{1,\ldots,m\}\setminus\{j\}`$. It preserves measurability.
 
-Writing $`\operatorname{ch}(Q)`$ for the dyadic children of $`Q`$, the difference
-operators are $`\Delta_Q=\sum_{R\in\operatorname{ch}(Q)}E_R-E_Q`$ and
+Writing $`\mathrm{ch}(Q)`$ for the dyadic children of $`Q`$, the difference
+operators are $`\Delta_Q=\sum_{R\in\mathrm{ch}(Q)}E_R-E_Q`$ and
 $`\Delta_{K^A}=\prod_{i\in A}\Delta_{K^i}`$.
 For $`f`$ constant on the smallest product cubes and extended by zero outside
 $`I_0`$, the projected function $`F`$ is obtained by subtracting the product

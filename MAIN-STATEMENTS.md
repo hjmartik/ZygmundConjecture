@@ -42,10 +42,10 @@ For $`\mathcal G\subset\mathcal D`$, define the overlap function and shadow by
 
 ```math
 h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
-\qquad \operatorname{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.
+\qquad \mathrm{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.
 ```
 
-The family has finite shadow if $`|\operatorname{sh}(\mathcal G)|<\infty`$.
+The family has finite shadow if $`|\mathrm{sh}(\mathcal G)|<\infty`$.
 
 It is **incomparable** if no two distinct members contain one another.
 For $`0<\eta\leq1`$, it is **$`\eta`$-sparse** if there are pairwise disjoint
@@ -75,16 +75,16 @@ with finite shadow. Then
 ```math
 \|h_{\mathcal G}\|_q
 \leq C_{m,d}\eta^{-1}q^{m-1}
-      |\operatorname{sh}(\mathcal G)|^{1/q},
+      |\mathrm{sh}(\mathcal G)|^{1/q},
 \qquad q\geq2,
 ```
 
 and
 
 ```math
-\int_{\operatorname{sh}(\mathcal G)}
+\int_{\mathrm{sh}(\mathcal G)}
 \left[\exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)-1\right]dx
-\leq C_{m,d}|\operatorname{sh}(\mathcal G)|.
+\leq C_{m,d}|\mathrm{sh}(\mathcal G)|.
 ```
 
 The positive constants depend only on $`m`$ and $`d`$.
@@ -207,9 +207,9 @@ If $`\mathcal G\subset\mathcal Z_\Phi`$ is $`\eta`$-sparse with finite
 shadow, where $`0<\eta\leq1`$, then
 
 ```math
-\int_{\operatorname{sh}(\mathcal G)}
+\int_{\mathrm{sh}(\mathcal G)}
 \left[\exp\!\left(c h_{\mathcal G}^{1/(m-1)}\right)-1\right]dx
-\leq C|\operatorname{sh}(\mathcal G)|,
+\leq C|\mathrm{sh}(\mathcal G)|,
 ```
 
 where $`c,C>0`$ depend only on $`m`$, $`d`$ and $`\eta`$, not on $`\Phi`$
@@ -229,11 +229,11 @@ Let $`m\geq3`$, $`0<\eta<1`$, and set
 
 There are finite incomparable $`\eta`$-sparse families
 $`\mathcal G_N\subset\mathcal Z_\Phi`$, $`N\geq2`$, with
-$`|\operatorname{sh}(\mathcal G_N)|=1`$, such that
+$`|\mathrm{sh}(\mathcal G_N)|=1`$, such that
 
 ```math
 \lim_{N\to\infty}
-\int_{\operatorname{sh}(\mathcal G_N)}
+\int_{\mathrm{sh}(\mathcal G_N)}
 \left[\exp\!\left(c h_{\mathcal G_N}^{\beta}\right)-1\right]dx
 =\infty
 \quad\text{for every }c>0,\quad\beta>\frac1{m-1}.
