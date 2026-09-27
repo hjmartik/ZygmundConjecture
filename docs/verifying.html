@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checking the formalization · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="checking-the-formalization">Checking the formalization</h1>
+<p>Choose the level of inspection you want:</p>
+<ul>
+<li><strong>Read the mathematics and inspect its formulation.</strong> Start with
+<a href="main-statements.html">Main theorems</a>, then follow the links beneath a theorem
+to its independent Lean statement and definitions. The
+<a href="consistency.html">consistency guide</a> explains the mathematical objects and
+the identifications used. This requires no installation of Lean or Linux.</li>
+<li><strong>Compile and check with Lean.</strong> Follow
+<a href="#1-install-the-pinned-dependencies">dependency setup</a> and
+<a href="#2-build-and-check-all-registered-declarations">build and statement inspection</a>.
+<a href="#3-ordinary-kernel-replay">Ordinary kernel replay</a> is a further check with
+Lean&#39;s own checker.</li>
+<li><strong>Repeat the Comparator and Nanoda checks.</strong> Follow
+<a href="#4-comparator-with-nanoda-on-linux">the Linux instructions</a> to compare the
+seven independently stated results and check their exported proofs with
+Lean&#39;s default kernel and Nanoda.</li>
+</ul>
+<p>The next sections describe the mathematical scope and the completed checks.
+The numbered instructions then explain how to reproduce them.</p>
+<h2 id="mathematical-scope">Mathematical scope</h2>
+<p><a href="main-statements.html">Main theorems</a> gives the seven results, including their
+hypotheses, parameter ranges and cube conventions. The sparse-family sharpness
+theorem for the classical dyadic Zygmund family is included; it does not appear
+in arXiv v1 and is intended for a subsequent revision. The examples cited in the
+paper to establish sharpness of the incomparable maximal power are not formalized.</p>
+<h2 id="what-has-been-checked">What has been checked</h2>
+<p>The recorded runs completed the following checks on the development&#39;s
+<strong>363 local modules and 453 registered declarations</strong>. A declaration is a
+named definition or theorem in Lean.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Recorded outcome and scope</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Compilation</td>
+<td>All local modules compiled.</td>
+</tr>
+<tr>
+<td>Statement and axiom inspection</td>
+<td>All registered declarations matched their separately written formal statements and used only the permitted axioms.</td>
+</tr>
+<tr>
+<td>Ordinary Lean replay</td>
+<td>Completed for all local modules, subject to the checker exclusions described in <a href="#3-ordinary-kernel-replay">step 3</a>.</td>
+</tr>
+<tr>
+<td>Comparator, Lean and Nanoda</td>
+<td>All seven Mathlib-only statement comparisons passed, and both kernels accepted the exported proofs, including the declarations on which those proofs depend.</td>
+</tr>
+</tbody></table>
+<p>The permitted axioms are <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.
+The seven-result checks do not give Nanoda coverage to every supporting
+result; <a href="#4-comparator-with-nanoda-on-linux">step 4</a> records the precise scope.</p>
+<p>The public source comments were subsequently edited for clarity. Comparison
+with the checked sources confirmed that all code outside comments is unchanged,
+including definitions, theorem statements and proofs. The mathematical checks
+were not rerun for that editorial revision. The distributed sources and their
+SHA-256 hashes are listed in <a href="files/verification/SOURCE-MANIFEST.json">SOURCE-MANIFEST.json</a>.</p>
+<p>Tests of the checking programs are a separate matter: they test whether the
+programs accept valid inputs, reject deliberately invalid ones, and recover
+missing compiled dependencies. Those tests are documented in
+<a href="packaging-tests.html">PACKAGING-TESTS.md</a>. The instructions below
+reproduce the mathematical checks summarized here.</p>
+<h2 id="1-install-the-pinned-dependencies">1. Install the pinned dependencies</h2>
+<p>Use Python 3.12 or later, <code>curl</code>, Git, and <a href="https://github.com/leanprover/elan">elan</a>
+with Lean <strong>4.34.0</strong> installed. Run commands below from the repository root.</p>
+<pre><code class="language-sh">elan toolchain install leanprover/lean4:v4.34.0
+python3 -I -B tools/dependencies.py fetch
+python3 -I -B tools/dependencies.py cache
+</code></pre>
+<p>These are explicit network/setup operations. The first Python command obtains
+nine fixed source archives and verifies their checksums. The second builds
+Mathlib&#39;s official cache utility and obtains matching compiled dependencies
+from <code>cache.mathlib.org</code>. Dependencies retain their upstream licenses.</p>
+<p>The archive-backed layout is deliberate: <a href="files/lean/SOURCE_LOCK.json">SOURCE_LOCK.json</a>
+fixes commits, archive checksums and source-tree fingerprints. Do not replace
+it with an unpinned <code>lake update</code>. This setup uses Mathlib&#39;s cache utility from
+its own root to preserve cache identities with the downstream path manifest.</p>
+<p>The dependency cache is architecture-specific. Do not copy macOS <code>.olean</code>
+artifacts into the Linux checking environment. For missing cache items, see
+<a href="#troubleshooting-dependency-setup">Troubleshooting dependency setup</a>.</p>
+<h2 id="2-build-and-check-all-registered-declarations">2. Build and check all registered declarations</h2>
+<pre><code class="language-sh">python3 -I -B tools/test_checker.py
+python3 -I -B tools/test_inspection.py
+python3 -I -B tools/check.py verify
+</code></pre>
+<p>The verifier checks pinned dependency sources and builds all local modules
+in import order into a fresh directory. A <strong>declaration</strong> is a named definition
+or theorem in Lean; a <strong>contract</strong> is the separately written formal statement
+against which it is checked. <a href="files/verification/TARGETS.json">TARGETS.json</a> lists the
+declarations and their contracts.</p>
+<p>The Lean inspector checks that each registered declaration&#39;s elaborated type
+is definitionally equal to its contract. It uses full unfolding transparency,
+allowing definitions to be unfolded in this comparison. Definitionally
+identical presentations pass; propositions that are merely logically equivalent
+do not pass on that basis. The inspector also checks axiom dependencies,
+including those used indirectly through other declarations. Only <code>propext</code>,
+<code>Classical.choice</code> and <code>Quot.sound</code> are permitted.</p>
+<p>The verifier rejects warnings, missing or mismatched declarations, unexpected
+origins and any other axioms. It checks input identities again at completion.
+It never uses an existing project object directory or starts a network download.</p>
+<p>A successful run prints the path to its <code>report.json</code> under <code>.runs/</code>. A
+nonzero exit or any status other than <code>PASS</code> is a failure, not partial acceptance.
+The first two commands test the checking machinery; their cases are described
+under <a href="#testing-the-verification-tools">Testing the verification tools</a>.</p>
+<p>Advanced options: <code>--lean-bin</code> selects the exact installed compiler directory;
+<code>--packages</code> reuses an existing archive-backed, pinned package directory
+read-only. Defaults are the toolchain selected by <code>lean/lean-toolchain</code> and
+<code>lean/.lake/packages</code>.</p>
+<p>For editor navigation or ordinary incremental compilation, <code>cd lean</code> followed
+by <code>lake build</code> selects both local libraries. This is compilation, <strong>not</strong> the
+contract/axiom inspection above. The external Comparator challenge adapters
+are not part of this default build.</p>
+<h2 id="3-ordinary-kernel-replay">3. Ordinary kernel replay</h2>
+<p>Use the report path printed by step 2:</p>
+<pre><code class="language-sh">python3 -I -B tools/check.py replay --run .runs/VERIFY-RUN/report.json
+</code></pre>
+<p>Replace <code>VERIFY-RUN</code> with the run directory from step 2. If that step used
+<code>--lean-bin</code> or <code>--packages</code>, use the same options here. Replay first compares
+the source, object, dependency, control-file and tool identities with the
+successful report from step 2. It then runs the paired <code>leanchecker -v MODULE</code> for
+each local module. A <strong>kernel</strong> is the program that checks the resulting formal
+proofs. This replay uses Lean&#39;s ordinary checker, not a second kernel,
+and it does not replay every declaration in Mathlib. Its tool-level exclusions
+are unsafe and partial constants.</p>
+<p>Fresh build/inspection took about 20 minutes and ordinary replay about
+42 minutes in the original environment. These are observations, not limits or
+promises for other machines.</p>
+<h2 id="4-comparator-with-nanoda-on-linux">4. Comparator with Nanoda on Linux</h2>
+<p>For each result, a challenge file states the independently formulated theorem
+without a proof, and a solution file supplies its proof from the library.
+Comparator compares the theorem statements and the definitions on which they
+depend, and checks the permitted axioms. Lean&#39;s default kernel and Nanoda check
+the exported proof.</p>
+<p>The independent specification consists of
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a> and
+<a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">Statements.lean</a>; their other
+imports are exclusively from Mathlib. They do not use proof-library definitions, original contracts or
+solution modules. The <a href="mathlib-only.html">independent specification guide</a>
+and <a href="consistency.html">consistency checks</a> explain the proved identities relating
+these definitions to those used in the proofs.</p>
+<p>The <a href="files/verification/comparator/CASES.json">comparison adapters</a> are short Lean
+theorems connecting the library&#39;s results to the independently stated theorems.
+<a href="files/verification/AUDIT-MANIFEST.json">AUDIT-MANIFEST.json</a> records the exact
+adapters, configurations, seven-result mapping and declaration/contract inventory.
+The permitted axioms are the same three as in step 2.</p>
+<p>Each <code>ChallengeN.lean</code> contains an intentional <code>sorry</code> placeholder for the
+proof to be supplied by its solution. Isolated negative-test fixtures also
+deliberately contain an admission or a custom axiom. These files are outside
+the production source inventory, and solutions cannot import them.</p>
+<p>Use a regular, unprivileged Linux user, working user-level systemd, and a
+Landlock-capable kernel. On macOS, a Linux VM such as Lima supplies this
+environment. Do not use <code>fake-landrun.sh</code> for these checks. The runner includes
+a sandbox preflight, the upstream AF_UNIX restriction and bounded
+resources (6 GiB memory, no swap, a 200% CPU quota, one hour per case).</p>
+<p>Install the same Lean and dependency sources/cache <strong>inside Linux</strong>, then
+follow <a href="linux-setup.html">Linux checker setup</a> for the four pinned
+checker tools. The authoritative versions are in
+<a href="files/verification/CHECKER-PINS.json">CHECKER-PINS.json</a>; do not substitute current
+default branches.</p>
+<p>The seven configurations correspond to the
+<a href="files/verification/comparator/config-1.json">incomparable maximal estimate</a>,
+<a href="files/verification/comparator/config-2.json">sparse incomparable overlap estimate</a>,
+<a href="files/verification/comparator/config-3.json">maximal and overlap estimates under weaker containment</a>,
+<a href="files/verification/comparator/config-4.json">rounded dyadic endpoint estimate</a>,
+<a href="files/verification/comparator/config-5.json">continuous Zygmund endpoint estimate</a>,
+<a href="files/verification/comparator/config-6.json">sparse Φ-Zygmund overlap estimate</a>, and
+<a href="files/verification/comparator/config-7.json">sharpness for the classical dyadic Zygmund family</a>.</p>
+<pre><code class="language-sh">python3 -I -B tools/comparator.py
+</code></pre>
+<p>To test the runner first, execute <code>python3 -I -B tools/test_comparator_runtime.py</code>
+in this Linux environment; this test additionally requires a C compiler with
+static libc support. See <a href="#testing-the-verification-tools">Testing the verification tools</a>.</p>
+<p>The runner first checks exact source, adapter and configuration identities. It
+traverses the local imports of each challenge and solution: a challenge may
+use only the two independent specification modules, while a solution must not
+import any challenge placeholder. The imported dependency sources are checked
+against their pins. These checks establish the source boundary, not the
+mathematical faithfulness of the definitions.</p>
+<p>For an offline packet and import-boundary check without invoking Linux tools:</p>
+<pre><code class="language-sh">python3 -I -B tools/comparator.py --prepare-only
+</code></pre>
+<p>Its status is <code>PREPARED_NOT_CHECKED</code>, never proof acceptance.</p>
+<p>The full runner creates a fresh packet, copies the dependency tree, and checks all
+seven pairs sequentially. Acceptance requires a successful Comparator exit and
+three explicit reports: successful comparison, Lean default-kernel acceptance
+and Nanoda acceptance. The runner records those observations separately, checks
+inputs and tool hashes at the end, and retains reports and complete logs under
+<code>.runs/</code>. Only
+<code>PASS_ALL_SEVEN</code> means the complete suite passed. <code>--case 7</code> is an optional
+single-result smoke test and can produce only <code>PASS_ONE_CASE_ONLY</code>.</p>
+<p>Both kernels checked the seven exported proofs and all declarations on which
+those proofs depend. Other supporting results have the ordinary Lean checks
+described above. In particular, <code>Continuous.Convention</code>,
+<code>Continuous.HalfOpenBoundary</code>, <code>MathlibOnly.BoundaryBridge</code> (all under
+<code>ReyZygmund</code>), <code>Verification.Inspect</code> and <code>Verification.Statements.MathlibOnly</code>
+are outside those seven exports; their presence in the distribution does not
+imply Nanoda coverage.</p>
+<p>The Mathlib-only seven-result run used an 8 GiB ARM64 Linux VM,
+completed in about 15 minutes with warm dependency caches, and had a measured
+peak of about 4.5 GiB.
+Allow at least 15 GiB free guest disk for the runner, in addition to installed
+tools and dependencies. Other architectures or colder caches may cost more.</p>
+<h2 id="what-remains-trusted">What remains trusted</h2>
+<p>Separate mathematical reviews compared the formal statements and definitions
+with the paper, and checked the proofs relating the independent statements to
+the library. This correspondence requires mathematical judgment: Comparator
+compares formal statements, not the paper&#39;s text. Lean and Nanoda check the
+resulting proof terms. The permitted axioms, dependency sources and caches,
+toolchain and operating environment are explicit parts of the setup. The checks
+cover the seven proofs and the definitions and results they depend on, rather
+than every result in the imported libraries.</p>
+<p>The guide follows the pinned <a href="https://github.com/leanprover/comparator/blob/d03acab154d269c06e60e4de7e4cc85deebff94b/README.md">Comparator documentation</a>.</p>
+<h2 id="troubleshooting-dependency-setup">Troubleshooting dependency setup</h2>
+<p>If an official cache item is unavailable, recover it <strong>offline from the
+existing pinned sources</strong>:</p>
+<pre><code class="language-sh">python3 -I -B tools/dependencies.py recover --module Mathlib.Analysis.SpecialFunctions.Log.Base
+</code></pre>
+<p>Use the module reported missing; <code>--module</code> may be repeated. Without it,
+<code>recover</code> traverses the project&#39;s external import closure and builds missing
+objects in dependency order. It preserves source pins, reuses complete cached
+objects, and installs newly compiled artifacts only in dependency build caches.
+It does not download, update dependencies, or invoke Lake build hooks. A
+partial existing artifact is backed up in the new <code>.runs/</code> receipt directory
+before replacement. <code>--packages PATH</code> selects an explicit pinned package tree
+whose build cache you authorize the command to update; <code>--lean-bin</code> selects
+the matching installed compiler.</p>
+<p>For split modules, this direct-compiler workflow requires the full <code>.olean</code>,
+<code>.olean.server</code>, <code>.olean.private</code>, <code>.ir.sig</code> and <code>.ir</code> family. Completeness is
+checked before cache reuse, after compilation, and after installation; the
+presence of the main <code>.olean</code> alone is not enough.</p>
+<p>Source recovery can take longer than a cache download. A compiler failure
+stops with a retained log. After <code>PASS_DEPENDENCY_RECOVERY</code>, rerun the failed
+verification command. Recovery rebuilds dependency module artifacts, not
+native dependency executables or widgets.</p>
+<h2 id="testing-the-verification-tools">Testing the verification tools</h2>
+<p><code>test_inspection.py</code> compiles seven isolated Lean fixtures and uses the
+production inspector and acceptance code: a valid theorem, a reducible
+definitionally equal presentation, a merely logically equivalent presentation,
+an indirect admission, a custom axiom, a changed conclusion and an extra
+assumption. The first two pass; the remaining five are rejected. The valid
+case also checks rejection of a wrong declaration origin.</p>
+<p>To exercise dependency recovery itself, supply an existing complete pinned
+cache to this optional isolated test:</p>
+<pre><code class="language-sh">python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
+</code></pre>
+<p>It runs three isolated cases: the whole selected Mathlib artifact family
+missing, only <code>.olean.server</code> missing, and only <code>.ir</code> missing while <code>.ir.sig</code>
+remains. Each confirms an import failure, rebuilds from pinned source,
+and verifies a small theorem through the production inspector. Retained
+artifacts of the selected module are copied into scratch storage; other cached
+objects are linked for read-only use. The original cache is not modified.</p>
+<p><code>test_comparator_runtime.py</code> runs a tiny Linux comparison with both kernels,
+then repeats it with a missing Nanoda binary and a deliberately failing static
+test binary. Both failures must be rejected by the same acceptance function as
+the production runner. It also tests rejection of a changed definition and an
+indirect admission. The test requires a C compiler with static libc support;
+it never replaces the installed Nanoda or edits the seven production configs.</p>
+<p>All fixture scripts retain reports with status <code>PASS_FIXTURES_ONLY</code>, distinct
+from production acceptance. Scratch copies are left under <code>.runs/</code> for inspection.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

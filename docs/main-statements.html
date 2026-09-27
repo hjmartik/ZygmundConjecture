@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Main theorems · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="main-theorems">Main theorems</h1>
+<p><a id="shared-definitions"></a></p>
+<h2 id="setting-and-notation">Setting and notation</h2>
+<p>Let <span class="math-inline">\(m\geq2\)</span>, let <span class="math-inline">\(d_1,\ldots,d_m\geq1\)</span>, and set <span class="math-inline">\(d=d_1+\cdots+d_m\)</span>.
+We work on <span class="math-inline">\(\mathbb R^{d_1}\times\cdots\times\mathbb R^{d_m}=\mathbb R^d\)</span>.</p>
+<h3 id="rectangles-and-dyadic-grids">Rectangles and dyadic grids</h3>
+<p>A rectangle is a product <span class="math-inline">\(I=I^1\times\cdots\times I^m\)</span> of axis-parallel
+cubes, with <span class="math-inline">\(I^i\)</span> in <span class="math-inline">\(\mathbb R^{d_i}\)</span>. Write <span class="math-inline">\(\ell(Q)\)</span> for the side
+length of a cube <span class="math-inline">\(Q\)</span>.</p>
+<p>Let <span class="math-inline">\(\mathcal D^i\)</span> be a dyadic grid of cubes in <span class="math-inline">\(\mathbb R^{d_i}\)</span> and set
+<span class="math-inline">\(\mathcal D=\mathcal D^1\times\cdots\times\mathcal D^m\)</span>.
+The cubes in each grid are half-open, and those of side length <span class="math-inline">\(2^k\)</span>
+partition the corresponding space for every <span class="math-inline">\(k\in\mathbb Z\)</span>.
+Any two intersecting cubes in the same grid are nested.</p>
+<h3 id="conventions">Conventions</h3>
+<p>We use <span class="math-inline">\(\subset\)</span> for inclusion allowing equality.</p>
+<p>All functions are real-valued. All measures and integrals are with respect
+to Lebesgue measure, and <span class="math-inline">\(\|g\|_p\)</span> denotes the <span class="math-inline">\(L^p(\mathbb R^d)\)</span> norm.
+We write <span class="math-inline">\(p'=p/(p-1)\)</span> for <span class="math-inline">\(1&lt;p&lt;\infty\)</span>.</p>
+<h3 id="maximal-operators-and-overlap-functions">Maximal operators and overlap functions</h3>
+<p>For a family <span class="math-inline">\(\mathcal E\)</span> of rectangles and <span class="math-inline">\(f\in L^1_{\mathrm{loc}}(\mathbb R^d)\)</span>,
+define the maximal operator</p>
+<div class="math-display">\[M_{\mathcal E}f(x)
+=\sup_{\substack{I\in\mathcal E\\x\in I}}
+  \frac1{|I|}\int_I |f(y)|\,dy.\]</div>
+<p>For <span class="math-inline">\(\mathcal G\subset\mathcal D\)</span>, define the overlap function and shadow by</p>
+<div class="math-display">\[h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
+\qquad \operatorname{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.\]</div>
+<p>The family has finite shadow if <span class="math-inline">\(|\operatorname{sh}(\mathcal G)|&lt;\infty\)</span>.</p>
+<p>It is <strong>incomparable</strong> if no two distinct members contain one another.
+For <span class="math-inline">\(0&lt;\eta\leq1\)</span>, it is <strong><span class="math-inline">\(\eta\)</span>-sparse</strong> if there are pairwise disjoint
+measurable sets <span class="math-inline">\(E_I\subset I\)</span>, <span class="math-inline">\(I\in\mathcal G\)</span>, with <span class="math-inline">\(|E_I|\geq\eta|I|\)</span>.</p>
+<h2 id="incomparable-maximal-estimate">Incomparable maximal estimate</h2>
+<p>Let <span class="math-inline">\(\mathcal G\subset\mathcal D\)</span> be incomparable. Then</p>
+<div class="math-display">\[\|M_{\mathcal G}f\|_p
+\leq C_{m,d}(p')^{m-1}\|f\|_p,
+\qquad 1&lt;p\leq2.\]</div>
+<p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L25">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionMaximal.lean.html#L10">Proof</a> · <a href="source/lean/ReyZygmund/Main/Maximal.lean.html#L70">Theorem in the main development</a>.</p>
+<p><a id="sparse-incomparable-overlap"></a></p>
+<h2 id="sparse-incomparable-overlap-estimate">Sparse incomparable overlap estimate</h2>
+<p>Let <span class="math-inline">\(\mathcal G\subset\mathcal D\)</span> be incomparable and <span class="math-inline">\(\eta\)</span>-sparse,
+with finite shadow. Then</p>
+<div class="math-display">\[\|h_{\mathcal G}\|_q
+\leq C_{m,d}\eta^{-1}q^{m-1}
+      |\operatorname{sh}(\mathcal G)|^{1/q},
+\qquad q\geq2,\]</div>
+<p>and</p>
+<div class="math-display">\[\int_{\operatorname{sh}(\mathcal G)}
+\left[\exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)-1\right]dx
+\leq C_{m,d}|\operatorname{sh}(\mathcal G)|.\]</div>
+<p>The positive constants depend only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L39">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionOverlap.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/Overlap.lean.html#L100">Theorem in the main development</a>.</p>
+<h2 id="maximal-and-overlap-estimates-under-weaker-containment">Maximal and overlap estimates under weaker containment</h2>
+<p>Suppose <span class="math-inline">\(\mathcal G\subset\mathcal D\)</span> satisfies</p>
+<div class="math-display">\[I,J\in\mathcal G,\quad I\subset J
+\quad\Longrightarrow\quad I^i=J^i
+\text{ for some }i\in\{1,\ldots,m\}.\]</div>
+<p>Then</p>
+<div class="math-display">\[\|M_{\mathcal G}f\|_p
+\leq C_{m,d}(p')^{m-1}\|f\|_p,
+\qquad 1&lt;p\leq2.\]</div>
+<p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.
+If <span class="math-inline">\(\mathcal G\)</span> is also <span class="math-inline">\(\eta\)</span>-sparse and has finite shadow, the
+<a href="#sparse-incomparable-overlap-estimate">moment and exponential estimates above</a>
+hold as well.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L57">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionWeaker.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/Overlap.lean.html#L60">Theorem in the main development</a>.</p>
+<h2 id="continuous-zygmund-endpoint-estimate">Continuous Zygmund endpoint estimate</h2>
+<p>Let <span class="math-inline">\(m\geq3\)</span> and let
+<span class="math-inline">\(\phi:(0,\infty)^{m-1}\to(0,\infty)\)</span> be coordinatewise nondecreasing.
+Let <span class="math-inline">\(\mathcal R_\phi\)</span> consist of all rectangles
+<span class="math-inline">\(R=R^1\times\cdots\times R^m\)</span> with axis-parallel cube factors
+<span class="math-inline">\(R^i\subset\mathbb R^{d_i}\)</span> and side-length tuple</p>
+<div class="math-display">\[(s_1,\ldots,s_{m-1},\phi(s_1,\ldots,s_{m-1})),
+\qquad s_1,\ldots,s_{m-1}&gt;0.\]</div>
+<p>For every <span class="math-inline">\(f\in L^1_{\mathrm{loc}}(\mathbb R^d)\)</span> and every <span class="math-inline">\(\lambda&gt;0\)</span>,</p>
+<div class="math-display">\[|\{x:M_{\mathcal R_\phi}f(x)&gt;\lambda\}|
+\leq C_{m,d}\int_{\mathbb R^d}\frac{|f(x)|}{\lambda}
+\left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.\]</div>
+<p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>, not on <span class="math-inline">\(\phi\)</span>.
+No continuity or doubling assumption on <span class="math-inline">\(\phi\)</span> is imposed.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L81">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionContinuous.lean.html#L10">Proof</a> · <a href="source/lean/ReyZygmund/Continuous/Endpoint.lean.html#L88">Theorem in the main development</a>.</p>
+<p><a id="endpoint-estimate-for-the-rounded-dyadic-families"></a></p>
+<h2 id="rounded-dyadic-endpoint-estimate">Rounded dyadic endpoint estimate</h2>
+<p>Let <span class="math-inline">\(m\geq3\)</span> and let
+<span class="math-inline">\(\phi:(0,\infty)^{m-1}\to(0,\infty)\)</span> be coordinatewise nondecreasing.
+For <span class="math-inline">\(s&gt;0\)</span>, define <span class="math-inline">\(\rho(s)=\lceil\log_2s\rceil+2\)</span>, and put</p>
+<div class="math-display">\[\Gamma_\phi=
+\{(\rho(s_1),\ldots,\rho(s_{m-1}),\rho(\phi(s))):
+                       s\in(0,\infty)^{m-1}\}.\]</div>
+<p>In <span class="math-inline">\(\Gamma_\phi\)</span>, the first <span class="math-inline">\(m-1\)</span> rounded scales need not determine the last.</p>
+<p>For <span class="math-inline">\(\tau=(\tau_1,\ldots,\tau_m)\)</span>, with
+<span class="math-inline">\(\tau_i\in\{0,1/3,2/3\}^{d_i}\)</span>, use the shifted grids</p>
+<div class="math-display">\[\mathcal D^{i,\tau_i}
+=\{2^k([0,1)^{d_i}+z+(-1)^k\tau_i):
+                              k\in\mathbb Z,\ z\in\mathbb Z^{d_i}\},\]</div>
+<p>and set</p>
+<div class="math-display">\[\mathcal D_\tau=\prod_{i=1}^m\mathcal D^{i,\tau_i},
+\qquad
+\mathcal E_\phi^\tau
+=\{I\in\mathcal D_\tau:
+    (\log_2\ell(I^1),\ldots,\log_2\ell(I^m))\in\Gamma_\phi\}.\]</div>
+<p>For every <span class="math-inline">\(f\in L^1_{\mathrm{loc}}(\mathbb R^d)\)</span> and every <span class="math-inline">\(\lambda&gt;0\)</span>,</p>
+<div class="math-display">\[|\{x:M_{\mathcal E_\phi^\tau}f(x)&gt;\lambda\}|
+\leq C_{m,d}\int_{\mathbb R^d}\frac{|f(x)|}{\lambda}
+\left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.\]</div>
+<p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>, not on <span class="math-inline">\(\phi\)</span> or <span class="math-inline">\(\tau\)</span>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L94">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionRounded.lean.html#L10">Proof</a> · <a href="source/lean/ReyZygmund/Main/Endpoints.lean.html#L19">Theorem in the main development</a>.</p>
+<p><a id="sparse-overlap-with-a-monotone-zygmund-scale-relation"></a></p>
+<h2 id="sparse-φ-zygmund-overlap-estimate">Sparse Φ-Zygmund overlap estimate</h2>
+<p>Let <span class="math-inline">\(m\geq3\)</span> and let <span class="math-inline">\(\Phi:\mathbb Z^{m-1}\to\mathbb Z\)</span> be
+coordinatewise nondecreasing. Let <span class="math-inline">\(\mathcal Z_\Phi\subset\mathcal D\)</span>
+be the family of rectangles with side-length tuple</p>
+<div class="math-display">\[\bigl(2^{k_1},\ldots,2^{k_{m-1}},
+                 2^{\Phi(k_1,\ldots,k_{m-1})}\bigr),
+\qquad (k_1,\ldots,k_{m-1})\in\mathbb Z^{m-1}.\]</div>
+<p>If <span class="math-inline">\(\mathcal G\subset\mathcal Z_\Phi\)</span> is <span class="math-inline">\(\eta\)</span>-sparse with finite
+shadow, where <span class="math-inline">\(0&lt;\eta\leq1\)</span>, then</p>
+<div class="math-display">\[\int_{\operatorname{sh}(\mathcal G)}
+\left[\exp\!\left(c h_{\mathcal G}^{1/(m-1)}\right)-1\right]dx
+\leq C|\operatorname{sh}(\mathcal G)|,\]</div>
+<p>where <span class="math-inline">\(c,C&gt;0\)</span> depend only on <span class="math-inline">\(m\)</span>, <span class="math-inline">\(d\)</span> and <span class="math-inline">\(\eta\)</span>, not on <span class="math-inline">\(\Phi\)</span>
+or the dyadic grids.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L108">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionPhiSparse.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/PhiSparse.lean.html#L51">Theorem in the main development</a>.</p>
+<p><a id="sharpness-for-sparse-incomparable-zygmund-families"></a></p>
+<h2 id="sharpness-for-the-classical-dyadic-zygmund-family">Sharpness for the classical dyadic Zygmund family</h2>
+<p>Let <span class="math-inline">\(m\geq3\)</span>, <span class="math-inline">\(0&lt;\eta&lt;1\)</span>, and set</p>
+<div class="math-display">\[\Phi(k_1,\ldots,k_{m-1})=k_1+\cdots+k_{m-1}.\]</div>
+<p>There are finite incomparable <span class="math-inline">\(\eta\)</span>-sparse families
+<span class="math-inline">\(\mathcal G_N\subset\mathcal Z_\Phi\)</span>, <span class="math-inline">\(N\geq2\)</span>, with
+<span class="math-inline">\(|\operatorname{sh}(\mathcal G_N)|=1\)</span>, such that</p>
+<div class="math-display">\[\lim_{N\to\infty}
+\int_{\operatorname{sh}(\mathcal G_N)}
+\left[\exp\!\left(c h_{\mathcal G_N}^{\beta}\right)-1\right]dx
+=\infty
+\quad\text{for every }c&gt;0,\quad\beta&gt;\frac1{m-1}.\]</div>
+<p>Thus adding incomparability to sparseness and the <span class="math-inline">\(\Phi\)</span>-Zygmund scale
+restriction need not improve the exponential power, even for the classical
+relation above.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L123">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SolutionSharpness.lean.html#L8">Proof</a> · <a href="source/lean/ReyZygmund/Main/Sharpness.lean.html#L22">Theorem in the main development</a>.</p>
+<h2 id="notes-on-the-formalization">Notes on the formalization</h2>
+<p>The links under each result give its independent Lean statement and
+definitions, a proof of that statement, and the theorem used from the main
+development. The <a href="consistency.html">consistency guide</a> explains the relation
+between the mathematical definitions and their formal representations;
+the <a href="verifying.html">verification guide</a> describes the checks performed and
+how to repeat them.</p>
+<p>The formalization also gives the incomparable maximal estimate for
+<span class="math-inline">\(2&lt;p&lt;\infty\)</span>.</p>
+<p>The shifted grids above use <span class="math-inline">\([0,1)\)</span>, as in the paper; Lean uses <span class="math-inline">\((0,1]\)</span>.
+The corresponding rounded-family maximal functions agree almost everywhere.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

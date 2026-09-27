@@ -1,0 +1,7 @@
+{
+  "challenge_module": "ChallengeIndirectAdmission",
+  "solution_module": "SolutionIndirectAdmission",
+  "theorem_names": ["PackagingIndirectAdmission.target"],
+  "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "enable_nanoda": true
+}

@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Challenge7",
+  "solution_module": "Solution7",
+  "theorem_names": [
+    "ReyMathlibOnly.target7"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "enable_nanoda": true
+}

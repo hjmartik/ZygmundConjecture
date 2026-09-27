@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "specification_modules": [
+    "ReyZygmund.MathlibOnly.Definitions",
+    "ReyZygmund.MathlibOnly.Statements"
+  ],
+  "sha256": {
+    "verification/TARGETS.json": "6236700c973612a44073856fe17d30f967120d51ec656593230306c0a7db6c6f",
+    "verification/comparator/CASES.json": "8869ccae67667d6e6619a1ca8b188373dac11bf569cb629961fe0cd72ea30881",
+    "verification/comparator/Challenge1.lean": "48680ed15846aa1f0f77d5c8bea54a59df0d16361dceabe254fab5fff6385b4b",
+    "verification/comparator/Challenge2.lean": "529cf4426538f061e9faff7487334ad42df70e007bb4d48aac1e0baddb7bce2f",
+    "verification/comparator/Challenge3.lean": "d8c70777ca79df1f21c53965d3a003034c6c45c7a59de6a810c85144035d6d7f",
+    "verification/comparator/Challenge4.lean": "12cedf00d04dd06c8ca83bdc29b95a0d209d71faa33a42b0c22c81cac73367f5",
+    "verification/comparator/Challenge5.lean": "195f76845dc3ada7438d8056b1864836752e3081d039f6664778a7d6cbdf2565",
+    "verification/comparator/Challenge6.lean": "6f74c515a5b6599f0c66affe4a46186108ef35af9e561eda912557eceaecf62d",
+    "verification/comparator/Challenge7.lean": "4f2ef606304c9ad65bad955664a514f0cb68e692ea96792648d4ce4e2610f4de",
+    "verification/comparator/Solution1.lean": "db0488db1026275aa50862513445fca3ff25869c6d422370b97578f4944f436c",
+    "verification/comparator/Solution2.lean": "48d378cf86db833c291b565c9059ab32a286f733f4550156e71b8db60f526d8e",
+    "verification/comparator/Solution3.lean": "20a553d4fb15ec47256157bf1dac126cc6dcf6591058bf9ff7ae7bc40bca4060",
+    "verification/comparator/Solution4.lean": "1084d42b2e6de010cbad4088f874e747135e359e796da08458cf3746a048791e",
+    "verification/comparator/Solution5.lean": "a806a2bc9adbbe7c5c9719a88eb93cb23e8cea50f23661f6c4dc76b541130e96",
+    "verification/comparator/Solution6.lean": "407db409954e853a58ad35ee612f50a249c965ebcc9042a7d96d87ea5de9df35",
+    "verification/comparator/Solution7.lean": "809760e9aee12dd807667d76c8309d0f46044c066ad5b65643ab0c8c55d056eb",
+    "verification/comparator/config-1.json": "de6214e1c76efb7ab6d7f7e01d706ef48eec29aba6a161df245aa0480bf5b2fc",
+    "verification/comparator/config-2.json": "40b518259a4c3a816ac59acd9a8902b38d544b721f50b8c9e5c13b43beac9672",
+    "verification/comparator/config-3.json": "db9a5ef131d0b5010ec68e3d3148584489fa8d558798e81c47e95bedb41dc412",
+    "verification/comparator/config-4.json": "f66e8f5b060ce0782632bc21c484fcd18c5ed58dda81dd9b3a241899fbadc559",
+    "verification/comparator/config-5.json": "99091520c553829a7a4c406d2db793380ce110f169a35c938ede035ca8495c5e",
+    "verification/comparator/config-6.json": "ade54a7e63112a1daccb4982f66f90897a302c9bd15a32a2c2788fe0515c9af2",
+    "verification/comparator/config-7.json": "37dc88d58237ed5c9258e5eb06ab02e6a212a2090eb8852e7c1effa617e8f08e"
+  }
+}

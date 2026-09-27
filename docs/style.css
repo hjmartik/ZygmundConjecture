@@ -1,0 +1,13 @@
+:root{color-scheme:light;--ink:#202c35;--muted:#52626e;--link:#176577;--rule:#dce3e6}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:2rem}body{margin:0;color:var(--ink);background:#fff;font:17px/1.7 Georgia,'Times New Roman',serif}
+a{color:var(--link);text-underline-offset:.18em}a:hover{color:#103f4c}a:focus-visible{outline:2px solid var(--link);outline-offset:4px}
+header,main,footer{max-width:940px;margin:auto;padding:0 28px}header{padding-top:26px;padding-bottom:20px;border-bottom:1px solid var(--rule);font:14px/1.8 system-ui,sans-serif}
+nav{display:flex;gap:22px;flex-wrap:wrap}nav a{text-decoration:none}main{padding-top:36px;padding-bottom:50px}h1,h2,h3{line-height:1.25;font-weight:normal;color:#182a35}
+h1{font-size:2.35rem;margin:0 0 1.3rem;letter-spacing:-.025em}h2{font-size:1.55rem;margin:2.25rem 0 1rem;padding-top:.15rem}h3{font-size:1.18rem;margin-top:1.8rem}
+p{margin:1rem 0}ul,ol{padding-left:1.5rem}li{margin:.35rem 0}strong{font-weight:600}code{font: .86em/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+pre{background:#f5f7f8;padding:18px 20px;border:1px solid var(--rule);border-radius:4px;overflow:auto;line-height:1.5}pre code{overflow-wrap:normal}
+table{width:100%;border-collapse:collapse;font-size:.91em;margin:1.4rem 0}th{text-align:left;font-weight:600;background:#f7f9fa}td,th{padding:10px 12px;vertical-align:top;border-bottom:1px solid var(--rule)}
+blockquote{margin:1.5rem 0;border-left:3px solid var(--rule);padding-left:1.2rem;color:var(--muted)}footer{border-top:1px solid var(--rule);padding-top:20px;padding-bottom:35px;color:var(--muted);font:13px/1.8 system-ui,sans-serif}
+.math-display{overflow-x:auto;padding:.3rem 0}.source{max-width:none;font-size:13px}.source .line{display:block;min-height:1.5em}.source .line:target{background:#fff2bc}.source .number{display:inline-block;width:4em;padding-right:1em;text-align:right;color:#6b7780;text-decoration:none;user-select:none}
+@media(max-width:600px){body{font-size:16px}header,main,footer{padding-left:18px;padding-right:18px}h1{font-size:1.9rem}nav{gap:14px}td,th{padding:8px 6px}table{font-size:.8em}pre{padding:12px}}
+@media print{nav{display:none}body{font-size:11pt}a{color:inherit;text-decoration:none}pre,table{break-inside:avoid}}

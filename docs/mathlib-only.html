@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Independent statements of the seven main results · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="independent-statements-of-the-seven-main-results">Independent statements of the seven main results</h1>
+<p>The results concern maximal functions and the overlap of rectangle families in
+<span class="math-inline">\(\mathbb R^{d_1}\times\cdots\times\mathbb R^{d_m}\)</span>. They include the Zygmund
+endpoint estimate, Rey&#39;s exponential integrability estimate, and the
+incomparable maximal estimate used to prove them, together with the extensions
+and sharpness result listed below.</p>
+<p>Here the seven results are stated using independently written definitions of
+the cubes, rectangles and operators. A reader can inspect these statements
+without tracing definitions through the proofs. The
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">definitions</a> and <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">statements</a> use only
+Mathlib and do not import the proof library or its earlier statements.
+The mathematical formulations, with all hypotheses and constants, are in the
+<a href="main-statements.html">Main theorems</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Lean proof of the independently stated result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Incomparable maximal estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionMaximal.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Sparse incomparable overlap estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionOverlap.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Maximal and overlap estimates under weaker containment</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionWeaker.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Rounded dyadic endpoint estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionRounded.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Continuous Zygmund endpoint estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionContinuous.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Sparse Φ-Zygmund overlap estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionPhiSparse.lean.html">Proof</a></td>
+</tr>
+<tr>
+<td>Sharpness for the classical dyadic Zygmund family</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SolutionSharpness.lean.html">Proof</a></td>
+</tr>
+</tbody></table>
+<h2 id="the-mathematical-definitions">The mathematical definitions</h2>
+<p>Dyadic cubes have side length <span class="math-inline">\(2^k\)</span> at scale <span class="math-inline">\(k\)</span>, partition the space at each
+scale, and are nested whenever they intersect. Dyadic rectangles are products of these
+cubes. The definitions of sparseness, incomparability and the weaker containment
+condition use the usual subsets and inclusions. The shadow of a family is its
+union, its overlap is the sum of its indicators, and its maximal function takes
+the supremum of averages of <span class="math-inline">\(|f|\)</span> over rectangles containing a point.</p>
+<p>The continuous family allows arbitrary locations and all positive values of
+the first <span class="math-inline">\(m-1\)</span> side lengths, with the last side prescribed by <span class="math-inline">\(\phi\)</span>.
+For the dyadic covering argument, every tuple obtained by rounding these side
+lengths is retained: the first <span class="math-inline">\(m-1\)</span> rounded scales need not determine the last
+one. The dyadic <span class="math-inline">\(\Phi\)</span>-Zygmund family is specified directly by its side-length
+relation.</p>
+<p>These definitions are given in <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>.
+The <a href="consistency.html">consistency guide</a> explains their mathematical
+meaning, including the Borel sets used for sparseness, the half-open cube
+conventions and the use of possibly infinite nonnegative sums and integrals.</p>
+<h2 id="relating-the-statements-to-the-proofs">Relating the statements to the proofs</h2>
+<p>The two descriptions of a dyadic grid are proved equivalent for every grid.
+The cubes are unchanged; the side-length exponent <span class="math-inline">\(k\)</span> corresponds to generation
+<span class="math-inline">\(n=-k\)</span> in the proofs. In particular, the usual dyadic children follow from the
+independent grid definition, and the constructed shifted grids satisfy it.
+See the <a href="source/lean/ReyZygmund/MathlibOnly/GridBridge.lean.html">grid equivalence</a> and
+<a href="source/lean/ReyZygmund/Geometry/ShiftedGrid.lean.html">shifted grids</a>.</p>
+<p>The corresponding rectangles, families and operators are then proved equal.
+This includes all the rectangles in the continuous and rounded families.
+For locally integrable functions, the nonnegative-integral formula for an
+average agrees with the real-integral formula used in the proofs.
+See the <a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html">identities for rectangles and operators</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/FamilyBridge.lean.html">equalities of dyadic families</a>, and
+<a href="source/lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean.html">boundary conventions and measurability</a>.</p>
+<p>The seven theorems follow from the existing results through these identities.
+Their hypotheses and conclusions were independently reviewed against the paper.
+Comparator then checked the seven independently stated results, and Lean and
+Nanoda accepted their proofs. This comparison supplements mathematical review;
+it does not replace the judgment needed to translate a paper into formal
+statements. The <a href="verifying.html">verification guide</a> gives the checking
+scope and instructions for repeating the checks.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

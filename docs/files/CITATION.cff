@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying paper and identify the software commit when referring to this formalization."
+type: software
+title: "The Zygmund and Rey conjectures in Lean"
+authors:
+  - family-names: Martikainen
+    given-names: Henri
+license: Apache-2.0
+abstract: "Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, together with the underlying incomparable maximal estimate and related extensions and sharpness results. Includes independently stated Mathlib-only specifications and instructions for reproducing verification with Lean, Comparator and Nanoda."
+preferred-citation:
+  type: article
+  title: "The Zygmund conjecture and Rey's exponential integrability conjecture"
+  authors:
+    - family-names: Martikainen
+      given-names: Henri
+  year: 2026
+  journal: arXiv
+  url: "https://arxiv.org/abs/2609.23895"

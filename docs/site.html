@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Building and maintaining the website · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="building-and-maintaining-the-website">Building and maintaining the website</h1>
+<p>These instructions explain how to preview and rebuild the optional website
+from the repository&#39;s Markdown and Lean files. The generated pages in <code>docs/</code>
+present the mathematical statements, consistency explanations, verification
+instructions and browsable Lean sources.</p>
+<p>For a local preview from the repository root:</p>
+<pre><code class="language-sh">python3 -m http.server 8000 --bind 127.0.0.1 --directory docs
+</code></pre>
+<p>Then open <code>http://127.0.0.1:8000</code>. Math rendering uses the pinned MathJax 3.2.2
+script from jsDelivr; opening a page with network access therefore requests that
+script from the jsDelivr CDN. The text and source pages remain readable without it.
+No analytics, cookies or external fonts are added by the site itself.</p>
+<p>The HTML is generated from the Markdown documents and exact Lean source
+inventory. To regenerate it after editorial changes, use Node.js 20+ and
+Marked 17.0.5:</p>
+<pre><code class="language-sh">npm install --prefix .tools/site --ignore-scripts --save-exact marked@17.0.5
+node tools/build-site.mjs --marked-module .tools/site/node_modules/marked/lib/marked.esm.js
+</code></pre>
+<p>Marked is a build-time dependency and is not vendored. MathJax is loaded from
+its public CDN, not copied into this repository. Their respective upstream
+licenses remain applicable to those tools.</p>
+<p>GitHub Pages can serve <code>docs/</code> from the chosen branch; <code>.nojekyll</code> keeps it a
+plain static site. The repository README is also a complete landing page
+without Pages.</p>
+<p>See GitHub&#39;s <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site">publishing-source instructions</a>.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Zygmund and Rey conjectures in Lean · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="the-zygmund-and-rey-conjectures-in-lean">The Zygmund and Rey conjectures in Lean</h1>
+<h2 id="what-this-is">What this is</h2>
+<p>A Lean 4 formalization accompanying Henri Martikainen&#39;s <a href="https://arxiv.org/abs/2609.23895"><em>The Zygmund conjecture and Rey&#39;s exponential integrability conjecture</em></a>, built on Mathlib.</p>
+<p>The formalization covers the two conjectures and their underlying maximal estimate, together with extensions to more general rectangle families and a sparse-family sharpness result. The paper is the primary mathematical exposition.</p>
+<p><a href="main-statements.html">Main theorems</a> · <a href="consistency.html">Definitions and consistency</a> · <a href="verifying.html">Checking the formalization</a></p>
+<h2 id="main-results">Main results</h2>
+<p>The paper proves the Zygmund conjecture in all parameters, in the following continuous form.</p>
+<p>Let <span class="math-inline">\(m\geq3\)</span>, let <span class="math-inline">\(d_1,\ldots,d_m\geq1\)</span>, and set <span class="math-inline">\(d=d_1+\cdots+d_m\)</span>.
+We work on <span class="math-inline">\(\mathbb R^{d_1}\times\cdots\times\mathbb R^{d_m}=\mathbb R^d\)</span>
+with Lebesgue measure. Let
+<span class="math-inline">\(\phi:(0,\infty)^{m-1}\to(0,\infty)\)</span> be coordinatewise nondecreasing.
+Let <span class="math-inline">\(\mathcal R_\phi\)</span> consist of all rectangles
+<span class="math-inline">\(R=R^1\times\cdots\times R^m\)</span> with axis-parallel cube factors
+<span class="math-inline">\(R^i\subset\mathbb R^{d_i}\)</span> and side-length tuple</p>
+<div class="math-display">\[(s_1,\ldots,s_{m-1},\phi(s_1,\ldots,s_{m-1})),
+\qquad s_1,\ldots,s_{m-1}&gt;0.\]</div>
+<p>For a family <span class="math-inline">\(\mathcal E\)</span> of rectangles, define</p>
+<div class="math-display">\[M_{\mathcal E}f(x)
+=\sup_{\substack{I\in\mathcal E\\x\in I}}
+  \frac1{|I|}\int_I |f(y)|\,dy.\]</div>
+<p><strong>Theorem (Zygmund conjecture).</strong> For every
+<span class="math-inline">\(f\in L^1_{\mathrm{loc}}(\mathbb R^d)\)</span> and every <span class="math-inline">\(\lambda&gt;0\)</span>,</p>
+<div class="math-display">\[|\{x:M_{\mathcal R_\phi}f(x)&gt;\lambda\}|
+\leq C_{m,d}\int_{\mathbb R^d}\frac{|f(x)|}{\lambda}
+\left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.\]</div>
+<p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>, not on <span class="math-inline">\(\phi\)</span>.
+No continuity or doubling assumption on <span class="math-inline">\(\phi\)</span> is imposed.
+This weak <span class="math-inline">\(L(\log L)^{m-2}\)</span> estimate saves one logarithm compared with
+the full <span class="math-inline">\(m\)</span>-parameter strong maximal function, whose logarithmic power is <span class="math-inline">\(m-1\)</span>.</p>
+<p>The central analytic estimate is <span class="math-inline">\(\|M_{\mathcal G}f\|_p\leq C_{m,d}(p')^{m-1}\|f\|_p\)</span>, <span class="math-inline">\(1&lt;p\leq2\)</span>, for incomparable <span class="math-inline">\(m\)</span>-parameter dyadic rectangle families, <span class="math-inline">\(m\geq2\)</span>. Here <span class="math-inline">\(p'=p/(p-1)\)</span>. It saves one factor of <span class="math-inline">\(p'\)</span> compared with the unrestricted product maximal operator. Duality gives Rey&#39;s exponential integrability estimate for sparse incomparable families, with power <span class="math-inline">\(1/(m-1)\)</span>.</p>
+<p>The continuous Zygmund theorem also uses an extension allowing certain containments: the slices arising after dyadic rounding need not be incomparable.</p>
+<p>The three central results are:</p>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Mathematical role</th>
+<th>Lean source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="main-statements.html#continuous-zygmund-endpoint-estimate">Continuous Zygmund endpoint estimate</a></td>
+<td>Zygmund&#39;s conjecture in its continuous form</td>
+<td><a href="source/lean/ReyZygmund/Continuous/Endpoint.lean.html">Continuous/Endpoint.lean</a></td>
+</tr>
+<tr>
+<td><a href="main-statements.html#sparse-incomparable-overlap-estimate">Sparse incomparable overlap estimate</a></td>
+<td>Rey&#39;s exponential integrability conjecture</td>
+<td><a href="source/lean/ReyZygmund/Main/Overlap.lean.html">Main/Overlap.lean</a></td>
+</tr>
+<tr>
+<td><a href="main-statements.html#incomparable-maximal-estimate">Incomparable maximal estimate</a></td>
+<td>Central analytic estimate used to prove both conjectures</td>
+<td><a href="source/lean/ReyZygmund/Main/Maximal.lean.html">Main/Maximal.lean</a></td>
+</tr>
+</tbody></table>
+<p>We also formalize the following extensions, transfer steps and sharpness result:</p>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Mathematical role</th>
+<th>Lean source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="main-statements.html#maximal-and-overlap-estimates-under-weaker-containment">Maximal and overlap estimates under weaker containment</a></td>
+<td>Applies to the slices used in the continuous reduction</td>
+<td><a href="source/lean/ReyZygmund/Main/Overlap.lean.html">Main/Overlap.lean</a></td>
+</tr>
+<tr>
+<td><a href="main-statements.html#rounded-dyadic-endpoint-estimate">Rounded dyadic endpoint estimate</a></td>
+<td>Dyadic endpoint used to obtain the continuous theorem</td>
+<td><a href="source/lean/ReyZygmund/Main/Endpoints.lean.html">Main/Endpoints.lean</a></td>
+</tr>
+<tr>
+<td><a href="main-statements.html#sparse-φ-zygmund-overlap-estimate">Sparse Φ-Zygmund overlap estimate</a></td>
+<td>Overlap estimate without incomparability</td>
+<td><a href="source/lean/ReyZygmund/Main/PhiSparse.lean.html">Main/PhiSparse.lean</a></td>
+</tr>
+<tr>
+<td><a href="main-statements.html#sharpness-for-the-classical-dyadic-zygmund-family">Sharpness for the classical dyadic Zygmund family</a></td>
+<td>Sharpness even for incomparable families</td>
+<td><a href="source/lean/ReyZygmund/Main/Sharpness.lean.html">Main/Sharpness.lean</a></td>
+</tr>
+</tbody></table>
+<h2 id="scope-and-faithfulness">Scope and faithfulness</h2>
+<p><a href="main-statements.html">Main theorems</a> gives the seven self-contained mathematical statements, including the hypotheses and constants for each setting. The links beneath each result lead to its independent Lean statement, definitions and proofs. No software installation is needed to inspect them.</p>
+<p>Separate mathematical reviews checked the correspondence between these formal statements and definitions and the paper. The <a href="verifying.html#mathematical-scope">mathematical scope notes</a> describe the coverage of the formalization relative to the paper.</p>
+<h2 id="consistency-checks-of-the-definitions">Consistency checks of the definitions</h2>
+<p>The <a href="consistency.html">consistency guide</a> explains how the mathematical objects are represented in Lean and how the independently written definitions are related to those used in the proofs. It links to the relevant definitions and identifications, distinguishing identities proved in Lean from comparisons checked mathematically.</p>
+<h2 id="verified-against-a-mathlib-only-statement">Verified against a Mathlib-only statement</h2>
+<p>Each of the seven results has an <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">independent Lean statement</a> using <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">definitions</a> that depend only on Mathlib. Neither file imports the proof development. Identities proved in Lean relate these definitions to those used in the proofs, so the main theorems give the independently stated results.</p>
+<p>On 26 September 2026, all seven results passed Comparator&#39;s comparison of the formal statements and their definitions. Their exported proofs, including the declarations on which they depend, were accepted by both Lean&#39;s default kernel and Nanoda.</p>
+<p>The theorem proofs contain no omitted steps (<code>sorry</code>) and use only the standard axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. See the <a href="verifying.html#what-has-been-checked">verification summary</a> for the recorded checks and their scope, and the <a href="verifying.html#4-comparator-with-nanoda-on-linux">reproduction instructions</a> to repeat the Comparator and two-kernel checks.</p>
+<h2 id="building">Building</h2>
+<p>The development uses Lean 4.34.0 and a pinned Mathlib version. See the <a href="verifying.html">verification guide</a> for dependency setup, build options and checking commands.</p>
+<p>For ordinary compilation after that setup:</p>
+<pre><code class="language-sh">cd lean
+lake build
+</code></pre>
+<h2 id="repository-layout">Repository layout</h2>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="main-statements.html">MAIN-STATEMENTS.md</a></td>
+<td>The seven mathematical statements and source links</td>
+</tr>
+<tr>
+<td><code>lean/ReyZygmund/</code></td>
+<td>The proof development</td>
+</tr>
+<tr>
+<td><a href="mathlib-only.html">MathlibOnly/README.md</a></td>
+<td>Independently written statements and their relation to the proofs</td>
+</tr>
+<tr>
+<td><code>lean/Verification/</code></td>
+<td>Reviewed formal statements and programs for checking them</td>
+</tr>
+<tr>
+<td><code>verification/comparator/</code></td>
+<td>The seven Mathlib-only comparison adapters and configurations</td>
+</tr>
+<tr>
+<td><a href="consistency.html">CONSISTENCY.md</a></td>
+<td>Mathematical definitions and the identities relating their descriptions</td>
+</tr>
+<tr>
+<td><a href="verifying.html">VERIFYING.md</a></td>
+<td>Reproduction instructions and checking scope</td>
+</tr>
+<tr>
+<td><code>tools/</code></td>
+<td>Checking and site-generation programs</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>Static website; see <a href="site.html">SITE.md</a></td>
+</tr>
+</tbody></table>
+<h2 id="how-this-was-built">How this was built</h2>
+<p>The formalization was developed with AI assistance, with separate reviews of its scope and faithfulness to the intended mathematics. The main Lean codebase was produced using GPT-6-Astra at Max reasoning effort, in a workflow with specialized subagents. Claude Fable 5.1 provided additional independent and blind review of the mathematical specifications.</p>
+<h2 id="authors-and-citation">Authors and citation</h2>
+<p>Henri Martikainen, Washington University in St. Louis.</p>
+<p>Please use the metadata in <a href="files/CITATION.cff">CITATION.cff</a> when citing this development, and the linked paper for the mathematical results.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This material is based upon work supported by the National Science Foundation under Grant No. 2247234. The work was also supported by the Simons Foundation through MP-TSM-00002361 (travel support for mathematicians).</p>
+<p>Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.</p>
+<h2 id="license">License</h2>
+<p>The source code, checking scripts and accompanying documentation are available under <a href="files/LICENSE">Apache-2.0</a>. See <a href="third-party.html">third-party notices</a> for the Mathlib adaptation and the Carleson proof-pattern acknowledgment. The linked paper is not distributed under this software license.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

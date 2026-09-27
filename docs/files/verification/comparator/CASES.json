@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "production_target": "ReyZygmund.MathlibOnly.incomparable_maximal",
+      "statement": "ReyZygmund.MathlibOnly.IncomparableMaximal",
+      "comparator_target": "ReyMathlibOnly.target1",
+      "config": "config-1.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.incomparable_overlap",
+      "statement": "ReyZygmund.MathlibOnly.IncomparableOverlap",
+      "comparator_target": "ReyMathlibOnly.target2",
+      "config": "config-2.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.weaker_containment",
+      "statement": "ReyZygmund.MathlibOnly.WeakerContainment",
+      "comparator_target": "ReyMathlibOnly.target3",
+      "config": "config-3.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.rounded_endpoint",
+      "statement": "ReyZygmund.MathlibOnly.RoundedEndpoint",
+      "comparator_target": "ReyMathlibOnly.target4",
+      "config": "config-4.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.continuous_endpoint",
+      "statement": "ReyZygmund.MathlibOnly.ContinuousEndpoint",
+      "comparator_target": "ReyMathlibOnly.target5",
+      "config": "config-5.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_overlap",
+      "statement": "ReyZygmund.MathlibOnly.PhiSparseOverlap",
+      "comparator_target": "ReyMathlibOnly.target6",
+      "config": "config-6.json"
+    },
+    {
+      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_sharpness",
+      "statement": "ReyZygmund.MathlibOnly.PhiSparseSharpness",
+      "comparator_target": "ReyMathlibOnly.target7",
+      "config": "config-7.json"
+    }
+  ]
+}

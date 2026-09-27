@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linux checker setup · Zygmund and Rey in Lean</title>
+<meta name="description" content="Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, with theorem statements and reproducible verification.">
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'local'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head><body><header><nav aria-label="Main navigation">
+<a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
+<a href="consistency.html">Definitions and consistency</a>
+<a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
+</nav></header><main><h1 id="linux-checker-setup">Linux checker setup</h1>
+<p>This installs checking software, not mathematical dependencies; complete
+steps 1–2 of <a href="verifying.html">the verification guide</a> separately. Use a fresh
+Linux environment if you need isolation from unrelated files. No host home
+mount is required when using a VM.</p>
+<p>Prerequisites are Lean 4.34.0, Python 3.12+, Git, a C/C++ toolchain, Go, Rust/Cargo,
+and user-level systemd with cgroup v2. The known-working environment used
+Ubuntu 26.04 ARM64, Go 1.26, Landlock ABI 8 and the exact revisions below.
+Package installation is an explicit setup operation; the proof-checking runner
+itself never installs software or downloads dependencies.</p>
+<p>From the public repository root, after installing these prerequisites:</p>
+<pre><code class="language-sh">python3 -I -B tools/install-checkers.py
+</code></pre>
+<p>This fetches and builds the fixed revisions in
+<a href="files/verification/CHECKER-PINS.json">CHECKER-PINS.json</a> into <code>.tools/checkers</code>, preserves existing
+matching tool checkouts, and refuses different revisions or tracked edits.
+It builds Comparator and lean4export with the pinned Lean version,
+Landrun with Go, and Nanoda with <code>cargo build --release --locked</code>.
+Git, Go and Cargo may download their declared software dependencies during
+this setup. Nothing is installed system-wide, and no repository files are uploaded.</p>
+<p>Then run, from a user session where <code>systemctl --user show-environment</code> works:</p>
+<pre><code class="language-sh">python3 -I -B tools/test_comparator_runtime.py
+python3 -I -B tools/comparator.py --case 7
+python3 -I -B tools/comparator.py
+</code></pre>
+<p>The first command tests the real runtime on five isolated fixtures: both
+kernels accepting a valid theorem, missing Nanoda, failing Nanoda, a changed
+referenced definition, and an indirect admission. It uses
+a C compiler with static libc support to create the failing test executable;
+no installed checker is replaced. Success is <code>PASS_FIXTURES_ONLY</code>.</p>
+<p>The second command is optional and tests the sparse-family sharpness result.
+Only the third checks all seven Mathlib-only main statements. Allow enough time and disk for
+fresh project builds; dependencies may reuse their installed compatible caches.</p>
+<p>Both source revisions and executable SHA-256 hashes are recorded. Source
+revision checks alone do not authenticate an arbitrary prebuilt executable;
+build the tools from the fixed checkouts in a trusted setup environment.
+The initial checker tests included negative fixtures for altered statements,
+extra assumptions, admissions, custom axioms, changed definitions and missing
+targets. When run on a new machine, the runner tests effective Landlock/AF_UNIX restrictions
+before invoking Comparator, and failures stop the run.</p>
+<p>Upstream references: <a href="https://github.com/leanprover/comparator">Comparator</a>,
+<a href="https://github.com/leanprover/lean4export">lean4export</a>,
+<a href="https://github.com/Zouuup/landrun">Landrun</a>,
+<a href="https://github.com/ammkrn/nanoda_lib">Nanoda</a>. Their source and license files
+remain in the installed checkouts; they are not vendored into this repository.</p>
+</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

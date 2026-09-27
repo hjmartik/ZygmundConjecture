@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Challenge1",
+  "solution_module": "Solution1",
+  "theorem_names": [
+    "ReyMathlibOnly.target1"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "enable_nanoda": true
+}

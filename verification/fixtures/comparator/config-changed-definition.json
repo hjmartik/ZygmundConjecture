@@ -1,0 +1,7 @@
+{
+  "challenge_module": "ChallengeChangedDefinition",
+  "solution_module": "SolutionChangedDefinition",
+  "theorem_names": ["PackagingChangedDefinition.target"],
+  "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "enable_nanoda": true
+}

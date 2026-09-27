@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "toolchain": "leanprover/lean4:v4.34.0",
+  "lean_revision": "293d5d0c0c3f3dded4688b3ccd6a33939ac5102b",
+  "source_method": "immutable GitHub commit archives; local path dependencies; no nested Git metadata",
+  "packages": [
+    {
+      "name": "mathlib",
+      "repository": "https://github.com/leanprover-community/mathlib4",
+      "commit": "5ed2965256430c3649e86755f9576b54eca72435",
+      "config_file": "lakefile.lean",
+      "archive_url": "https://codeload.github.com/leanprover-community/mathlib4/tar.gz/5ed2965256430c3649e86755f9576b54eca72435",
+      "archive_sha256": "bc6a431203374e261223926aaacf7443a5567abd7181dbc35bea9de2acf598f5",
+      "archive_bytes": 23846870,
+      "source_file_count": 9293,
+      "source_tree_sha256": "209621e2fac231de3f1082ecc6f50b74f26c2edabdb209283d4c928ee65460d9",
+      "local_path": ".lake/packages/mathlib"
+    },
+    {
+      "name": "plausible",
+      "repository": "https://github.com/leanprover-community/plausible",
+      "commit": "118aa17ee84656b8bd727fef7c458ee8c833385c",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/plausible/tar.gz/118aa17ee84656b8bd727fef7c458ee8c833385c",
+      "archive_sha256": "e5ed8b63ae57811987cc68e89b87fdd9932ed8ec4bda187abd4db5d9321a8f48",
+      "archive_bytes": 42943,
+      "source_file_count": 35,
+      "source_tree_sha256": "66d1e144af806cf07d356cd35758c796fe49f12f9310a9e7cd1b91cec6f71bfc",
+      "local_path": ".lake/packages/plausible"
+    },
+    {
+      "name": "LeanSearchClient",
+      "repository": "https://github.com/leanprover-community/LeanSearchClient",
+      "commit": "ddf04cf3949fa556442341e87d47f9f6e6074707",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/LeanSearchClient/tar.gz/ddf04cf3949fa556442341e87d47f9f6e6074707",
+      "archive_sha256": "55f9b52a8134dd4e14176999cda127af2c1190241048864b546ae7c802ae6e37",
+      "archive_bytes": 13134,
+      "source_file_count": 15,
+      "source_tree_sha256": "9b1fad0ff3e6e8b79be50477ab847dd7307e4a2ee99ea5f00ab4f9d1adc8098d",
+      "local_path": ".lake/packages/LeanSearchClient"
+    },
+    {
+      "name": "importGraph",
+      "repository": "https://github.com/leanprover-community/import-graph",
+      "commit": "e928b72544873815af278d38681b31c0293588e3",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/import-graph/tar.gz/e928b72544873815af278d38681b31c0293588e3",
+      "archive_sha256": "5daec3b3889d425440a93f4a47de29a41836266359e29472abbc767ed2188eed",
+      "archive_bytes": 149550,
+      "source_file_count": 73,
+      "source_tree_sha256": "9b65b54da2f227aec738694f00a6fa2fc43ce6b54205d743b519fb83f73df937",
+      "local_path": ".lake/packages/importGraph"
+    },
+    {
+      "name": "proofwidgets",
+      "repository": "https://github.com/leanprover-community/ProofWidgets4",
+      "commit": "106ff4fafc74ef4ac99d81dbf3ab399118f497a5",
+      "config_file": "lakefile.lean",
+      "archive_url": "https://codeload.github.com/leanprover-community/ProofWidgets4/tar.gz/106ff4fafc74ef4ac99d81dbf3ab399118f497a5",
+      "archive_sha256": "c6cf369f63a997035e36c5f6f76afdba77c2e047988cb6abdec362a1098552de",
+      "archive_bytes": 3895061,
+      "source_file_count": 111,
+      "source_tree_sha256": "2068bc85897778c95272ef34987f9d23ed73a000aeffb7d9d34b1ad298a41437",
+      "local_path": ".lake/packages/proofwidgets"
+    },
+    {
+      "name": "aesop",
+      "repository": "https://github.com/leanprover-community/aesop",
+      "commit": "355695d523e41d0554926416cba2a2b3544fbbc9",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/aesop/tar.gz/355695d523e41d0554926416cba2a2b3544fbbc9",
+      "archive_sha256": "80792fbdc4f7a12a9783c32ee5eba7387d450bc26ababf5ff6f16c4dc59b633a",
+      "archive_bytes": 208005,
+      "source_file_count": 258,
+      "source_tree_sha256": "4e571a6104cee1f0cddb2e0c9b7bb936f235a33913239f8c920c43b4a4639ab7",
+      "local_path": ".lake/packages/aesop"
+    },
+    {
+      "name": "Qq",
+      "repository": "https://github.com/leanprover-community/quote4",
+      "commit": "6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/quote4/tar.gz/6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259",
+      "archive_sha256": "c61940f3fe63e39db9b25b8ac4ce1bc9a9466801055b9218804556d85e9a6e29",
+      "archive_bytes": 33006,
+      "source_file_count": 35,
+      "source_tree_sha256": "e95300c3be53e370b9c53159dfcb6339f312dc16f6ff958cc52f1772df3c7834",
+      "local_path": ".lake/packages/Qq"
+    },
+    {
+      "name": "batteries",
+      "repository": "https://github.com/leanprover-community/batteries",
+      "commit": "f2effa3d803fda822b1f97b806c47cf2adfbcbc2",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover-community/batteries/tar.gz/f2effa3d803fda822b1f97b806c47cf2adfbcbc2",
+      "archive_sha256": "1987093d3e0af3c75084f48095a8eb0fac0751b11712c51fb05b31e71d64220b",
+      "archive_bytes": 363638,
+      "source_file_count": 290,
+      "source_tree_sha256": "58654563fdf35f459bb19147a9fa0c6f8d50e825fbc75bf4fa7b43984702654f",
+      "local_path": ".lake/packages/batteries"
+    },
+    {
+      "name": "Cli",
+      "repository": "https://github.com/leanprover/lean4-cli",
+      "commit": "e92c9f15fdfacc8536f31cfb3b7ad26c3c8cd204",
+      "config_file": "lakefile.toml",
+      "archive_url": "https://codeload.github.com/leanprover/lean4-cli/tar.gz/e92c9f15fdfacc8536f31cfb3b7ad26c3c8cd204",
+      "archive_sha256": "1ccb3440fc468e393b064a446368c4b317b7c57ffe78cee3b2b932333834e007",
+      "archive_bytes": 23864,
+      "source_file_count": 12,
+      "source_tree_sha256": "1ced9480a15cd9c0807fcfa745dc29e43a4182e906766db451843f8a9e5afc75",
+      "local_path": ".lake/packages/Cli"
+    }
+  ]
+}

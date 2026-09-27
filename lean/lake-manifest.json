@@ -1,0 +1,90 @@
+{
+  "version": "1.2.0",
+  "name": "rey_zygmund_v3",
+  "lakeDir": ".lake",
+  "packagesDir": ".lake/packages",
+  "fixedToolchain": true,
+  "packages": [
+    {
+      "type": "path",
+      "name": "mathlib",
+      "scope": "",
+      "inherited": false,
+      "configFile": "lakefile.lean",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/mathlib"
+    },
+    {
+      "type": "path",
+      "name": "plausible",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/plausible"
+    },
+    {
+      "type": "path",
+      "name": "LeanSearchClient",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/LeanSearchClient"
+    },
+    {
+      "type": "path",
+      "name": "importGraph",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/importGraph"
+    },
+    {
+      "type": "path",
+      "name": "proofwidgets",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.lean",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/proofwidgets"
+    },
+    {
+      "type": "path",
+      "name": "aesop",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/aesop"
+    },
+    {
+      "type": "path",
+      "name": "Qq",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/Qq"
+    },
+    {
+      "type": "path",
+      "name": "batteries",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/batteries"
+    },
+    {
+      "type": "path",
+      "name": "Cli",
+      "scope": "",
+      "inherited": true,
+      "configFile": "lakefile.toml",
+      "manifestFile": "lake-manifest.json",
+      "dir": ".lake/packages/Cli"
+    }
+  ]
+}
