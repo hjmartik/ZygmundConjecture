@@ -22,8 +22,10 @@ script from jsDelivr; opening a page with network access therefore requests that
 script from the jsDelivr CDN. The text and source pages remain readable without it.
 No analytics, cookies or external fonts are added by the site itself.</p>
 <p>The HTML is generated from the Markdown documents and exact Lean source
-inventory. To regenerate it after editorial changes, use Node.js 20+ and
-Marked 17.0.5:</p>
+inventory. Use GitHub&#39;s fenced <code>math</code> blocks for displayed equations and
+dollar-and-backtick delimiters for inline math. The generator preserves the
+same TeX expressions for the website.</p>
+<p>To regenerate it after editorial changes, use Node.js 20+ and Marked 17.0.5:</p>
 <pre><code class="language-sh">npm install --prefix .tools/site --ignore-scripts --save-exact marked@17.0.5
 node tools/build-site.mjs --marked-module .tools/site/node_modules/marked/lib/marked.esm.js
 </code></pre>

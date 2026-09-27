@@ -17,8 +17,11 @@ script from the jsDelivr CDN. The text and source pages remain readable without 
 No analytics, cookies or external fonts are added by the site itself.
 
 The HTML is generated from the Markdown documents and exact Lean source
-inventory. To regenerate it after editorial changes, use Node.js 20+ and
-Marked 17.0.5:
+inventory. Use GitHub's fenced `math` blocks for displayed equations and
+dollar-and-backtick delimiters for inline math. The generator preserves the
+same TeX expressions for the website.
+
+To regenerate it after editorial changes, use Node.js 20+ and Marked 17.0.5:
 
 ```sh
 npm install --prefix .tools/site --ignore-scripts --save-exact marked@17.0.5

@@ -79,12 +79,19 @@ function localLink(href, from) {
 for (const [source, destination] of pages) {
   const equations = [];
   let text = fs.readFileSync(path.join(root, source), 'utf8');
-  text = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, value) => {
-    const id = equations.length; equations.push({value, display:true}); return `\n\nRZMATH${id}END\n\n`;
-  });
-  text = text.replace(/\$([^$\n]+)\$/g, (_, value) => {
-    const id = equations.length; equations.push({value, display:false}); return `RZMATH${id}END`;
-  });
+  // Protect GitHub's math fences and inline delimiters before parsing Markdown.
+  // Ordinary code fences/spans stay literal; legacy dollar math is still supported.
+  text = text.replace(
+    /^```([^\n]*)\n([\s\S]*?)^```[ \t]*$|\$\$([\s\S]*?)\$\$|\$`([^`\n]+)`\$|(`[^`\n]*`)|\$([^$\n]+)\$/gm,
+    (whole, language, fenced, legacyDisplay, protectedInline, code, inline) => {
+      if (language !== undefined && language.trim() !== 'math' || code !== undefined) return whole;
+      const display = fenced !== undefined || legacyDisplay !== undefined;
+      const value = fenced ?? legacyDisplay ?? protectedInline ?? inline;
+      const id = equations.length;
+      equations.push({value, display});
+      return display ? `\n\nRZMATH${id}END\n\n` : `RZMATH${id}END`;
+    }
+  );
   const parser = new Marked({gfm:true, renderer:{
     heading(token) {const content=this.parser.parseInline(token.tokens); return `<h${token.depth} id="${slug(token.text)}">${content}</h${token.depth}>\n`;},
     link(token) {return `<a href="${escape(localLink(token.href, source))}">${this.parser.parseInline(token.tokens)}</a>`;}

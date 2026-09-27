@@ -12,42 +12,42 @@ The formalization covers the two conjectures and their underlying maximal estima
 
 The paper proves the Zygmund conjecture in all parameters, in the following continuous form.
 
-Let $m\geq3$, let $d_1,\ldots,d_m\geq1$, and set $d=d_1+\cdots+d_m$.
-We work on $\mathbb R^{d_1}\times\cdots\times\mathbb R^{d_m}=\mathbb R^d$
+Let $`m\geq3`$, let $`d_1,\ldots,d_m\geq1`$, and set $`d=d_1+\cdots+d_m`$.
+We work on $`\mathbb R^{d_1}\times\cdots\times\mathbb R^{d_m}=\mathbb R^d`$
 with Lebesgue measure. Let
-$\phi:(0,\infty)^{m-1}\to(0,\infty)$ be coordinatewise nondecreasing.
-Let $\mathcal R_\phi$ consist of all rectangles
-$R=R^1\times\cdots\times R^m$ with axis-parallel cube factors
-$R^i\subset\mathbb R^{d_i}$ and side-length tuple
+$`\phi:(0,\infty)^{m-1}\to(0,\infty)`$ be coordinatewise nondecreasing.
+Let $`\mathcal R_\phi`$ consist of all rectangles
+$`R=R^1\times\cdots\times R^m`$ with axis-parallel cube factors
+$`R^i\subset\mathbb R^{d_i}`$ and side-length tuple
 
-$$
+```math
 (s_1,\ldots,s_{m-1},\phi(s_1,\ldots,s_{m-1})),
 \qquad s_1,\ldots,s_{m-1}>0.
-$$
+```
 
-For a family $\mathcal E$ of rectangles, define
+For a family $`\mathcal E`$ of rectangles, define
 
-$$
+```math
 M_{\mathcal E}f(x)
 =\sup_{\substack{I\in\mathcal E\\x\in I}}
   \frac1{|I|}\int_I |f(y)|\,dy.
-$$
+```
 
 **Theorem (Zygmund conjecture).** For every
-$f\in L^1_{\mathrm{loc}}(\mathbb R^d)$ and every $\lambda>0$,
+$`f\in L^1_{\mathrm{loc}}(\mathbb R^d)`$ and every $`\lambda>0`$,
 
-$$
+```math
 |\{x:M_{\mathcal R_\phi}f(x)>\lambda\}|
 \leq C_{m,d}\int_{\mathbb R^d}\frac{|f(x)|}{\lambda}
 \left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.
-$$
+```
 
-The constant depends only on $m$ and $d$, not on $\phi$.
-No continuity or doubling assumption on $\phi$ is imposed.
-This weak $L(\log L)^{m-2}$ estimate saves one logarithm compared with
-the full $m$-parameter strong maximal function, whose logarithmic power is $m-1$.
+The constant depends only on $`m`$ and $`d`$, not on $`\phi`$.
+No continuity or doubling assumption on $`\phi`$ is imposed.
+This weak $`L(\log L)^{m-2}`$ estimate saves one logarithm compared with
+the full $`m`$-parameter strong maximal function, whose logarithmic power is $`m-1`$.
 
-The central analytic estimate is $\|M_{\mathcal G}f\|_p\leq C_{m,d}(p')^{m-1}\|f\|_p$, $1<p\leq2$, for incomparable $m$-parameter dyadic rectangle families, $m\geq2$. Here $p'=p/(p-1)$. It saves one factor of $p'$ compared with the unrestricted product maximal operator. Duality gives Rey's exponential integrability estimate for sparse incomparable families, with power $1/(m-1)$.
+The central analytic estimate is $`\|M_{\mathcal G}f\|_p\leq C_{m,d}(p')^{m-1}\|f\|_p`$, $`1<p\leq2`$, for incomparable $`m`$-parameter dyadic rectangle families, $`m\geq2`$. Here $`p'=p/(p-1)`$. It saves one factor of $`p'`$ compared with the unrestricted product maximal operator. Duality gives Rey's exponential integrability estimate for sparse incomparable families, with power $`1/(m-1)`$.
 
 The continuous Zygmund theorem also uses an extension allowing certain containments: the slices arising after dyadic rounding need not be incomparable.
 
