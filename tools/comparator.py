@@ -38,9 +38,9 @@ def validate_cases():
     require(len(cases)==6 and len({c['production_target'] for c in cases})==6,
             'Expected six distinct main results')
     for i,c in enumerate(cases,1):
-        require(c['id']==f'submitted-{i}' and c['config']==f'comparison-{i}.json'
-                and c['challenge_module']==f'SubmittedChallenge{i}'
-                and c['solution_module']=='SubmittedSolution', 'Unexpected adapter mapping')
+        require(c['id']==f'main-{i}' and c['config']==f'comparison-{i}.json'
+                and c['challenge_module']==f'Challenge{i}'
+                and c['solution_module']=='Solution', 'Unexpected adapter mapping')
         cfg=read_json(ADAPTERS/c['config'])
         require(cfg==dict(challenge_module=c['challenge_module'], solution_module=c['solution_module'],
             theorem_names=[c['production_target']], permitted_axioms=['propext','Classical.choice','Quot.sound']),
@@ -50,7 +50,7 @@ def validate_cases():
 def validate_import_separation(manifest):
     specs=set(read_json(ROOT/'verification/AUDIT-MANIFEST.json')['specification_modules'])
     require(specs == {'ReyZygmund.MathlibOnly.Definitions',
-        'ReyZygmund.MathlibOnly.SubmittedDefinitions','ReyZygmund.MathlibOnly.SubmittedStatements'},
+        'ReyZygmund.MathlibOnly.Statements'},
         'Specification module list differs')
     modules={p[5:-5].replace('/','.'):ROOT/p for p in manifest['sha256']}
     modules.update({p.stem:p for p in ADAPTERS.glob('*.lean')})
@@ -73,7 +73,7 @@ def validate_import_separation(manifest):
         visit(root)
         if independent:require(specs<=seen,'Incomplete independent specification closure')
         return dict(local_modules=sorted(seen),external_imports=sorted(external))
-    return {name:closure(name,name in challenges) for name in sorted(challenges|{'SubmittedSolution'})}
+    return {name:closure(name,name in challenges) for name in sorted(challenges|{'Solution'})}
 
 def tool_paths(directory, bindir):
     pins=read_json(ROOT/'verification/CHECKER-PINS.json')

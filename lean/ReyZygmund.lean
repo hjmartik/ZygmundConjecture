@@ -25,5 +25,5 @@ import ReyZygmund.Weighted.Projected
 
 This module collects the finite cube partitions, coordinate averages,
 projection identities, finite maximal estimates and weighted square estimates.
-For the complete main results, import `ReyZygmund.Submitted`.
+For the complete main results, import `ReyZygmund.MainResults`.
 -/

@@ -8,7 +8,7 @@ Apply Chebyshev at a real
 moment order, bound the small thresholds by the shadow measure, and integrate
 the resulting exponential tail. Constants depend only on parameter count and
 total dimension. Adding the shadow measure gives the full exponential estimate
-in `MathlibOnly.SubmittedSolutions`.
+in `MathlibOnly.Proof.EstimateSolutions`.
 -/
 
 open BoxIntegral MeasureTheory

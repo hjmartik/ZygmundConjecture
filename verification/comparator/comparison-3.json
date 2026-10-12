@@ -1,8 +1,8 @@
 {
-  "challenge_module": "SubmittedChallenge3",
-  "solution_module": "SubmittedSolution",
+  "challenge_module": "Challenge3",
+  "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.Submitted.continuous_endpoint"
+    "ReyZygmund.MathlibOnly.continuous_endpoint"
   ],
   "permitted_axioms": [
     "propext",

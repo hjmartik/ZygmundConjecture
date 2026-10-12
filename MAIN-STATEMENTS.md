@@ -23,7 +23,8 @@ Any two intersecting cubes in the same grid are nested.
 
 We use $`\subset`$ for inclusion allowing equality.
 
-All functions are real-valued. All measures and integrals are with respect
+Input functions are real-valued; maximal and overlap functions may take the
+value $`+\infty`$. All measures and integrals are with respect
 to Lebesgue measure, and $`\|g\|_p`$ denotes the $`L^p(\mathbb R^d)`$ norm.
 We write $`p'=p/(p-1)`$ for $`1<p<\infty`$.
 
@@ -72,7 +73,7 @@ Let $`\mathcal G\subset\mathcal D`$ be weakly incomparable. Then
 
 The constant depends only on $`m`$ and $`d`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L26) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L37) · [Theorem in the main development](lean/ReyZygmund/Maximal/WeakerGlobal.lean#L140).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L33) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L19) · [Theorem in the main development](lean/ReyZygmund/Maximal/WeakerGlobal.lean#L140).
 
 <a id="sparse-incomparable-overlap"></a>
 
@@ -105,7 +106,7 @@ and
 
 The positive constants depend only on $`m`$ and $`d`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L40) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L50) · [Exponential estimate in the main development](lean/ReyZygmund/Overlap/Exponential.lean#L78).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L47) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L31) · [Exponential estimate in the main development](lean/ReyZygmund/Overlap/Exponential.lean#L78).
 
 ## Continuous Zygmund endpoint estimate
 
@@ -133,7 +134,7 @@ For every $`f\in L^1_{\mathrm{loc}}(\mathbb R^d)`$ and every $`\lambda>0`$,
 The constant depends only on $`m`$ and $`d`$, not on $`\phi`$.
 No continuity or doubling assumption on $`\phi`$ is imposed.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L57) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L94) · [Theorem in the main development](lean/ReyZygmund/Continuous/Endpoint.lean#L88).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L64) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L49) · [Theorem in the main development](lean/ReyZygmund/Continuous/Endpoint.lean#L88).
 
 <a id="endpoint-estimate-for-the-rounded-dyadic-families"></a>
 
@@ -180,7 +181,7 @@ For every $`f\in L^1_{\mathrm{loc}}(\mathbb R^d)`$ and every $`\lambda>0`$,
 
 The constant depends only on $`m`$ and $`d`$, not on $`\phi`$ or $`\tau`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L70) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L97) · [Theorem in the main development](lean/ReyZygmund/Main/Endpoints.lean#L19).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L78) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L59) · [Theorem in the main development](lean/ReyZygmund/Main/Endpoints.lean#L19).
 
 <a id="sparse-overlap-with-a-monotone-zygmund-scale-relation"></a>
 
@@ -208,14 +209,13 @@ shadow, where $`0<\eta\leq1`$, then
 where $`c,C>0`$ depend only on $`m`$, $`d`$ and $`\eta`$, not on $`\Phi`$
 or the dyadic grids.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L83) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L105) · [Theorem in the main development](lean/ReyZygmund/Main/PhiSparse.lean#L51).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L92) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L69) · [Theorem in the main development](lean/ReyZygmund/Main/PhiSparse.lean#L51).
 
 <a id="sharpness-for-sparse-incomparable-zygmund-families"></a>
 
 ## Sharpness for the classical dyadic Zygmund family
 
-The formalization retains the following stronger, quantified form of the
-paper's sharpness remark.
+The formalization proves the following sharpness result.
 
 Let $`m\geq3`$, $`0<\eta<1`$, and set
 
@@ -242,7 +242,7 @@ Thus adding incomparability to sparseness and the $`\Phi`$-Zygmund scale
 restriction need not improve the exponential power, even for the classical
 relation above.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L97) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L116) · [Theorem in the main development](lean/ReyZygmund/Main/Sharpness.lean#L22).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L109) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L88) · [Theorem in the main development](lean/ReyZygmund/Main/Sharpness.lean#L22).
 
 ## Notes on the formalization
 

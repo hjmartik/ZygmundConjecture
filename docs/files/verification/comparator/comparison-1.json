@@ -1,8 +1,8 @@
 {
-  "challenge_module": "SubmittedChallenge1",
-  "solution_module": "SubmittedSolution",
+  "challenge_module": "Challenge1",
+  "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.Submitted.weakly_incomparable_maximal"
+    "ReyZygmund.MathlibOnly.weakly_incomparable_maximal"
   ],
   "permitted_axioms": [
     "propext",

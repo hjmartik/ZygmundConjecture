@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fresh 497-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
+"""Fresh 508-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
 import argparse
 from datetime import datetime, timezone
 import json

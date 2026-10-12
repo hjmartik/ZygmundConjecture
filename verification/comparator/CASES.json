@@ -1,46 +1,46 @@
 {
   "cases": [
     {
-      "id": "submitted-1",
+      "id": "main-1",
       "config": "comparison-1.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.weakly_incomparable_maximal",
-      "challenge_module": "SubmittedChallenge1",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_maximal",
+      "challenge_module": "Challenge1",
+      "solution_module": "Solution"
     },
     {
-      "id": "submitted-2",
+      "id": "main-2",
       "config": "comparison-2.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.weakly_incomparable_overlap",
-      "challenge_module": "SubmittedChallenge2",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_overlap",
+      "challenge_module": "Challenge2",
+      "solution_module": "Solution"
     },
     {
-      "id": "submitted-3",
+      "id": "main-3",
       "config": "comparison-3.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.continuous_endpoint",
-      "challenge_module": "SubmittedChallenge3",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.continuous_endpoint",
+      "challenge_module": "Challenge3",
+      "solution_module": "Solution"
     },
     {
-      "id": "submitted-4",
+      "id": "main-4",
       "config": "comparison-4.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.rounded_endpoint",
-      "challenge_module": "SubmittedChallenge4",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.rounded_endpoint",
+      "challenge_module": "Challenge4",
+      "solution_module": "Solution"
     },
     {
-      "id": "submitted-5",
+      "id": "main-5",
       "config": "comparison-5.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.phi_sparse_overlap",
-      "challenge_module": "SubmittedChallenge5",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_overlap",
+      "challenge_module": "Challenge5",
+      "solution_module": "Solution"
     },
     {
-      "id": "submitted-6",
+      "id": "main-6",
       "config": "comparison-6.json",
-      "production_target": "ReyZygmund.MathlibOnly.Submitted.phi_sparse_sharpness",
-      "challenge_module": "SubmittedChallenge6",
-      "solution_module": "SubmittedSolution"
+      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_sharpness",
+      "challenge_module": "Challenge6",
+      "solution_module": "Solution"
     }
   ]
 }

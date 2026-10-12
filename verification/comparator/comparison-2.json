@@ -1,8 +1,8 @@
 {
-  "challenge_module": "SubmittedChallenge2",
-  "solution_module": "SubmittedSolution",
+  "challenge_module": "Challenge2",
+  "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.Submitted.weakly_incomparable_overlap"
+    "ReyZygmund.MathlibOnly.weakly_incomparable_overlap"
   ],
   "permitted_axioms": [
     "propext",

@@ -1,22 +1,30 @@
-import Mathlib.Analysis.BoxIntegral.Box.Basic
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.Analysis.BoxIntegral.Box.Basic
+import Mathlib.Analysis.Normed.Group.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Base
+import Mathlib.Analysis.SpecialFunctions.Log.ERealExp
 import Mathlib.MeasureTheory.Constructions.Pi
-import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Function.LpSeminorm.Defs
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Measure.NullMeasurable
 
-/-! # Mathematical definitions for the independent statements
+/-!
+# Rectangles, families and maximal functions
 
-This file depends only on Mathlib. Rectangles are subsets of Euclidean space;
-averages of absolute values, suprema and overlaps take nonnegative extended
-values.
+These definitions use Mathlib and are independent of the proof library.
+`Fin m` indexes the `m` coordinate factors, of dimensions `d i`.
+The grid index `k` is the side-length exponent: cubes have side `2 ^ k`.
 
-We use Mathlib's half-open convention `(lower, upper]`. The grid index `k` is a
-side-length exponent: side `2 ^ k`, children at `k - 1`. The grid definition
-specifies geometry; countability is proved later, and a common ancestor is not
-assumed.
+The sets `rectangle R` use `(lower, upper]` in each scalar coordinate.
+For the explicit shifted grids, `rectangleIco R` uses `[lower, upper)`.
+The [consistency guide](../../../CONSISTENCY.md) explains the boundary identifications.
+All measures and integrals are with respect to Lebesgue measure.
+
+The type `ℝ≥0∞` denotes `[0, ∞]`, and `∫⁻` is the nonnegative Lebesgue integral.
+`∑'` denotes a possibly infinite sum, and `⨆` an indexed supremum.
+For nonnegative `t`, `ENNReal.ofReal t` is the same value in `[0, ∞]`.
 -/
 
 open BoxIntegral MeasureTheory
@@ -24,10 +32,15 @@ open scoped BigOperators ENNReal Classical
 
 namespace ReyZygmund.MathlibOnly
 
-/-- A dyadic cube grid, indexed by the logarithm of the side length.
-Each scale partitions the whole space, and intersecting cubes are nested.
-These are the geometric conditions in the paper, without a choice of parent,
-children or a common ancestor. -/
+/-- Euclidean space of dimension `∑ i, d i`. -/
+abbrev Point {m : ℕ} (d : Fin m → ℕ) := Fin (∑ i, d i) → ℝ
+
+/-- A tuple of nonempty box factors. The grid and side-length conditions
+below select products of cubes. -/
+abbrev Rectangle {m : ℕ} (d : Fin m → ℕ) := ∀ i, Box (Fin (d i))
+
+/-- A dyadic cube grid: cubes of side `2 ^ k` partition the space at each
+integer scale, and intersecting cubes are nested. -/
 structure CubeGrid (d : ℕ) where
   cubes : ℤ → Set (Box (Fin d))
   side_length : ∀ k Q, Q ∈ cubes k → ∀ j,
@@ -36,78 +49,91 @@ structure CubeGrid (d : ℕ) where
     (fun Q R => Disjoint (Q : Set (Fin d → ℝ)) (R : Set (Fin d → ℝ)))
   covers : ∀ k x, ∃ Q ∈ cubes k, x ∈ Q
   nested : ∀ k l Q R, Q ∈ cubes k → R ∈ cubes l →
-    (Disjoint (Q : Set (Fin d → ℝ)) (R : Set (Fin d → ℝ))) ∨ Q ≤ R ∨ R ≤ Q
+    Disjoint (Q : Set (Fin d → ℝ)) (R : Set (Fin d → ℝ)) ∨
+      (Q : Set (Fin d → ℝ)) ⊆ (R : Set (Fin d → ℝ)) ∨
+      (R : Set (Fin d → ℝ)) ⊆ (Q : Set (Fin d → ℝ))
 
 noncomputable section
 
-/-- The product rectangle in ordinary coordinates, with the block coordinates
-listed by Mathlib's finite-sum equivalence. -/
-def rectangle {m : ℕ} {d : Fin m → ℕ} (R : ∀ i, Box (Fin (d i))) :
-    Set (Fin (∑ i, d i) → ℝ) :=
+/-- The product of the factors, with scalar coordinates listed block by block.
+`finSigmaFinEquiv` assigns the scalar index to the pair `(i, j)`. -/
+def rectangle {m : ℕ} {d : Fin m → ℕ} (R : Rectangle d) :
+    Set (Point d) :=
   {x | ∀ i j, (R i).lower j < x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ∧
     x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ≤ (R i).upper j}
 
 /-- All products of cubes in the supplied grids, at independently chosen scales. -/
 def gridRectangles {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, CubeGrid (d i)) :
-    Set (∀ i, Box (Fin (d i))) :=
+    Set (Rectangle d) :=
   {R | ∀ i, ∃ k : ℤ, R i ∈ (D i).cubes k}
 
-/-- The union of the rectangles, not a sum counting multiplicity. -/
-def shadow {m : ℕ} {d : Fin m → ℕ} (G : Set (∀ i, Box (Fin (d i)))) :
-    Set (Fin (∑ i, d i) → ℝ) :=
+/-- The shadow: the union of the rectangles in the family.
+In expressions indexed by `R : G`, `R` ranges over the rectangles belonging to `G`,
+and `R.1` denotes the rectangle itself. -/
+def shadow {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d)) :
+    Set (Point d) :=
   ⋃ R : G, rectangle R.1
 
-/-- The overlap counts multiplicity and may initially be infinite. -/
-def overlap {m : ℕ} {d : Fin m → ℕ} (G : Set (∀ i, Box (Fin (d i))))
-    (x : Fin (∑ i, d i) → ℝ) : ℝ≥0∞ :=
+/-- The overlap: the sum of rectangle indicators, counting the members of `G`
+containing `x`, with values in `[0, ∞]`. -/
+def overlap {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
+    (x : Point d) : ℝ≥0∞ :=
   ∑' R : G, (rectangle R.1).indicator (fun _ => (1 : ℝ≥0∞)) x
-
-/-- Pairwise disjoint measurable subsets establishing sparseness. -/
-def Sparse {m : ℕ} {d : Fin m → ℕ} (eta : ℝ)
-    (G : Set (∀ i, Box (Fin (d i)))) : Prop :=
-  ∃ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-    (∀ R ∈ G, MeasurableSet (E R) ∧ E R ⊆ rectangle R ∧
-      ENNReal.ofReal eta * volume (rectangle R) ≤ volume (E R)) ∧
-    G.Pairwise (fun R S => Disjoint (E R) (E S))
 
 /-- No distinct members contain one another. -/
 def Incomparable {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) : Prop :=
+    (G : Set (Rectangle d)) : Prop :=
   ∀ R ∈ G, ∀ S ∈ G, rectangle R ⊆ rectangle S → R = S
 
-/-- Containment leaves at least one entire cube factor unchanged. -/
-def HasEqualFactorOnContainment {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) : Prop :=
-  ∀ R ∈ G, ∀ S ∈ G, rectangle R ⊆ rectangle S → ∃ i, R i = S i
+/-- Weak incomparability: strict containment cannot hold in every factor.
+Here `⊂` denotes strict inclusion of sets. -/
+def WeaklyIncomparable {m : ℕ} {d : Fin m → ℕ}
+    (G : Set (Rectangle d)) : Prop :=
+  ∀ R ∈ G, ∀ S ∈ G, ¬ ∀ i,
+    (R i : Set (Fin (d i) → ℝ)) ⊂ (S i : Set (Fin (d i) → ℝ))
 
-/-- The supremum of the averages of `|f|` over rectangles containing the point. The
-averages use nonnegative integrals and may be infinite. -/
-def maximal {m : ℕ} {d : Fin m → ℕ} (G : Set (∀ i, Box (Fin (d i))))
-    (f : (Fin (∑ i, d i) → ℝ) → ℝ) (x : Fin (∑ i, d i) → ℝ) : ℝ≥0∞ :=
-  ⨆ R : G, (rectangle R.1).indicator
-    (fun _ => (∫⁻ y in rectangle R.1, ENNReal.ofReal |f y| ∂volume) /
-      volume (rectangle R.1)) x
+/-- Sparseness: pairwise disjoint Lebesgue-measurable sets `E R ⊆ rectangle R`
+with measure at least `eta` times the rectangle's measure.
+`NullMeasurableSet` expresses measurability for completed Lebesgue measure. -/
+def Sparse {m : ℕ} {d : Fin m → ℕ} (eta : ℝ)
+    (G : Set (Rectangle d)) : Prop :=
+  ∃ E : Rectangle d → Set (Point d),
+    (∀ R ∈ G, NullMeasurableSet (E R) volume ∧ E R ⊆ rectangle R ∧
+      ENNReal.ofReal eta * volume (rectangle R) ≤ volume (E R)) ∧
+    G.Pairwise (fun R S => Disjoint (E R) (E S))
 
-/-- All positions and all positive first side lengths of the continuous family. -/
+/-- The supremum of the averages of `|f|` over rectangles containing `x`.
+The supremum is zero when no rectangle contains `x`. -/
+def maximal {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
+    (f : Point d → ℝ) (x : Point d) : ℝ≥0∞ :=
+  ⨆ R ∈ G, ⨆ (_ : x ∈ rectangle R),
+    (∫⁻ y in rectangle R, ENNReal.ofReal |f y| ∂volume) /
+      volume (rectangle R)
+
+/-- All rectangles with side lengths `(s₁, …, sₙ, phi s)`, at every position
+and for every positive tuple `s`. The type `Set.Ioi (0 : ℝ)` means `(0, ∞)`;
+`Fin.snoc` appends the prescribed last side length. -/
 def continuousRectangles {n : ℕ} (d : Fin (n + 1) → ℕ)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
-    Set (∀ i, Box (Fin (d i))) :=
+    Set (Rectangle d) :=
   {R | ∃ s : Fin n → Set.Ioi (0 : ℝ), ∀ i j,
     (R i).upper j - (R i).lower j =
       (Fin.snoc (fun a => (s a).1) (phi s).1 : Fin (n + 1) → ℝ) i}
 
-/-- Prescribed-scale rounding, including the exact additive constant two. -/
+/-- The rounding rule `ρ(s) = ⌈log₂ s⌉ + 2` for positive side lengths. -/
 def rounding (s : ℝ) : ℤ := ⌈Real.logb 2 s⌉ + 2
 
-/-- The full image of rounding; not a single-valued graph on integer scales. -/
+/-- All rounded tuples `(ρ(s₁), …, ρ(sₙ), ρ(phi s))`.
+A fixed tuple of the first `n` rounded scales can have several last scales. -/
 def roundedScales {n : ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
     Set (Fin (n + 1) → ℤ) :=
   Set.range (fun s : Fin n → Set.Ioi (0 : ℝ) =>
     Fin.snoc (fun i => rounding (s i).1) (rounding (phi s).1))
 
-/-- A shifted cube is specified directly by its lower and upper corners.
-The shift entries are the numerators of `0, 1/3, 2/3`. -/
+/-- Corners of the cubes `2^k ([0,1)^d + z + (-1)^k tau/3)`.
+Each entry of `tau : Fin d → Fin 3` is `0`, `1` or `2`.
+The associated `[lower, upper)` sets are used by `maximalIco`. -/
 def shiftedCubes {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
     Set (Box (Fin d)) :=
   {Q | ∃ z : Fin d → ℤ, ∀ j,
@@ -115,21 +141,39 @@ def shiftedCubes {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
       ((z j : ℝ) + (-1 : ℝ) ^ k * ((tau j).val : ℝ) / 3) ∧
     Q.upper j = Q.lower j + (2 : ℝ) ^ k}
 
-/-- Every rectangle in the indicated shifted grids whose tuple of side-length
-exponents is produced by rounding the prescribed side lengths. -/
+/-- Products of shifted cubes whose side-length exponents belong to
+the full rounded family `roundedScales phi`. -/
 def roundedRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (tau : ∀ i, Fin (d i) → Fin 3)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
-    Set (∀ i, Box (Fin (d i))) :=
+    Set (Rectangle d) :=
   {R | ∃ k ∈ roundedScales phi, ∀ i, R i ∈ shiftedCubes (tau i) (k i)}
 
-/-- Dyadic Φ-Zygmund rectangles, indexed by side-length exponents.
-The last exponent is determined by `Phi`. -/
+/-- The `[lower, upper)` rectangle used by the prescribed shifted grids. -/
+def rectangleIco {m : ℕ} {d : Fin m → ℕ} (R : Rectangle d) :
+    Set (Point d) :=
+  {x | ∀ i j, (R i).lower j ≤ x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ∧
+    x (finSigmaFinEquiv (n := d) ⟨i, j⟩) < (R i).upper j}
+
+/-- Supremum of absolute Lebesgue averages over the `[lower, upper)` rectangles
+containing the point. -/
+def maximalIco {m : ℕ} {d : Fin m → ℕ}
+    (G : Set (Rectangle d))
+    (f : Point d → ℝ) (x : Point d) : ℝ≥0∞ :=
+  ⨆ R ∈ G, ⨆ (_ : x ∈ rectangleIco R),
+    (∫⁻ y in rectangleIco R, ENNReal.ofReal |f y| ∂volume) /
+      volume (rectangleIco R)
+
+/-- All products of grid cubes with side lengths
+`(2^k₁, …, 2^kₙ, 2^(Phi k))`. -/
 def phiRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
-    Set (∀ i, Box (Fin (d i))) :=
+    Set (Rectangle d) :=
   {R | ∃ k : Fin n → ℤ,
     ∀ i, R i ∈ (D i).cubes ((Fin.snoc k (Phi k) : Fin (n + 1) → ℤ) i)}
+
+/-- The exponential on `[0, ∞]`: the usual `e^t` for finite `t`, and `∞` at `∞`. -/
+def exp (t : ℝ≥0∞) : ℝ≥0∞ := EReal.exp (t : EReal)
 
 end
 end ReyZygmund.MathlibOnly

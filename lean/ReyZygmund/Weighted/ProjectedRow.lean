@@ -1,6 +1,6 @@
 import ReyZygmund.Weighted.CrossProductStep
 import ReyZygmund.Maximal.FamilyProperties
-import ReyZygmund.Projection.SubmittedCross
+import ReyZygmund.Projection.CrossProjection
 
 /-!
 # One row of the projected weighted square estimate

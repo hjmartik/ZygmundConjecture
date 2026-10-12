@@ -52,17 +52,17 @@ the full <span class="math-inline">\(m\)</span>-parameter strong maximal functio
 <tbody><tr>
 <td><a href="main-statements.html#continuous-zygmund-endpoint-estimate">Continuous Zygmund endpoint estimate</a></td>
 <td>Zygmund&#39;s conjecture in its continuous form</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L57">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L94">Proof</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L64">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L49">Proof</a></td>
 </tr>
 <tr>
 <td><a href="main-statements.html#sparse-weakly-incomparable-overlap-estimate">Sparse weakly incomparable overlap estimate</a></td>
 <td>Rey&#39;s exponential integrability conjecture, with weak incomparability and arbitrary sparsity parameter</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L40">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L50">Proof</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L47">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L31">Proof</a></td>
 </tr>
 <tr>
 <td><a href="main-statements.html#weakly-incomparable-maximal-estimate">Weakly incomparable maximal estimate</a></td>
 <td>Central analytic estimate used to prove both conjectures</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L26">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L37">Proof</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L33">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L19">Proof</a></td>
 </tr>
 </tbody></table>
 <p>We also formalize the following dyadic, overlap and sharpness results:</p>
@@ -77,24 +77,24 @@ the full <span class="math-inline">\(m\)</span>-parameter strong maximal functio
 <tbody><tr>
 <td><a href="main-statements.html#rounded-dyadic-endpoint-estimate">Rounded dyadic endpoint estimate</a></td>
 <td>Dyadic endpoint used to obtain the continuous theorem</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L70">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L97">Proof</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L78">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L59">Proof</a></td>
 </tr>
 <tr>
 <td><a href="main-statements.html#sparse-φ-zygmund-overlap-estimate">Sparse Φ-Zygmund overlap estimate</a></td>
 <td>Overlap estimate without incomparability</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L83">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L105">Proof</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L92">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L69">Proof</a></td>
 </tr>
 <tr>
 <td><a href="main-statements.html#sharpness-for-the-classical-dyadic-zygmund-family">Sharpness for the classical dyadic Zygmund family</a></td>
-<td>Stronger quantified form of the paper&#39;s sharpness remark, even for incomparable families</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L97">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L116">Proof</a></td>
+<td>Sharpness of the exponential power, even for incomparable families</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L109">Statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L88">Proof</a></td>
 </tr>
 </tbody></table>
 <h2 id="independent-specification-verification-and-correspondence-with-the-paper">Independent specification, verification and correspondence with the paper</h2>
 <p><a href="main-statements.html">Main theorems</a> presents the six results in mathematical prose. Their precise formal meaning is given by an <a href="mathlib-only.html">independent specification rebuilt from Mathlib primitives</a>, without importing the proof library. The specification states the results and defines the mathematical objects needed to interpret them. No software installation is needed to inspect these statements and definitions.</p>
 <p>Mathematical review checked that the statements and their definitions express the intended results of the paper. This addresses the central question: does the Lean specification faithfully represent the mathematics we intend to prove? The formal checks then verify that the supplied proofs establish those statements.</p>
 <p>The mathematical arguments are developed separately in the <a href="https://github.com/hjmartik/ZygmundConjecture/tree/main/lean/ReyZygmund/">proof library</a>, using its own definitions and supporting constructions.</p>
-<p>Bridges proved in Lean connect those definitions to the independent specification. The <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html">public proofs</a> use these bridges to derive the six independently stated results from the library’s theorems. The <a href="consistency.html">consistency guide</a> explains these connections and the mathematical meaning of constructions used within the proofs.</p>
+<p>Bridges proved in Lean connect those definitions to the independent specification. The <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html">public proofs</a> use these bridges to derive the six independently stated results from the library’s theorems. The <a href="consistency.html">consistency guide</a> explains these connections and the mathematical meaning of constructions used within the proofs.</p>
 <p>Comparator compares each resulting theorem with its independent specification, including the definitions determining its meaning. All six comparisons passed. Lean’s default kernel, Nanoda and con-ron accepted the exported proofs and their exported dependencies. The theorem proofs contain no omitted steps (<code>sorry</code>) and use only the standard axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. The <a href="verifying.html">verification guide</a> records the checking scope and reproduction instructions.</p>
 <p>A checked proof of a faithful specification establishes the intended mathematical results; whether it follows the paper’s argument is a separate question. This formalization was developed to follow the paper’s proof strategies closely. Separate mathematical reviews examined that correspondence and found agreement in the main lines of argument. The consistency guide explains how the paper’s definitions and supporting constructions are represented in Lean.</p>
 <h2 id="building">Building</h2>

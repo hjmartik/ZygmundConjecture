@@ -1,4 +1,4 @@
-import ReyZygmund.MathlibOnly.SubmittedDefinitions
+import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
 import ReyZygmund.Projection.LocalProductExpansion
 
 /-!
@@ -12,7 +12,7 @@ The enlargement removes exactly the original difference indices, so its common
 projection is unchanged. Its weak incomparability follows from the finite dyadic
 geometry. The formula in fewer coordinates holds for every family. Applying it
 and preserved averages to the enlarged family gives the signed representation.
-The subsequent analytic argument is in `Maximal.SubmittedFinite`.
+The subsequent analytic argument is in `Maximal.WeaklyIncomparableFinite`.
 -/
 
 open BoxIntegral MeasureTheory
@@ -21,7 +21,7 @@ open scoped BigOperators Classical
 namespace ReyZygmund
 
 open Geometry Projection
-open MathlibOnly.Submitted (WeaklyIncomparable)
+open MathlibOnly.Proof.Estimates (WeaklyIncomparable)
 
 variable {m : ℕ} {d : Fin m → ℕ}
 

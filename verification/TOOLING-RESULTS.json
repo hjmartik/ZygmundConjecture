@@ -1,200 +1,7 @@
 {
   "status": "PASS_FIXTURES_ONLY",
   "theorem_runs": false,
-  "linux_runtime_report_sha256": "3d3187236a0f588afd4acef0616f1236dc84423318f38538c513d374c91c68b0",
-  "linux_controls": {
-    "tools/common.py": "730c6197dfd26847b94968c8d992007939e0fc719415bd779ec5c3c1b8b2de0b",
-    "tools/check.py": "1792305dca5ccb8b09e4a497b76f5510226b924b044113f364825c647e14cc5d",
-    "verification/TARGETS.json": "cd436a3c4f0a87d6ea5b32204b73a732653e9a1f0bedf90a19150cf884392d99",
-    "verification/SOURCE-MANIFEST.json": "77d28ad705bff80a3d6ab5374b45cf768e62a8ea6db02c63f70b7464743e7b99",
-    "verification/AUDIT-MANIFEST.json": "7be7c1ecca380081410cdbb701fe9363304c55ea7791fcc9ee64144a42a7bf4e",
-    "lean/SOURCE_LOCK.json": "21f3220c9e0093f2e5ba67f4a2eeebd4dd4eaacfcf8f1eefa9c17dfefc12d3fd",
-    "lean/lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
-    "lean/lake-manifest.json": "bf22662858af28855818b5556042b8286857df9a29849f2e7f75682c1785fcb1",
-    "lean/lakefile.toml": "f889ff8670ee66e3e512c243806b39b9f4b749520fb8912fe0c42acb0f3e3763",
-    "verification/comparator/comparison-1.json": "86b9ed064f71eaeb3ef082d9cd8e0d5b247249d517c5311deb1544758c5487b8",
-    "verification/comparator/SubmittedChallenge6.lean": "136592ab182e2744876d207c9439e30caa23218c00632e2116e03535135d3322",
-    "verification/comparator/SubmittedChallenge1.lean": "7b447f18d7a9ca2ce8c9211c7b2b1dd27deb4a5b1ffa56d74662a822a71cb3ed",
-    "verification/comparator/SubmittedSolution.lean": "209f686a5556cc736f88655f61dfc80e1649bcf12472e856fcd8414aac99a23f",
-    "verification/comparator/CASES.json": "dc56bbbef1dae1a847f45dc479cc17fdfb7214bc33731f13827040d0e8696e4e",
-    "verification/comparator/comparison-6.json": "2b304c118773545934565c42416333914ea2a56088bed2eab57dd2d38a773c8f",
-    "verification/comparator/comparison-5.json": "7957258649881e65594b7d8c94c64ec13fbe85091f3536a4bc205c20c63d0b29",
-    "verification/comparator/SubmittedChallenge3.lean": "555910dd85d9ab801d78ccdd71d949dabe15c1b64303021c262ed6aad57d6db7",
-    "verification/comparator/SubmittedChallenge2.lean": "74f01c8066eae5e8706222bb01844d4013e4d38468dc17d438d6e3f4a4cc2c1e",
-    "verification/comparator/comparison-4.json": "0c58aa2d8a27fb00edc59b4eecb005250026a1732ae1e9b7a7b782a1b368155d",
-    "verification/comparator/comparison-3.json": "6c5339a19ba7aa438d094d82c1f5373aa48848336f2c47e107bc9d3903a0312e",
-    "verification/comparator/SubmittedChallenge5.lean": "3664ba5cffc34a2fbb53b1539ddb88945b97b34b945d3e671ee951c14d82ba9a",
-    "verification/comparator/SubmittedChallenge4.lean": "ed8b37f9b38826ea6a880ecb2eab14d6f50bb6a4e97df558a9271ae446d3b3b7",
-    "verification/comparator/comparison-2.json": "e644e078abed2250d539d6178a7974006be4525b1426607804166200e0d85d2a",
-    "verification/CHECKER-PINS.json": "7f42083b5fd8cc03935aacabcf88b588f51c8777b7440b3efe727f2d4f09409f",
-    "tools/comparator.py": "d79d9afb2b395f4a10493266457a93c3af5d3d8efa93aaad3c046db35214c2c2",
-    "tools/comparator_runtime.py": "a02658a31a9e91e278da519e9171c51d68cd051b1490b7f47631324fa0e1fe75",
-    "tools/comparator-child.py": "29b82994af017190174a9b74fe6921ddff2c3f4d6e52a77d45cf4222c3fe8880",
-    "tools/comparator-preflight.py": "cb17892227b5c1c7296151ff3b1ec4859257fedbc5580eea019f83fcd05c047e"
-  },
-  "cases": [
-    {
-      "name": "valid",
-      "outcome": {
-        "exit_code": 0,
-        "lean_accepted": true,
-        "nanoda_accepted": true,
-        "con_ron_accepted": true,
-        "comparator_accepted": true,
-        "passed": true
-      },
-      "log_sha256": "2cc339323d1bc67c5d8cb476768f105ffbe1384fe68b3e072da1b4bdeceb8f5a",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "extra-assumption",
-      "outcome": {
-        "exit_code": 1,
-        "lean_accepted": false,
-        "nanoda_accepted": false,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "37633f5fdb009508f7d0e609a689cbeda8864548f2efd57982d4c79281bc5597",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "changed-definition",
-      "outcome": {
-        "exit_code": 1,
-        "lean_accepted": false,
-        "nanoda_accepted": false,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "2443820a61cd82b2d216685c5cd4c622e357414251cb8a4ac7d63399c78be4b0",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "indirect-admission",
-      "outcome": {
-        "exit_code": 1,
-        "lean_accepted": false,
-        "nanoda_accepted": false,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "61cdfaadb7eff5ef14d7bbf2a5b865d446390f39066c3cae7eb30cf71b9a8a71",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "missing-nanoda",
-      "outcome": {
-        "exit_code": 2,
-        "lean_accepted": false,
-        "nanoda_accepted": false,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "c225e76b4b123377aec66f3184d4f70cfd65c67f1d1b16678b98e52e4382b04a",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "failing-nanoda",
-      "outcome": {
-        "exit_code": 1,
-        "lean_accepted": true,
-        "nanoda_accepted": false,
-        "con_ron_accepted": true,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "013b882033c2769284c9ba5fb1633cd52e8f98ce5e6df347e06573b08f7cbe85",
-      "invocation_marker": "PUBLIC_FIXTURE_NANODA_EXIT_73",
-      "failure_executable_sha256": "9a114eae9308e8891202253dafaee231537bd68529c336d2c7ca1b1282fbd5a0"
-    },
-    {
-      "name": "missing-con-ron",
-      "outcome": {
-        "exit_code": 2,
-        "lean_accepted": false,
-        "nanoda_accepted": false,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "8e621e5dd2a3b50fb01b98619eb7ac759820d73351aedc8d9f1e9e53f1ac7ff5",
-      "invocation_marker": null,
-      "failure_executable_sha256": null
-    },
-    {
-      "name": "failing-con-ron",
-      "outcome": {
-        "exit_code": 1,
-        "lean_accepted": true,
-        "nanoda_accepted": true,
-        "con_ron_accepted": false,
-        "comparator_accepted": false,
-        "passed": false
-      },
-      "log_sha256": "a4604e8031bf8f5dc58271cfc9a916a24ead8a33d95dfaa871cf8205253c4ad3",
-      "invocation_marker": "PUBLIC_FIXTURE_CON_RON_EXIT_73",
-      "failure_executable_sha256": "8dc8126e45dacbafc8671cc9058db8d7d31d182adda4ff443be9a733946ffacf"
-    }
-  ],
-  "recovery_suite_sha256": "3974b09ef8a84b742112b388e0e9c2819fa75676b847afcc4c1e126024fc8e2c",
-  "recovery_cases": [
-    "whole-family",
-    "missing-server",
-    "missing-ir"
-  ],
-  "prior_local_wrapper_tests": [
-    {
-      "name": "wrapper",
-      "command": [
-        "-I",
-        "-B",
-        "tools/test_checker.py"
-      ],
-      "exit_code": 0,
-      "log_sha256": "475bf0d55aef06616f11357681f01c078a6c33c9c29805ee16db302165e9b2d3"
-    },
-    {
-      "name": "acceptance",
-      "command": [
-        "-I",
-        "-B",
-        "tools/test_comparator_acceptance.py"
-      ],
-      "exit_code": 0,
-      "log_sha256": "607503b82662a23579b726e420f5f186b20edb10fe0f355b22f391c1e846e1f1"
-    },
-    {
-      "name": "inspection",
-      "command": [
-        "-I",
-        "-B",
-        "tools/test_inspection.py"
-      ],
-      "exit_code": 0,
-      "log_sha256": "7723372f8bad188020f6ffbe82ac2ee657f0727798f5dfee0abb5668b2aaa654"
-    },
-    {
-      "name": "prepare",
-      "command": [
-        "-I",
-        "-B",
-        "tools/comparator.py",
-        "--prepare-only"
-      ],
-      "exit_code": 0,
-      "log_sha256": "f8f5f148cfa7ed21874ebd0c7d5a86dd6a38642a319af841539d70768efe1a45"
-    }
-  ],
+  "checked_date": "2026-10-12",
   "local_wrapper_tests": [
     {
       "name": "wrapper",
@@ -205,7 +12,7 @@
         "tools/test_checker.py"
       ],
       "exit_code": 0,
-      "log_sha256": "899f8a914471a68fcccc73067bc0596da1f21981bc296d4e549fcadd42871503"
+      "log_sha256": "1a871c5de3466b224df39c588d1d787a88abe8bf83948b80c477eb09224e7e78"
     },
     {
       "name": "acceptance",
@@ -219,6 +26,109 @@
       "log_sha256": "94eca0b66e980d25f9fe1f25b6acd210de4f65b08ca164183ee7ce1d860d84a1"
     },
     {
+      "name": "prepare",
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "tools/comparator.py",
+        "--prepare-only"
+      ],
+      "exit_code": 0,
+      "log_sha256": "b8cc2fb1fd48404c2c3e6d2398c00201f8de364bdf462b14982b81b1f1cf1136"
+    }
+  ],
+  "production_packet_preparation": {
+    "status": "PREPARED_NOT_CHECKED",
+    "report_sha256": "cce0f9c84d23d6512181218e778c8ba362c45285446cd510d0c423b8ae3d3eee",
+    "six_challenges_import_only_two_specification_modules": true
+  },
+  "current_source_bindings": {
+    "verification/SOURCE-MANIFEST.json": "6687f25a7ea4b3a94939d5c902112c93439bb298c48d3eb4a89cc1aa45ab8c17",
+    "verification/TARGETS.json": "97d8366238b71ed5a0211031507f5bad51e600db3b91ecd8670215ab619b238d",
+    "verification/AUDIT-MANIFEST.json": "01550d14d79fad18253b32ca103b6e07cbd788fc311564f48438eb6daa790e5f",
+    "lean/lakefile.toml": "bbe5f660c66292aab69424918581962b6ee0ba85eff72a5fd9618749435d334c"
+  },
+  "current_program_hashes": {
+    "tools/check.py": "9aaa268f87b38622aebae7c1600e4eddd3a8495a9edc5900b60733dea17145e0",
+    "tools/comparator.py": "14832661d3c22e463a51ddf7c8192f5001ec322c209a1bf5f5dc59e03cd67a0d",
+    "tools/test_inspection.py": "437ae5417ba1b147a66331cf2a3faf12335e623d8497521f02acd1e28ea5495a",
+    "tools/test_recovery.py": "f49a19b05b4cc5bf822ec21c9605d937798c867c21b016778a9a9cf4e29f2a49",
+    "tools/test_comparator_runtime.py": "1d59164df04fbde5bbec0e38fdffd7a39d1ee4b73d79dc021583c3df160b0eba",
+    "tools/common.py": "a5d16dcf6ff54562487039c9a728b6f5ed33d33de9548781d8b141f08890bcd7",
+    "tools/comparator_runtime.py": "a02658a31a9e91e278da519e9171c51d68cd051b1490b7f47631324fa0e1fe75",
+    "tools/comparator-child.py": "29b82994af017190174a9b74fe6921ddff2c3f4d6e52a77d45cf4222c3fe8880",
+    "tools/test_comparator_acceptance.py": "8c387fa4a541b06d19e1ed89393d5e572e12892e92fe680e33231f0c71efd61e",
+    "tools/comparator-preflight.py": "cb17892227b5c1c7296151ff3b1ec4859257fedbc5580eea019f83fcd05c047e",
+    "tools/test_checker.py": "ed5348ac43cecb7db6e27321845fee45fd929f79ed4cbacfe2ebde5799f64b12",
+    "tools/dependencies.py": "3c262adfa97f8784ff07eb57f6f942d3b4fc43efd05efd815964a27f9c846749",
+    "tools/install-checkers.py": "a5b4b32e362d98f88ec00b0d7ca11e78ecc3982cffdaed675775a1f59421c2b1"
+  },
+  "retained_fixture_evidence": {
+    "status": "PASS_IDENTITY_RECONCILIATION",
+    "previous_record_sha256": "a7394ed6d4476654f137711d62326ea5a2e6913c2fc93225c86d642ce9a74646",
+    "statement": "Compiled inspection, Linux runtime and dependency-recovery fixtures were not rerun for this update. Their programs, fixture sources, inspector and dependency pins are byte-identical to the previous release. Shared-helper changes only update exact production inventory counts; the verification driver changes only its count in the docstring. The renamed public modules and revised import boundary were checked by the 26 rerun lightweight tests and production packet preparation.",
+    "unchanged_since_previous_release": {
+      "lean/SOURCE_LOCK.json": "21f3220c9e0093f2e5ba67f4a2eeebd4dd4eaacfcf8f1eefa9c17dfefc12d3fd",
+      "lean/lake-manifest.json": "bf22662858af28855818b5556042b8286857df9a29849f2e7f75682c1785fcb1",
+      "lean/lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+      "lean/Verification/Inspect.lean": "101227314aa1b331706dcbd850f4a215153642ad6ed456b2450b5b9c79d15ee6",
+      "tools/comparator_runtime.py": "a02658a31a9e91e278da519e9171c51d68cd051b1490b7f47631324fa0e1fe75",
+      "tools/comparator-child.py": "29b82994af017190174a9b74fe6921ddff2c3f4d6e52a77d45cf4222c3fe8880",
+      "tools/comparator-preflight.py": "cb17892227b5c1c7296151ff3b1ec4859257fedbc5580eea019f83fcd05c047e",
+      "tools/dependencies.py": "3c262adfa97f8784ff07eb57f6f942d3b4fc43efd05efd815964a27f9c846749",
+      "tools/install-checkers.py": "a5b4b32e362d98f88ec00b0d7ca11e78ecc3982cffdaed675775a1f59421c2b1",
+      "tools/test_comparator_runtime.py": "1d59164df04fbde5bbec0e38fdffd7a39d1ee4b73d79dc021583c3df160b0eba",
+      "tools/test_inspection.py": "437ae5417ba1b147a66331cf2a3faf12335e623d8497521f02acd1e28ea5495a",
+      "tools/test_recovery.py": "f49a19b05b4cc5bf822ec21c9605d937798c867c21b016778a9a9cf4e29f2a49",
+      "verification/CHECKER-PINS.json": "7f42083b5fd8cc03935aacabcf88b588f51c8777b7440b3efe727f2d4f09409f",
+      "verification/fixtures/comparator/FailingNanoda.c": "d1a714362733843708496bc92516fad808e5f96c8b8ed9dc864e76f88a333ea7",
+      "verification/fixtures/comparator/config-changed-definition.json": "f0bb6b468024b7f7959b84935a020363674d06278fc45742a0180321205b1b0c",
+      "verification/fixtures/comparator/config.json": "c8dfe86edea82d625c0851556ae447fb795e4016c2d94f858524c79b20aeb6f5",
+      "verification/fixtures/comparator/ChallengeChangedDefinition.lean": "ebe37cf3de67d217d6e33c3751a6736a124012873f1f818f1befb68043673d11",
+      "verification/fixtures/comparator/ChallengeIndirectAdmission.lean": "2e3567595da4590afeb208ee79c0da7ff688b969f6b56ee5840b596b6ac2d8f1",
+      "verification/fixtures/comparator/Solution.lean": "27ee717cb4eb325fe21bfc5cc2dbd0f08dca9cb754689c9f88a2c6ba13bb35c7",
+      "verification/fixtures/comparator/SolutionIndirectAdmission.lean": "93c4f3e0a48d45e6eb9644f07618884f694bf6a0a52e3968446405309ff4d1e8",
+      "verification/fixtures/comparator/SolutionChangedDefinition.lean": "dda54b2978bc5ace96b63fb26fea96d212b4f913e8d6a0acbde9cf596049a5a3",
+      "verification/fixtures/comparator/config-indirect-admission.json": "d24b6a8c166d0f149d0864925a5a75b3960a63571e7a416353fb41f0bca94686",
+      "verification/fixtures/comparator/AdmissionHelper.lean": "41d3dd36c91d62fd1873ca5be4263cc591f44ed9766350136de5a12261208a2b",
+      "verification/fixtures/comparator/Challenge.lean": "ffadac772fd61e4e5e5497ec6bacdc44e610274155392ae70b2f16b636bd3fc2",
+      "verification/fixtures/recovery/Recovered.lean": "d42d52a12f64128f3118165f2ebb26e918260a1dcf6dce0f6e25ab06859c4a9c",
+      "verification/fixtures/inspection/Contracts.lean": "c12ba4551ecf6e7de40d61f85466c509ce02d8d18940ef6a4131e19f04ab6460",
+      "verification/fixtures/inspection/ExtraAssumption.lean": "243a97b1cdaa61d6f917bc076c100fb105e30bf64057e30cc38f42e3a26edc02",
+      "verification/fixtures/inspection/ReduciblePresentation.lean": "640e505b2809b19e8d1eae87a85f8438e20ee6c40015a14bea61ebd6cad2a2dd",
+      "verification/fixtures/inspection/LogicallyEquivalent.lean": "da1d12fe3af0ee58ee25c99af9f29c2bac4e77494a57974236e239db78416333",
+      "verification/fixtures/inspection/AdmissionHelper.lean": "ab58d6792f4723092f0d06498340868245e4a16addf6898a37642801f4252f39",
+      "verification/fixtures/inspection/IndirectAdmission.lean": "c799fd2fb2526a5cb4f8a4af2e2685a167d80d1faf0a3ee31b2a560119024be0",
+      "verification/fixtures/inspection/CustomAxiom.lean": "3040db91e4a3cdcff3ca30a463b2671fd2f2602690f97de01507385775f0b26e",
+      "verification/fixtures/inspection/AxiomHelper.lean": "51ec1f866b27bbb820259def2827c2fb77a57c87227f5e0e8666553601ecb71c",
+      "verification/fixtures/inspection/ChangedStatement.lean": "3ed50d9cff78569a067610528037c612416f56eba736abc89db8c5441c87877f",
+      "verification/fixtures/inspection/Valid.lean": "869afe46ff18f5da75ff9aaf45f17881fef576317e1669fb2f8f00f12adc4f3d"
+    },
+    "production_helper_changes": {
+      "tools/common.py": {
+        "before": "4ff1449a0810a28951147ae93432d32dc30509f83edaad9cf6aa0f8d95834547",
+        "after": "a5d16dcf6ff54562487039c9a728b6f5ed33d33de9548781d8b141f08890bcd7"
+      },
+      "tools/check.py": {
+        "before": "45afaa4a62a385eca53b245870e4f32f84d9e3c1a337d2b8d1d6010ef19ff9ea",
+        "after": "9aaa268f87b38622aebae7c1600e4eddd3a8495a9edc5900b60733dea17145e0"
+      },
+      "tools/comparator.py": {
+        "before": "d79d9afb2b395f4a10493266457a93c3af5d3d8efa93aaad3c046db35214c2c2",
+        "after": "14832661d3c22e463a51ddf7c8192f5001ec322c209a1bf5f5dc59e03cd67a0d"
+      },
+      "tools/test_checker.py": {
+        "before": "e03807cf5ea75398e1b56cf3d713e4f03446aabd0b00a818953d7b3ee19445a8",
+        "after": "ed5348ac43cecb7db6e27321845fee45fd929f79ed4cbacfe2ebde5799f64b12"
+      },
+      "tools/test_comparator_acceptance.py": {
+        "before": "2eac8fd6bdd74d37ae6186a3a6fdc43f80910c5524788392911f047fec84cdb6",
+        "after": "8c387fa4a541b06d19e1ed89393d5e572e12892e92fe680e33231f0c71efd61e"
+      }
+    },
+    "compiled_inspection_cases": 7,
+    "compiled_inspection_previous_receipt": {
       "name": "inspection",
       "command": [
         "python3",
@@ -229,106 +139,170 @@
       "exit_code": 0,
       "log_sha256": "967f45f7318d4822bebbcc00a0d2a6e1c3977e3e82de3c237e04b06c6bb92582"
     },
-    {
-      "name": "prepare",
-      "command": [
-        "python3",
-        "-I",
-        "-B",
-        "tools/comparator.py",
-        "--prepare-only"
-      ],
-      "exit_code": 0,
-      "log_sha256": "abb7390593e55e752eaa844cb02731adfc23311eb94434c55f59fae7522c8732"
-    }
-  ],
-  "current_source_bindings": {
-    "verification/SOURCE-MANIFEST.json": "984f4b4728e62d531807cab402cb29b5ae399e4a35800bdb4c5ec638f241eaf4",
-    "verification/TARGETS.json": "f4e9a02ff5f0b0a75594faddefffa60f5e2262fbc9b545b290a832437d8caf44",
-    "verification/AUDIT-MANIFEST.json": "c5350262ba5bf6f90ff88b0f9048c0e20cf965e9670312a89d2da964ba72989d",
-    "lean/lakefile.toml": "5ff8f23fdd35a54c91118bfad4c158f5559dc673ad01013008b4658f1bf17a69"
-  },
-  "retained_fixture_evidence": {
-    "status": "PASS_IDENTITY_RECONCILIATION",
-    "statement": "The Linux runtime and dependency-recovery fixtures were not rerun. Their executable logic, fixture sources and dependency pins are byte-identical. Shared helper changes only update exact production inventory counts; inspector changes are comments only, and its compiled fixtures were rerun. Historical report hashes remain unchanged.",
-    "unchanged_files": {
-      "lean/SOURCE_LOCK.json": "21f3220c9e0093f2e5ba67f4a2eeebd4dd4eaacfcf8f1eefa9c17dfefc12d3fd",
-      "lean/lake-manifest.json": "bf22662858af28855818b5556042b8286857df9a29849f2e7f75682c1785fcb1",
-      "lean/lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
-      "tools/comparator-child.py": "29b82994af017190174a9b74fe6921ddff2c3f4d6e52a77d45cf4222c3fe8880",
-      "tools/comparator-preflight.py": "cb17892227b5c1c7296151ff3b1ec4859257fedbc5580eea019f83fcd05c047e",
-      "tools/comparator.py": "d79d9afb2b395f4a10493266457a93c3af5d3d8efa93aaad3c046db35214c2c2",
-      "tools/comparator_runtime.py": "a02658a31a9e91e278da519e9171c51d68cd051b1490b7f47631324fa0e1fe75",
-      "tools/dependencies.py": "3c262adfa97f8784ff07eb57f6f942d3b4fc43efd05efd815964a27f9c846749",
-      "tools/install-checkers.py": "a5b4b32e362d98f88ec00b0d7ca11e78ecc3982cffdaed675775a1f59421c2b1",
-      "tools/test_comparator_acceptance.py": "2eac8fd6bdd74d37ae6186a3a6fdc43f80910c5524788392911f047fec84cdb6",
-      "tools/test_comparator_runtime.py": "1d59164df04fbde5bbec0e38fdffd7a39d1ee4b73d79dc021583c3df160b0eba",
-      "tools/test_inspection.py": "437ae5417ba1b147a66331cf2a3faf12335e623d8497521f02acd1e28ea5495a",
-      "tools/test_recovery.py": "f49a19b05b4cc5bf822ec21c9605d937798c867c21b016778a9a9cf4e29f2a49",
-      "verification/CHECKER-PINS.json": "7f42083b5fd8cc03935aacabcf88b588f51c8777b7440b3efe727f2d4f09409f",
-      "verification/comparator/CASES.json": "dc56bbbef1dae1a847f45dc479cc17fdfb7214bc33731f13827040d0e8696e4e",
-      "verification/comparator/SubmittedChallenge1.lean": "7b447f18d7a9ca2ce8c9211c7b2b1dd27deb4a5b1ffa56d74662a822a71cb3ed",
-      "verification/comparator/SubmittedChallenge2.lean": "74f01c8066eae5e8706222bb01844d4013e4d38468dc17d438d6e3f4a4cc2c1e",
-      "verification/comparator/SubmittedChallenge3.lean": "555910dd85d9ab801d78ccdd71d949dabe15c1b64303021c262ed6aad57d6db7",
-      "verification/comparator/SubmittedChallenge4.lean": "ed8b37f9b38826ea6a880ecb2eab14d6f50bb6a4e97df558a9271ae446d3b3b7",
-      "verification/comparator/SubmittedChallenge5.lean": "3664ba5cffc34a2fbb53b1539ddb88945b97b34b945d3e671ee951c14d82ba9a",
-      "verification/comparator/SubmittedChallenge6.lean": "136592ab182e2744876d207c9439e30caa23218c00632e2116e03535135d3322",
-      "verification/comparator/SubmittedSolution.lean": "209f686a5556cc736f88655f61dfc80e1649bcf12472e856fcd8414aac99a23f",
-      "verification/comparator/comparison-1.json": "86b9ed064f71eaeb3ef082d9cd8e0d5b247249d517c5311deb1544758c5487b8",
-      "verification/comparator/comparison-2.json": "e644e078abed2250d539d6178a7974006be4525b1426607804166200e0d85d2a",
-      "verification/comparator/comparison-3.json": "6c5339a19ba7aa438d094d82c1f5373aa48848336f2c47e107bc9d3903a0312e",
-      "verification/comparator/comparison-4.json": "0c58aa2d8a27fb00edc59b4eecb005250026a1732ae1e9b7a7b782a1b368155d",
-      "verification/comparator/comparison-5.json": "7957258649881e65594b7d8c94c64ec13fbe85091f3536a4bc205c20c63d0b29",
-      "verification/comparator/comparison-6.json": "2b304c118773545934565c42416333914ea2a56088bed2eab57dd2d38a773c8f",
-      "verification/fixtures/comparator/AdmissionHelper.lean": "41d3dd36c91d62fd1873ca5be4263cc591f44ed9766350136de5a12261208a2b",
-      "verification/fixtures/comparator/Challenge.lean": "ffadac772fd61e4e5e5497ec6bacdc44e610274155392ae70b2f16b636bd3fc2",
-      "verification/fixtures/comparator/ChallengeChangedDefinition.lean": "ebe37cf3de67d217d6e33c3751a6736a124012873f1f818f1befb68043673d11",
-      "verification/fixtures/comparator/ChallengeIndirectAdmission.lean": "2e3567595da4590afeb208ee79c0da7ff688b969f6b56ee5840b596b6ac2d8f1",
-      "verification/fixtures/comparator/FailingNanoda.c": "d1a714362733843708496bc92516fad808e5f96c8b8ed9dc864e76f88a333ea7",
-      "verification/fixtures/comparator/Solution.lean": "27ee717cb4eb325fe21bfc5cc2dbd0f08dca9cb754689c9f88a2c6ba13bb35c7",
-      "verification/fixtures/comparator/SolutionChangedDefinition.lean": "dda54b2978bc5ace96b63fb26fea96d212b4f913e8d6a0acbde9cf596049a5a3",
-      "verification/fixtures/comparator/SolutionIndirectAdmission.lean": "93c4f3e0a48d45e6eb9644f07618884f694bf6a0a52e3968446405309ff4d1e8",
-      "verification/fixtures/comparator/config-changed-definition.json": "f0bb6b468024b7f7959b84935a020363674d06278fc45742a0180321205b1b0c",
-      "verification/fixtures/comparator/config-indirect-admission.json": "d24b6a8c166d0f149d0864925a5a75b3960a63571e7a416353fb41f0bca94686",
-      "verification/fixtures/comparator/config.json": "c8dfe86edea82d625c0851556ae447fb795e4016c2d94f858524c79b20aeb6f5",
-      "verification/fixtures/inspection/AdmissionHelper.lean": "ab58d6792f4723092f0d06498340868245e4a16addf6898a37642801f4252f39",
-      "verification/fixtures/inspection/AxiomHelper.lean": "51ec1f866b27bbb820259def2827c2fb77a57c87227f5e0e8666553601ecb71c",
-      "verification/fixtures/inspection/ChangedStatement.lean": "3ed50d9cff78569a067610528037c612416f56eba736abc89db8c5441c87877f",
-      "verification/fixtures/inspection/Contracts.lean": "c12ba4551ecf6e7de40d61f85466c509ce02d8d18940ef6a4131e19f04ab6460",
-      "verification/fixtures/inspection/CustomAxiom.lean": "3040db91e4a3cdcff3ca30a463b2671fd2f2602690f97de01507385775f0b26e",
-      "verification/fixtures/inspection/ExtraAssumption.lean": "243a97b1cdaa61d6f917bc076c100fb105e30bf64057e30cc38f42e3a26edc02",
-      "verification/fixtures/inspection/IndirectAdmission.lean": "c799fd2fb2526a5cb4f8a4af2e2685a167d80d1faf0a3ee31b2a560119024be0",
-      "verification/fixtures/inspection/LogicallyEquivalent.lean": "da1d12fe3af0ee58ee25c99af9f29c2bac4e77494a57974236e239db78416333",
-      "verification/fixtures/inspection/ReduciblePresentation.lean": "640e505b2809b19e8d1eae87a85f8438e20ee6c40015a14bea61ebd6cad2a2dd",
-      "verification/fixtures/inspection/Valid.lean": "869afe46ff18f5da75ff9aaf45f17881fef576317e1669fb2f8f00f12adc4f3d",
-      "verification/fixtures/recovery/Recovered.lean": "d42d52a12f64128f3118165f2ebb26e918260a1dcf6dce0f6e25ab06859c4a9c"
-    },
-    "cardinality_only_changes": {
-      "common.py": {
-        "before": "730c6197dfd26847b94968c8d992007939e0fc719415bd779ec5c3c1b8b2de0b",
-        "after": "4ff1449a0810a28951147ae93432d32dc30509f83edaad9cf6aa0f8d95834547"
+    "linux_runtime_report_sha256": "3d3187236a0f588afd4acef0616f1236dc84423318f38538c513d374c91c68b0",
+    "linux_cases": [
+      {
+        "name": "valid",
+        "outcome": {
+          "exit_code": 0,
+          "lean_accepted": true,
+          "nanoda_accepted": true,
+          "con_ron_accepted": true,
+          "comparator_accepted": true,
+          "passed": true
+        },
+        "log_sha256": "2cc339323d1bc67c5d8cb476768f105ffbe1384fe68b3e072da1b4bdeceb8f5a",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
       },
-      "test_checker.py": {
-        "before": "f586d619a44b18a2f5a0ff46ee4633dc87872fbb50e089696c7f379cc1599cdc",
-        "after": "e03807cf5ea75398e1b56cf3d713e4f03446aabd0b00a818953d7b3ee19445a8"
+      {
+        "name": "extra-assumption",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "37633f5fdb009508f7d0e609a689cbeda8864548f2efd57982d4c79281bc5597",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
+      },
+      {
+        "name": "changed-definition",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "2443820a61cd82b2d216685c5cd4c622e357414251cb8a4ac7d63399c78be4b0",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
+      },
+      {
+        "name": "indirect-admission",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "61cdfaadb7eff5ef14d7bbf2a5b865d446390f39066c3cae7eb30cf71b9a8a71",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
+      },
+      {
+        "name": "missing-nanoda",
+        "outcome": {
+          "exit_code": 2,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "c225e76b4b123377aec66f3184d4f70cfd65c67f1d1b16678b98e52e4382b04a",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
+      },
+      {
+        "name": "failing-nanoda",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": true,
+          "nanoda_accepted": false,
+          "con_ron_accepted": true,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "013b882033c2769284c9ba5fb1633cd52e8f98ce5e6df347e06573b08f7cbe85",
+        "invocation_marker": "PUBLIC_FIXTURE_NANODA_EXIT_73",
+        "failure_executable_sha256": "9a114eae9308e8891202253dafaee231537bd68529c336d2c7ca1b1282fbd5a0"
+      },
+      {
+        "name": "missing-con-ron",
+        "outcome": {
+          "exit_code": 2,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "8e621e5dd2a3b50fb01b98619eb7ac759820d73351aedc8d9f1e9e53f1ac7ff5",
+        "invocation_marker": null,
+        "failure_executable_sha256": null
+      },
+      {
+        "name": "failing-con-ron",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": true,
+          "nanoda_accepted": true,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "log_sha256": "a4604e8031bf8f5dc58271cfc9a916a24ead8a33d95dfaa871cf8205253c4ad3",
+        "invocation_marker": "PUBLIC_FIXTURE_CON_RON_EXIT_73",
+        "failure_executable_sha256": "8dc8126e45dacbafc8671cc9058db8d7d31d182adda4ff443be9a733946ffacf"
       }
-    },
-    "docstring_only_change": {
-      "before": "1792305dca5ccb8b09e4a497b76f5510226b924b044113f364825c647e14cc5d",
-      "after": "45afaa4a62a385eca53b245870e4f32f84d9e3c1a337d2b8d1d6010ef19ff9ea"
-    },
-    "inspector_comments_only": {
-      "before": "4219897fa6c9c02e080283329e0f4ed13f2e09f8ba77ac4ab53a52807c74e2d2",
-      "after": "101227314aa1b331706dcbd850f4a215153642ad6ed456b2450b5b9c79d15ee6"
-    },
-    "comment_only_files": {
-      "lean/lakefile.toml": {
-        "checked_sha256": "f889ff8670ee66e3e512c243806b39b9f4b749520fb8912fe0c42acb0f3e3763",
-        "distributed_sha256": "5ff8f23fdd35a54c91118bfad4c158f5559dc673ad01013008b4658f1bf17a69",
-        "change": "One comment replaced; parsed TOML is unchanged.",
-        "parsed_toml_equal": true,
-        "parsed_toml_sha256": "105b852a19f610a86b2c6ce0c17c0920d9d1cfe7427222a4b02be4c11981fb83"
+    ],
+    "recovery_suite_sha256": "3974b09ef8a84b742112b388e0e9c2819fa75676b847afcc4c1e126024fc8e2c",
+    "recovery_cases": [
+      "whole-family",
+      "missing-server",
+      "missing-ir"
+    ]
+  },
+  "editorial_packaging_checks": {
+    "status": "PASS",
+    "utc": "2026-10-12T22:50:43.130476+00:00",
+    "tests": 26,
+    "rows": [
+      {
+        "name": "wrapper",
+        "command": [
+          "python3",
+          "-I",
+          "-B",
+          "tools/test_checker.py"
+        ],
+        "exit_code": 0,
+        "log_sha256": "aa7df94a5264f33089dd1f2423592efb803e23ceb06340ebefe94a6f5c5cb79c"
+      },
+      {
+        "name": "acceptance",
+        "command": [
+          "python3",
+          "-I",
+          "-B",
+          "tools/test_comparator_acceptance.py"
+        ],
+        "exit_code": 0,
+        "log_sha256": "94eca0b66e980d25f9fe1f25b6acd210de4f65b08ca164183ee7ce1d860d84a1"
+      },
+      {
+        "name": "prepare",
+        "command": [
+          "python3",
+          "-I",
+          "-B",
+          "tools/comparator.py",
+          "--prepare-only"
+        ],
+        "exit_code": 0,
+        "log_sha256": "ffcb5758cf9ff49efff25d136ed1d53374eaf119f4c0d9c64b8281de5a19fde6"
       }
-    }
+    ],
+    "packet_status": "PREPARED_NOT_CHECKED",
+    "packet_report_sha256": "07ad4aa1196b0a2207870676ef6306ae66b59738591e5fa28e5285fceb282c14",
+    "theorem_checks_rerun": false
   }
 }

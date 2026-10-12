@@ -1,141 +1,127 @@
 import ReyZygmund.MathlibOnly.Definitions
 import Mathlib.Analysis.SpecialFunctions.Exponential
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
-/-! # Seven independently stated results
+/-!
+# Independent statements of the six main results
 
-The only local import is the Mathlib-only definition file. This file defines
-propositions; their proofs are in separate modules importing the proof library.
+The definitions needed to read these statements are in `Definitions.lean`.
+Neither file imports the proof library.
 
-The order of quantifiers specifies the allowed dependence of each constant.
-Real-valued representatives of maximal functions and overlaps are accompanied by
-almost-everywhere finiteness conclusions.
+`eLpNorm` denotes the `L^p` norm, allowing the value infinity; `MemLp` means
+membership in `L^p`. `LocallyIntegrable` means membership in `L¹_loc`.
+`Monotone` on tuples uses the coordinatewise order.
 
+`totalDim` is the sum of the block dimensions. Choosing the constants before
+the dimension vector `d` makes the estimates uniform over all splits of that sum.
 
+For a prescribed last side length, `n` counts the independent side lengths,
+so the number of cube factors is `m = n + 1`. The logarithmic endpoint power
+is `n - 1 = m - 2`, and the overlap exponential power is `1 / n = 1 / (m - 1)`.
 -/
 
-open BoxIntegral MeasureTheory Filter
+open MeasureTheory Filter
 open scoped BigOperators ENNReal Classical Topology
 
 namespace ReyZygmund.MathlibOnly
 
 noncomputable section
 
-/-- Incomparable maximal estimate. The range `1 < p` includes the paper's
-stated range `1 < p ≤ 2`. -/
-def IncomparableMaximal : Prop :=
-  ∃ C : ℕ → ℕ → ℝ, (∀ m D, 0 < C m D) ∧
-    ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
-      ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
-        G ⊆ gridRectangles D → Incomparable G →
-        ∀ (p : ℝ), 1 < p →
-          ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), MemLp f (ENNReal.ofReal p) volume →
-            (∀ᵐ x ∂volume, maximal G f x < ∞) ∧
-              eLpNorm (fun x => (maximal G f x).toReal) (ENNReal.ofReal p) volume ≤
-                ENNReal.ofReal (C m (∑ i, d i) * (p / (p - 1)) ^ (m - 1)) *
-                  eLpNorm f (ENNReal.ofReal p) volume
+/-- Weakly incomparable maximal estimate for `1 < p ≤ 2`.
+The constant depends only on the number of factors and total dimension.
+Here `p / (p - 1)` is the conjugate exponent `p'`. -/
+def WeaklyIncomparableMaximal : Prop :=
+  ∀ (m totalDim : ℕ), 2 ≤ m → ∃ C : ℝ, 0 < C ∧
+    ∀ (d : Fin m → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
+      ∀ (grids : ∀ i, CubeGrid (d i)) (G : Set (Rectangle d)),
+        G ⊆ gridRectangles grids → WeaklyIncomparable G →
+        ∀ (p : ℝ), 1 < p → p ≤ 2 →
+          ∀ (f : Point d → ℝ), MemLp f (ENNReal.ofReal p) volume →
+            eLpNorm (maximal G f) (ENNReal.ofReal p) volume ≤
+              ENNReal.ofReal (C * (p / (p - 1)) ^ (m - 1)) *
+                eLpNorm f (ENNReal.ofReal p) volume
 
-/-- Sparse incomparable overlap: every real moment `q ≥ 2`, and exponential
-power `1/(m-1)`, with the sparsity parameter inside that power. -/
-def IncomparableOverlap : Prop :=
-  ∃ C c : ℕ → ℕ → ℝ, (∀ m D, 0 < C m D) ∧ (∀ m D, 0 < c m D) ∧
-    ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
-      ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
-        G ⊆ gridRectangles D → Incomparable G →
+/-- Moments and exponential overlap for sparse weakly incomparable families.
+Both constants depend only on the number of factors and total dimension,
+uniformly for `0 < eta ≤ 1`. -/
+def WeaklyIncomparableOverlap : Prop :=
+  ∀ (m totalDim : ℕ), 2 ≤ m → ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
+    ∀ (d : Fin m → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
+      ∀ (grids : ∀ i, CubeGrid (d i)) (G : Set (Rectangle d)),
+        G ⊆ gridRectangles grids → WeaklyIncomparable G →
         ∀ (eta : ℝ), 0 < eta → eta ≤ 1 → Sparse eta G → volume (shadow G) < ∞ →
-          (∀ᵐ x ∂volume, overlap G x < ∞) ∧
           (∀ (q : ℝ), 2 ≤ q →
-            eLpNorm (fun x => (overlap G x).toReal) (ENNReal.ofReal q) volume ≤
-              ENNReal.ofReal (C m (∑ i, d i) * eta⁻¹ * q ^ (m - 1)) *
+            eLpNorm (overlap G) (ENNReal.ofReal q) volume ≤
+              ENNReal.ofReal (C * eta⁻¹ * q ^ (m - 1)) *
                 (volume (shadow G)) ^ (1 / q)) ∧
-          (∫⁻ x in shadow G, ENNReal.ofReal
-            (Real.exp (c m (∑ i, d i) *
-              Real.rpow (eta * (overlap G x).toReal) (1 / ((m - 1 : ℕ) : ℝ))) - 1)
-              ∂volume) ≤ ENNReal.ofReal (C m (∑ i, d i)) * volume (shadow G)
+          (∫⁻ x in shadow G, exp
+            (ENNReal.ofReal c *
+              (ENNReal.ofReal eta * overlap G x) ^ (1 / ((m - 1 : ℕ) : ℝ)))
+              ∂volume) ≤ ENNReal.ofReal C * volume (shadow G)
 
-/-- The maximal estimate and both sparse conclusions when containment preserves
-some cube factor. Sparsity and finite shadow restrict only the overlap part. -/
-def WeakerContainment : Prop :=
-  ∃ C c : ℕ → ℕ → ℝ, (∀ m D, 0 < C m D) ∧ (∀ m D, 0 < c m D) ∧
-    ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
-      ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
-        G ⊆ gridRectangles D → HasEqualFactorOnContainment G →
-        (∀ (p : ℝ), 1 < p → p ≤ 2 →
-          ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), MemLp f (ENNReal.ofReal p) volume →
-            (∀ᵐ x ∂volume, maximal G f x < ∞) ∧
-              eLpNorm (fun x => (maximal G f x).toReal) (ENNReal.ofReal p) volume ≤
-                ENNReal.ofReal (C m (∑ i, d i) * (p / (p - 1)) ^ (m - 1)) *
-                  eLpNorm f (ENNReal.ofReal p) volume) ∧
-        (∀ (eta : ℝ), 0 < eta → eta ≤ 1 → Sparse eta G → volume (shadow G) < ∞ →
-          (∀ᵐ x ∂volume, overlap G x < ∞) ∧
-          (∀ (q : ℝ), 2 ≤ q →
-            eLpNorm (fun x => (overlap G x).toReal) (ENNReal.ofReal q) volume ≤
-              ENNReal.ofReal (C m (∑ i, d i) * eta⁻¹ * q ^ (m - 1)) *
-                (volume (shadow G)) ^ (1 / q)) ∧
-          (∫⁻ x in shadow G, ENNReal.ofReal
-            (Real.exp (c m (∑ i, d i) *
-              Real.rpow (eta * (overlap G x).toReal) (1 / ((m - 1 : ℕ) : ℝ))) - 1)
-              ∂volume) ≤ ENNReal.ofReal (C m (∑ i, d i)) * volume (shadow G))
-
-/-- Continuous Zygmund endpoint for `n+1` blocks, with no hypothesis on the
-positive side function other than coordinatewise monotonicity. -/
+/-- The continuous Zygmund `L(log L)^(n-1)` endpoint estimate.
+The constant depends only on the number of factors and total dimension. -/
 def ContinuousEndpoint : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n → ∃ C : ℝ, 0 < C ∧
     ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
       ∀ (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
-        ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
+        ∀ (f : Point d → ℝ), LocallyIntegrable f volume →
           ∀ (lam : ℝ), 0 < lam →
             volume {x | ENNReal.ofReal lam < maximal (continuousRectangles d phi) f x} ≤
               ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
-                (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2))
+                (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ (n - 1))
                   ∂volume
 
-/-- The same endpoint for each prescribed shifted grid and the full rounded
-scale image, with the constant independent of both shift and side function. -/
+/-- The rounded dyadic endpoint estimate in each prescribed shifted grid.
+The constant depends only on the number of factors and total dimension,
+uniformly in `phi` and `tau`. -/
 def RoundedEndpoint : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n → ∃ C : ℝ, 0 < C ∧
     ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
       ∀ (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
         ∀ (tau : ∀ i, Fin (d i) → Fin 3),
-          ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
+          ∀ (f : Point d → ℝ), LocallyIntegrable f volume →
             ∀ (lam : ℝ), 0 < lam →
-              volume {x | ENNReal.ofReal lam < maximal (roundedRectangles tau phi) f x} ≤
+              volume {x | ENNReal.ofReal lam < maximalIco (roundedRectangles tau phi) f x} ≤
                 ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
-                  (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2))
+                  (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ (n - 1))
                     ∂volume
 
-/-- Sparse prescribed-scale overlap, without incomparability. Here `n=m-1`;
-the constants can depend on sparsity but not on grids or the side relation. -/
+/-- Sparse Φ-Zygmund exponential overlap.
+The constants depend only on the number of factors, total dimension and `eta`. -/
 def PhiSparseOverlap : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n → ∀ (eta : ℝ), 0 < eta → eta ≤ 1 →
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
       ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-        ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
-          ∀ (G : Set (∀ i, Box (Fin (d i)))),
-            G ⊆ phiRectangles D Phi → Sparse eta G → volume (shadow G) < ∞ →
-              (∀ᵐ x ∂volume, overlap G x < ∞) ∧
-                (∫⁻ x in shadow G, ENNReal.ofReal
-                  (Real.exp (c * Real.rpow (overlap G x).toReal (1 / (n : ℝ)))) - 1
-                    ∂volume) ≤ ENNReal.ofReal C * volume (shadow G)
+        ∀ (grids : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+          ∀ (G : Set (Rectangle d)),
+            G ⊆ phiRectangles grids Phi → Sparse eta G → volume (shadow G) < ∞ →
+              (∫⁻ x in shadow G,
+                exp (ENNReal.ofReal c * overlap G x ^ (1 / (n : ℝ))) ∂volume) ≤
+                  ENNReal.ofReal C * volume (shadow G)
 
-/-- Sharpness for the classical sum of side exponents. For every grid and
-sparsity parameter, one sequence works for every larger power and positive
-coefficient; each term from index two onward has unit shadow. -/
+/-- Sharpness for the classical dyadic Zygmund family, with `Phi k = ∑ i, k i`.
+For every choice of grids and `0 < eta < 1`, one sequence of finite incomparable
+sparse families has shadows of measure one and divergent exponential integrals
+for every positive coefficient and every power above `1 / n`.
+The real indicator sum is the overlap of the finite family. It is measurable
+and bounded, so its exponential has a finite real integral on the shadow. -/
 def PhiSparseSharpness : Prop :=
   ∀ (n : ℕ), 2 ≤ n → ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, CubeGrid (d i)) (eta : ℝ), 0 < eta → eta < 1 →
-      ∃ G : ℕ → Finset (∀ i, Box (Fin (d i))),
+    ∀ (grids : ∀ i, CubeGrid (d i)) (eta : ℝ), 0 < eta → eta < 1 →
+      ∃ G : ℕ → Finset (Rectangle d),
         (∀ N : ℕ, 2 ≤ N →
-          (G N : Set (∀ i, Box (Fin (d i)))) ⊆
-              phiRectangles D (fun k : Fin n → ℤ => ∑ i, k i) ∧
-            Incomparable (G N : Set (∀ i, Box (Fin (d i)))) ∧
-            Sparse eta (G N : Set (∀ i, Box (Fin (d i)))) ∧
-            volume (shadow (G N : Set (∀ i, Box (Fin (d i))))) = 1) ∧
+          (G N : Set (Rectangle d)) ⊆
+              phiRectangles grids (fun k : Fin n → ℤ => ∑ i, k i) ∧
+            Incomparable (G N : Set (Rectangle d)) ∧
+            Sparse eta (G N : Set (Rectangle d)) ∧
+            volume (shadow (G N : Set (Rectangle d))) = 1) ∧
         ∀ (c beta : ℝ), 0 < c → 1 / (n : ℝ) < beta →
           Tendsto (fun N : ℕ =>
-            ∫⁻ x in shadow (G N : Set (∀ i, Box (Fin (d i)))),
-              ENNReal.ofReal (Real.exp (c * Real.rpow
-                (overlap (G N : Set (∀ i, Box (Fin (d i)))) x).toReal beta)) - 1
-                  ∂volume) atTop (𝓝 ∞)
+            ∫ x in shadow (G N : Set (Rectangle d)),
+              Real.exp (c * Real.rpow
+                (∑ R ∈ G N, (rectangle R).indicator (fun _ => (1 : ℝ)) x) beta)
+                  ∂volume) atTop atTop
 
 end
 end ReyZygmund.MathlibOnly

@@ -25,7 +25,8 @@ partition the corresponding space for every <span class="math-inline">\(k\in\mat
 Any two intersecting cubes in the same grid are nested.</p>
 <h3 id="conventions">Conventions</h3>
 <p>We use <span class="math-inline">\(\subset\)</span> for inclusion allowing equality.</p>
-<p>All functions are real-valued. All measures and integrals are with respect
+<p>Input functions are real-valued; maximal and overlap functions may take the
+value <span class="math-inline">\(+\infty\)</span>. All measures and integrals are with respect
 to Lebesgue measure, and <span class="math-inline">\(\|g\|_p\)</span> denotes the <span class="math-inline">\(L^p(\mathbb R^d)\)</span> norm.
 We write <span class="math-inline">\(p'=p/(p-1)\)</span> for <span class="math-inline">\(1&lt;p&lt;\infty\)</span>.</p>
 <h3 id="maximal-operators-and-overlap-functions">Maximal operators and overlap functions</h3>
@@ -53,7 +54,7 @@ measurable sets <span class="math-inline">\(E_I\subset I\)</span>, <span class="
 \leq C_{m,d}(p')^{m-1}\|f\|_p,
 \qquad 1\lt p\leq2.\]</div>
 <p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L26">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L37">Proof</a> · <a href="source/lean/ReyZygmund/Maximal/WeakerGlobal.lean.html#L140">Theorem in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L33">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L19">Proof</a> · <a href="source/lean/ReyZygmund/Maximal/WeakerGlobal.lean.html#L140">Theorem in the main development</a>.</p>
 <p><a id="sparse-incomparable-overlap"></a></p>
 <p><a id="sparse-incomparable-overlap-estimate"></a></p>
 <h2 id="sparse-weakly-incomparable-overlap-estimate">Sparse weakly incomparable overlap estimate</h2>
@@ -72,7 +73,7 @@ with finite shadow. Then</p>
 \exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)dx
 \leq C_{m,d}|\mathrm{sh}(\mathcal G)|.\]</div>
 <p>The positive constants depend only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L40">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L50">Proof</a> · <a href="source/lean/ReyZygmund/Overlap/Exponential.lean.html#L78">Exponential estimate in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L47">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L31">Proof</a> · <a href="source/lean/ReyZygmund/Overlap/Exponential.lean.html#L78">Exponential estimate in the main development</a>.</p>
 <h2 id="continuous-zygmund-endpoint-estimate">Continuous Zygmund endpoint estimate</h2>
 <p>This is the monotone side-length formulation of Zygmund&#39;s conjecture.</p>
 <p>Let <span class="math-inline">\(m\geq3\)</span> and let
@@ -88,7 +89,7 @@ Let <span class="math-inline">\(\mathcal R_\phi\)</span> consist of all rectangl
 \left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.\]</div>
 <p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>, not on <span class="math-inline">\(\phi\)</span>.
 No continuity or doubling assumption on <span class="math-inline">\(\phi\)</span> is imposed.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L57">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L94">Proof</a> · <a href="source/lean/ReyZygmund/Continuous/Endpoint.lean.html#L88">Theorem in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L64">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L49">Proof</a> · <a href="source/lean/ReyZygmund/Continuous/Endpoint.lean.html#L88">Theorem in the main development</a>.</p>
 <p><a id="endpoint-estimate-for-the-rounded-dyadic-families"></a></p>
 <h2 id="rounded-dyadic-endpoint-estimate">Rounded dyadic endpoint estimate</h2>
 <p>Let <span class="math-inline">\(m\geq3\)</span> and let
@@ -114,7 +115,7 @@ For <span class="math-inline">\(s&gt;0\)</span>, define <span class="math-inline
 \leq C_{m,d}\int_{\mathbb R^d}\frac{|f(x)|}{\lambda}
 \left[\log\!\left(e+\frac{|f(x)|}{\lambda}\right)\right]^{m-2}dx.\]</div>
 <p>The constant depends only on <span class="math-inline">\(m\)</span> and <span class="math-inline">\(d\)</span>, not on <span class="math-inline">\(\phi\)</span> or <span class="math-inline">\(\tau\)</span>.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L70">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L97">Proof</a> · <a href="source/lean/ReyZygmund/Main/Endpoints.lean.html#L19">Theorem in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L78">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L59">Proof</a> · <a href="source/lean/ReyZygmund/Main/Endpoints.lean.html#L19">Theorem in the main development</a>.</p>
 <p><a id="sparse-overlap-with-a-monotone-zygmund-scale-relation"></a></p>
 <h2 id="sparse-φ-zygmund-overlap-estimate">Sparse Φ-Zygmund overlap estimate</h2>
 <p>Let <span class="math-inline">\(m\geq3\)</span> and let <span class="math-inline">\(\Phi:\mathbb Z^{m-1}\to\mathbb Z\)</span> be
@@ -130,11 +131,10 @@ shadow, where <span class="math-inline">\(0&lt;\eta\leq1\)</span>, then</p>
 \leq C|\mathrm{sh}(\mathcal G)|,\]</div>
 <p>where <span class="math-inline">\(c,C&gt;0\)</span> depend only on <span class="math-inline">\(m\)</span>, <span class="math-inline">\(d\)</span> and <span class="math-inline">\(\eta\)</span>, not on <span class="math-inline">\(\Phi\)</span>
 or the dyadic grids.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L83">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L105">Proof</a> · <a href="source/lean/ReyZygmund/Main/PhiSparse.lean.html#L51">Theorem in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L92">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L69">Proof</a> · <a href="source/lean/ReyZygmund/Main/PhiSparse.lean.html#L51">Theorem in the main development</a>.</p>
 <p><a id="sharpness-for-sparse-incomparable-zygmund-families"></a></p>
 <h2 id="sharpness-for-the-classical-dyadic-zygmund-family">Sharpness for the classical dyadic Zygmund family</h2>
-<p>The formalization retains the following stronger, quantified form of the
-paper&#39;s sharpness remark.</p>
+<p>The formalization proves the following sharpness result.</p>
 <p>Let <span class="math-inline">\(m\geq3\)</span>, <span class="math-inline">\(0&lt;\eta&lt;1\)</span>, and set</p>
 <div class="math-display">\[\Phi(k_1,\ldots,k_{m-1})=k_1+\cdots+k_{m-1}.\]</div>
 <p>For every choice of the dyadic grids, there are finite incomparable
@@ -150,7 +150,7 @@ paper&#39;s sharpness remark.</p>
 <p>Thus adding incomparability to sparseness and the <span class="math-inline">\(\Phi\)</span>-Zygmund scale
 restriction need not improve the exponential power, even for the classical
 relation above.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L97">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L116">Proof</a> · <a href="source/lean/ReyZygmund/Main/Sharpness.lean.html#L22">Theorem in the main development</a>.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L109">Independent statement</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions</a> · <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L88">Proof</a> · <a href="source/lean/ReyZygmund/Main/Sharpness.lean.html#L22">Theorem in the main development</a>.</p>
 <h2 id="notes-on-the-formalization">Notes on the formalization</h2>
 <p>The links under each result give its independent Lean statement and
 definitions, a proof of that statement, and the theorem used from the main

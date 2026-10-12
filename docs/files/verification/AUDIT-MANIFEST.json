@@ -1,26 +1,25 @@
 {
   "specification_modules": [
     "ReyZygmund.MathlibOnly.Definitions",
-    "ReyZygmund.MathlibOnly.SubmittedDefinitions",
-    "ReyZygmund.MathlibOnly.SubmittedStatements"
+    "ReyZygmund.MathlibOnly.Statements"
   ],
   "expected_comparisons": 6,
   "sha256": {
-    "verification/TARGETS.json": "f4e9a02ff5f0b0a75594faddefffa60f5e2262fbc9b545b290a832437d8caf44",
-    "verification/SOURCE-MANIFEST.json": "984f4b4728e62d531807cab402cb29b5ae399e4a35800bdb4c5ec638f241eaf4",
-    "verification/comparator/CASES.json": "dc56bbbef1dae1a847f45dc479cc17fdfb7214bc33731f13827040d0e8696e4e",
-    "verification/comparator/SubmittedChallenge1.lean": "7b447f18d7a9ca2ce8c9211c7b2b1dd27deb4a5b1ffa56d74662a822a71cb3ed",
-    "verification/comparator/SubmittedChallenge2.lean": "74f01c8066eae5e8706222bb01844d4013e4d38468dc17d438d6e3f4a4cc2c1e",
-    "verification/comparator/SubmittedChallenge3.lean": "555910dd85d9ab801d78ccdd71d949dabe15c1b64303021c262ed6aad57d6db7",
-    "verification/comparator/SubmittedChallenge4.lean": "ed8b37f9b38826ea6a880ecb2eab14d6f50bb6a4e97df558a9271ae446d3b3b7",
-    "verification/comparator/SubmittedChallenge5.lean": "3664ba5cffc34a2fbb53b1539ddb88945b97b34b945d3e671ee951c14d82ba9a",
-    "verification/comparator/SubmittedChallenge6.lean": "136592ab182e2744876d207c9439e30caa23218c00632e2116e03535135d3322",
-    "verification/comparator/SubmittedSolution.lean": "209f686a5556cc736f88655f61dfc80e1649bcf12472e856fcd8414aac99a23f",
-    "verification/comparator/comparison-1.json": "86b9ed064f71eaeb3ef082d9cd8e0d5b247249d517c5311deb1544758c5487b8",
-    "verification/comparator/comparison-2.json": "e644e078abed2250d539d6178a7974006be4525b1426607804166200e0d85d2a",
-    "verification/comparator/comparison-3.json": "6c5339a19ba7aa438d094d82c1f5373aa48848336f2c47e107bc9d3903a0312e",
-    "verification/comparator/comparison-4.json": "0c58aa2d8a27fb00edc59b4eecb005250026a1732ae1e9b7a7b782a1b368155d",
-    "verification/comparator/comparison-5.json": "7957258649881e65594b7d8c94c64ec13fbe85091f3536a4bc205c20c63d0b29",
-    "verification/comparator/comparison-6.json": "2b304c118773545934565c42416333914ea2a56088bed2eab57dd2d38a773c8f"
+    "verification/TARGETS.json": "97d8366238b71ed5a0211031507f5bad51e600db3b91ecd8670215ab619b238d",
+    "verification/SOURCE-MANIFEST.json": "6687f25a7ea4b3a94939d5c902112c93439bb298c48d3eb4a89cc1aa45ab8c17",
+    "verification/comparator/CASES.json": "59743c3a6ee8a8029d1c2cafe409051ae5bc570669c5911dbcd77e44e4b14c5d",
+    "verification/comparator/Challenge1.lean": "45bfc95f1a32063c2baaf469b6e2c3fd8869f047e79ff9b44ec4bce14e709f2d",
+    "verification/comparator/Challenge2.lean": "03e53f5a53143ea97c31c18c169708ddd0e719d3910563db4ae8cddb7f9929d5",
+    "verification/comparator/Challenge3.lean": "5ad7ea848f564fb16359ef4aad10f9618494c5799156964596cd328b432e9474",
+    "verification/comparator/Challenge4.lean": "dc13df9b81f12e17a2b148878bb8c721ad5510d1bafa3eed449504b24cbbf050",
+    "verification/comparator/Challenge5.lean": "943a2ebc93bdc71ae8031d03348601000f0356ade600a783e97a1b05c7cb4f34",
+    "verification/comparator/Challenge6.lean": "f5fc73c3dd63f2ddb2560d2c7fb409eb53392dbaada96793b6a003ba86673150",
+    "verification/comparator/Solution.lean": "c999c685df7c8d720424ecca32c016e5d80465f2224189c0248d87c6c52ac449",
+    "verification/comparator/comparison-1.json": "09ee16c9146dc6ff8d90ddfedfc53140121065b8e9e02620e4ad92321b3a62b8",
+    "verification/comparator/comparison-2.json": "f19fd1a13ce2dc15120cd97fc53af3fb0180ea8ab02dbbf2cd1bce98ce0708d0",
+    "verification/comparator/comparison-3.json": "00bdf8054038cf6cd5a50cbbc45e33bba5e9a1fe561bf47de4c7c68eec2c0cd9",
+    "verification/comparator/comparison-4.json": "f9e2d5f5ab8b2e66275b568c0a7a49b818ac52c8ba670a8a0297f7874af83734",
+    "verification/comparator/comparison-5.json": "7629e5186116fa40194e260c044c4741263827bef23148f720f22a18aa19f6bf",
+    "verification/comparator/comparison-6.json": "880226fd92df8303e7189c51054169d7c4ab3a6bcb07a6ee788f659c5da23bfa"
   }
 }

@@ -1,6 +1,6 @@
 import ReyZygmund.Geometry.LastCoordinate
 import ReyZygmund.Overlap.Countable
-import ReyZygmund.MathlibOnly.SubmittedDefinitions
+import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
 
 /-!
 # Weak incomparability and overlap of slices
@@ -18,7 +18,7 @@ open scoped BigOperators Classical ENNReal
 namespace ReyZygmund.Geometry
 
 open Overlap
-open MathlibOnly.Submitted (WeaklyIncomparable)
+open MathlibOnly.Proof.Estimates (WeaklyIncomparable)
 
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 

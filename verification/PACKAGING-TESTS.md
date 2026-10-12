@@ -6,9 +6,9 @@ The mathematical verification results are recorded separately in
 [RESULTS.json](RESULTS.json).
 
 Test outcomes and checking-program identities are recorded in
-[TOOLING-RESULTS.json](TOOLING-RESULTS.json). The Linux runtime and dependency-recovery
-results are retained from earlier runs. The same record explains why those
-results apply to the distributed files.
+[TOOLING-RESULTS.json](TOOLING-RESULTS.json). The compiled inspection, Linux runtime
+and dependency-recovery results are retained from earlier runs; those fixtures
+were not rerun for this update. The same record explains why they still apply.
 
 ## Lightweight tests
 
@@ -79,10 +79,10 @@ python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
 
 ## Source and packet checks
 
-Source checks matched all 391 supplied Lean files to the checked code outside
-comments, the seven adapter files and six comparison configurations to the
-checked inputs, and the 497 declaration mappings to their contracts. The selected
-local build/replay closure contains 377 modules. Packet preparation passed its
+Source checks matched all 396 supplied Lean files exactly outside comments to the checked
+code, the seven adapter files and six comparison configurations to the
+checked inputs, and the 508 declaration mappings to their contracts. The selected
+local build/replay closure contains 382 modules. Packet preparation passed its
 source and import-boundary checks; preparation does not verify proofs.
 
 See [the verification guide](../VERIFYING.md) for the mathematical checking scope and

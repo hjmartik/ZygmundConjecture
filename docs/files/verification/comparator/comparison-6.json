@@ -1,8 +1,8 @@
 {
-  "challenge_module": "SubmittedChallenge6",
-  "solution_module": "SubmittedSolution",
+  "challenge_module": "Challenge6",
+  "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.Submitted.phi_sparse_sharpness"
+    "ReyZygmund.MathlibOnly.phi_sparse_sharpness"
   ],
   "permitted_axioms": [
     "propext",

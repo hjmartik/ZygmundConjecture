@@ -15,9 +15,9 @@ deliberately invalid ones and recover missing compiled dependencies.
 The mathematical verification results are recorded separately in
 <a href="files/verification/RESULTS.json">RESULTS.json</a>.</p>
 <p>Test outcomes and checking-program identities are recorded in
-<a href="files/verification/TOOLING-RESULTS.json">TOOLING-RESULTS.json</a>. The Linux runtime and dependency-recovery
-results are retained from earlier runs. The same record explains why those
-results apply to the distributed files.</p>
+<a href="files/verification/TOOLING-RESULTS.json">TOOLING-RESULTS.json</a>. The compiled inspection, Linux runtime
+and dependency-recovery results are retained from earlier runs; those fixtures
+were not rerun for this update. The same record explains why they still apply.</p>
 <h2 id="lightweight-tests">Lightweight tests</h2>
 <p>The 13 tests in <code>tools/test_checker.py</code> passed, covering inventories, changed
 or missing sources, duplicate targets, origins, import separation, configuration
@@ -96,10 +96,10 @@ theorem through the production inspector. The original cache was unchanged.</p>
 <pre><code class="language-sh">python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
 </code></pre>
 <h2 id="source-and-packet-checks">Source and packet checks</h2>
-<p>Source checks matched all 391 supplied Lean files to the checked code outside
-comments, the seven adapter files and six comparison configurations to the
-checked inputs, and the 497 declaration mappings to their contracts. The selected
-local build/replay closure contains 377 modules. Packet preparation passed its
+<p>Source checks matched all 396 supplied Lean files exactly outside comments to the checked
+code, the seven adapter files and six comparison configurations to the
+checked inputs, and the 508 declaration mappings to their contracts. The selected
+local build/replay closure contains 382 modules. Packet preparation passed its
 source and import-boundary checks; preparation does not verify proofs.</p>
 <p>See <a href="verifying.html">the verification guide</a> for the mathematical checking scope and
 reproduction instructions.</p>

@@ -33,22 +33,21 @@ The numbered instructions then explain how to reproduce them.</p>
 <p><a href="main-statements.html">Main theorems</a> gives the six results, including their
 hypotheses, parameter ranges and cube conventions. The maximal and sparse
 overlap estimates are stated for weakly incomparable families. The formalization
-also retains a stronger, quantified form of the paper&#39;s sharpness remark for
-the classical dyadic Zygmund family, as explained there.</p>
+also includes sharpness for the classical dyadic Zygmund family, as stated there.</p>
 <p>The examples cited in the paper to establish sharpness of the incomparable
 maximal power are not formalized.</p>
-<p>The previous version of this repository presented seven main theorems. The
+<p>An earlier version of this repository presented seven main theorems. The
 current version presents six: the estimates under weaker containment are
 incorporated into the general statements for weakly incomparable families.
 No mathematical coverage has been removed.</p>
 <h2 id="what-has-been-checked">What has been checked</h2>
-<p>The recorded runs cover <strong>377 local modules and 497 registered declarations</strong>.
+<p>The recorded runs cover <strong>382 local modules and 508 registered declarations</strong>.
 A declaration is a named definition or theorem in Lean. The source inventory
-contains 391 Lean files; the build and replay
+contains 396 Lean files; the build and replay
 selection excludes negative-test fixtures and other files outside its import
-closure. This coverage combines earlier full local checks with checks of the
-revised definitions, proofs and affected imports. The earlier checks still apply
-to unchanged source files and their unchanged dependencies.</p>
+closure. A fresh build, declaration inspection and ordinary replay cover the
+current sources. The six external comparisons also used the current specification
+and its proofs.</p>
 <table>
 <thead>
 <tr>
@@ -58,7 +57,7 @@ to unchanged source files and their unchanged dependencies.</p>
 </thead>
 <tbody><tr>
 <td>Compilation</td>
-<td>All 377 selected local modules compiled.</td>
+<td>All 382 selected local modules compiled.</td>
 </tr>
 <tr>
 <td>Statement and axiom inspection</td>
@@ -66,7 +65,7 @@ to unchanged source files and their unchanged dependencies.</p>
 </tr>
 <tr>
 <td>Ordinary Lean replay</td>
-<td>Completed for the 377 selected local modules, subject to the checker exclusions described in <a href="#3-ordinary-kernel-replay">step 3</a>.</td>
+<td>Completed for the 382 selected local modules, subject to the checker exclusions described in <a href="#3-ordinary-kernel-replay">step 3</a>.</td>
 </tr>
 <tr>
 <td>Comparator, Lean, Nanoda and con-ron</td>
@@ -77,12 +76,11 @@ to unchanged source files and their unchanged dependencies.</p>
 The six-result checks do not give independent-kernel coverage to every supporting
 result; <a href="#4-comparator-with-lean-nanoda-and-con-ron-on-linux">step 4</a> records the
 precise scope.</p>
-<p>The distributed Lean code matches the checked code exactly apart from comments.
+<p>The distributed Lean code matches the checked code exactly outside comments.
 The source hashes are listed in
 <a href="files/verification/SOURCE-MANIFEST.json">SOURCE-MANIFEST.json</a>.
 <a href="files/verification/RESULTS.json">RESULTS.json</a> records the checks for this release,
-including target identities, execution dates, tool hashes and the comment-only
-source reconciliation.</p>
+including target identities, checking dates, tool hashes and source bindings.</p>
 <p>The root file <code>PUBLIC-FILES.sha256</code> lists SHA-256 checksums for the other
 distributed files.</p>
 <p>Tests of the checking programs are a separate matter: they test whether the
@@ -114,7 +112,7 @@ python3 -I -B tools/test_inspection.py
 python3 -I -B tools/check.py verify
 </code></pre>
 <p>The verifier checks all supplied Lean files and pinned dependency sources,
-then builds the selected 377 local modules in import order into a fresh directory.
+then builds the selected 382 local modules in import order into a fresh directory.
 A <strong>contract</strong> is the separately written formal statement against which a
 declaration is checked. <a href="files/verification/TARGETS.json">TARGETS.json</a> lists the
 declarations and their contracts.</p>
@@ -163,9 +161,8 @@ Comparator compares the theorem statements and the definitions on which they
 depend, and checks the permitted axioms. Lean&#39;s default kernel, Nanoda and
 con-ron check the exported proof.</p>
 <p>The independent specification consists of
-<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>,
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">SubmittedDefinitions.lean</a>
-and <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html">SubmittedStatements.lean</a>.
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>
+and <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">Statements.lean</a>.
 Their other imports are exclusively from Mathlib. They do not use proof-library
 definitions, original contracts or solution modules.
 The <a href="mathlib-only.html">independent specification guide</a>
@@ -173,13 +170,13 @@ and <a href="consistency.html">consistency guide</a> explain the proved identiti
 these definitions to those used in the proofs.</p>
 <p>The <a href="files/verification/comparator/CASES.json">comparison cases</a> select the six
 independently stated theorems and their proofs. The shared solution adapter
-imports <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html">SubmittedSolutions.lean</a>,
+imports <a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html">Solutions.lean</a>,
 where the library&#39;s results are connected to those statements.
 <a href="files/verification/AUDIT-MANIFEST.json">AUDIT-MANIFEST.json</a> records hashes
 identifying the adapters, configurations, six-result mapping and
 declaration/contract inventory.
 The permitted axioms are the same three as in step 2.</p>
-<p>Each <code>SubmittedChallengeN.lean</code> contains an intentional <code>sorry</code> placeholder
+<p>Each <code>ChallengeN.lean</code> contains an intentional <code>sorry</code> placeholder
 for the proof to be supplied by its solution. Isolated negative-test fixtures
 also deliberately contain an admission or a custom axiom. Challenge adapters
 are inventoried separately from the library; supplied negative fixtures are
@@ -207,7 +204,7 @@ in this Linux environment; this test additionally requires a C compiler availabl
 as <code>cc</code>, with static libc support. See <a href="#testing-the-verification-tools">Testing the verification tools</a>.</p>
 <p>The runner first checks exact source, adapter and configuration identities. It
 traverses the local imports of each challenge and solution: a challenge may
-use only the three independent specification modules, while a solution must not
+use only the two independent specification modules, while a solution must not
 import any challenge placeholder or negative fixture. The imported dependency sources are checked
 against their pins. These checks establish the source boundary, not the
 mathematical faithfulness of the definitions.</p>

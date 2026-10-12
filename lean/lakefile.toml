@@ -1,6 +1,6 @@
 name = "rey_zygmund_v3"
 version = "0.1.0"
-defaultTargets = ["ReyZygmund.Submitted"]
+defaultTargets = ["ReyZygmund.MainResults"]
 
 [leanOptions]
 autoImplicit = false
@@ -15,25 +15,25 @@ path = ".lake/packages/mathlib"
 name = "ReyZygmund"
 
 [[lean_lib]]
-name = "SubmittedSolution"
+name = "Solution"
 
 [[lean_lib]]
-name = "SubmittedChallenge1"
+name = "Challenge1"
 
 [[lean_lib]]
-name = "SubmittedChallenge2"
+name = "Challenge2"
 
 [[lean_lib]]
-name = "SubmittedChallenge3"
+name = "Challenge3"
 
 [[lean_lib]]
-name = "SubmittedChallenge4"
+name = "Challenge4"
 
 [[lean_lib]]
-name = "SubmittedChallenge5"
+name = "Challenge5"
 
 [[lean_lib]]
-name = "SubmittedChallenge6"
+name = "Challenge6"
 
 [[lean_lib]]
 name = "Verification"

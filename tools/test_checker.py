@@ -27,19 +27,19 @@ class CheckerTests(unittest.TestCase):
         return '\n'.join('RZ_REPORT ' + json.dumps(r) for r in reports)
 
     def test_inventory(self):
-        self.assertEqual(len(module_order(source_manifest())), 377)
-        self.assertEqual(len(targets()), 497)
+        self.assertEqual(len(module_order(source_manifest())), 382)
+        self.assertEqual(len(targets()), 508)
 
     def test_mathlib_only_import_boundary(self):
         manifest = source_manifest()
         report = comparator_module.validate_import_separation(manifest)
         self.assertEqual(len(report), 7)
         for i in range(1, 7):
-            self.assertEqual(len(report[f'SubmittedChallenge{i}']['local_modules']), 4)
+            self.assertEqual(len(report[f'Challenge{i}']['local_modules']), 3)
         real_imports = comparator_module.imports
         for source, forbidden, reason in [
                 ('Definitions.lean', 'ReyZygmund.Geometry.Grids', 'Proof-library import'),
-                ('SubmittedSolutions.lean', 'SubmittedChallenge1', 'Challenge placeholder'),
+                ('Solutions.lean', 'Challenge1', 'Challenge placeholder'),
                 ('Definitions.lean', 'ReyZygmund.Missing', 'Unresolved audit import')]:
             with self.subTest(source=source, forbidden=forbidden), \
                  patch.object(comparator_module, 'imports', side_effect=lambda p, s=source, f=forbidden:
@@ -49,10 +49,10 @@ class CheckerTests(unittest.TestCase):
 
     def test_comparator_input_binding(self):
         cases = comparator_module.validate_cases()
-        self.assertEqual(cases[3]['production_target'], 'ReyZygmund.MathlibOnly.Submitted.rounded_endpoint')
-        self.assertEqual(cases[2]['production_target'], 'ReyZygmund.MathlibOnly.Submitted.continuous_endpoint')
+        self.assertEqual(cases[3]['production_target'], 'ReyZygmund.MathlibOnly.rounded_endpoint')
+        self.assertEqual(cases[2]['production_target'], 'ReyZygmund.MathlibOnly.continuous_endpoint')
         real_digest = comparator_module.digest
-        for name in ['CASES.json', 'SubmittedChallenge1.lean', 'SubmittedSolution.lean', 'comparison-4.json']:
+        for name in ['CASES.json', 'Challenge1.lean', 'Solution.lean', 'comparison-4.json']:
             with self.subTest(name=name), \
                  patch.object(comparator_module, 'digest', side_effect=lambda p, n=name:
                               '0' * 64 if p.name == n else real_digest(p)), \
@@ -60,7 +60,7 @@ class CheckerTests(unittest.TestCase):
                 comparator_module.validate_cases()
 
     def test_missing_new_module_rejected(self):
-        selected = ROOT / 'lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean'
+        selected = ROOT / 'lean/ReyZygmund/MathlibOnly/Proof/BoundaryBridge.lean'
         real_is_file = Path.is_file
         with patch.object(Path, 'is_file', lambda path: False if path == selected else real_is_file(path)), \
              self.assertRaisesRegex(ValueError, 'Reviewed source bytes differ'):

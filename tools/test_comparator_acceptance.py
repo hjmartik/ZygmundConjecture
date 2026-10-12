@@ -17,7 +17,7 @@ SUCCESS = '\n'.join(('Lean default kernel accepts the solution',
                      'nanoda kernel accepts the solution',
                      'con-ron kernel accepts the solution', 'Your solution is okay!'))
 CONFIG = dict(challenge_module='Challenge1', solution_module='Solution1',
-              theorem_names=['Submitted.target1'], permitted_axioms=['propext', 'Classical.choice', 'Quot.sound'])
+              theorem_names=['Example.target1'], permitted_axioms=['propext', 'Classical.choice', 'Quot.sound'])
 
 
 class AcceptanceTests(unittest.TestCase):

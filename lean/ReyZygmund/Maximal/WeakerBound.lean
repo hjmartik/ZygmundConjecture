@@ -1,10 +1,10 @@
-import ReyZygmund.Maximal.SubmittedFinite
+import ReyZygmund.Maximal.WeaklyIncomparableFinite
 
 /-!
 # The finite maximal estimate under weaker containment
 
 The equal-factor formulation follows from the weak-incomparability argument
-in `SubmittedFinite`: the enlarged family has the same projection, its
+in `WeaklyIncomparableFinite`: the enlarged family has the same projection, its
 averages are represented, and the weighted square estimate is absorbed.
 -/
 

@@ -30,9 +30,9 @@ its descendants obtained by repeated halving are proved to be exactly the
 grid cubes of the corresponding smaller side length.
 
 Lean: [grid used in the proofs](lean/ReyZygmund/Geometry/Grids.lean#L23),
-[independent grid definition](lean/ReyZygmund/MathlibOnly/Definitions.lean#L31),
-[dyadic children](lean/ReyZygmund/MathlibOnly/GridBridge.lean#L141),
-[equivalence of the two descriptions](lean/ReyZygmund/MathlibOnly/GridBridge.lean#L220),
+[independent grid definition](lean/ReyZygmund/MathlibOnly/Definitions.lean#L44),
+[dyadic children](lean/ReyZygmund/MathlibOnly/Proof/GridBridge.lean#L141),
+[equivalence of the two descriptions](lean/ReyZygmund/MathlibOnly/Proof/GridBridge.lean#L220),
 [standard grids](lean/ReyZygmund/Geometry/StandardGrid.lean),
 [shifted grids](lean/ReyZygmund/Geometry/ShiftedGrid.lean), and
 [descendants](lean/ReyZygmund/Geometry/GridDescendants.lean#L67).
@@ -55,7 +55,7 @@ $`E_I f=\mathbf1_I|I|^{-1}\int_I f`$.
 Lean: [identification of the coordinates](lean/ReyZygmund/Geometry/Flatten.lean#L21),
 [preservation of Lebesgue measure](lean/ReyZygmund/Geometry/Flatten.lean#L54),
 [rectangle, integral and norm identities](lean/ReyZygmund/Geometry/FlatRectangles.lean),
-[rectangles in the independent statement](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L26),
+[rectangles in the independent statement](lean/ReyZygmund/MathlibOnly/Definitions.lean#L60),
 [coordinate averages](lean/ReyZygmund/Geometry/ProductOperators.lean), and
 [averaging over a rectangle](lean/ReyZygmund/Geometry/ProductMean.lean#L208).
 
@@ -91,35 +91,39 @@ containing the point. The specification defines these averages using
 nonnegative integrals, which may take the value infinity. The hypotheses of
 the maximal estimates ensure integrability on each rectangle. Lean proves
 that these averages agree with the ordinary real-valued averages used in
-the proofs.
+the proofs. Lean also identifies the supremum over rectangles containing the
+point with the formulation that assigns each average zero outside its rectangle.
 
-For countable families, the overlap sum and maximal supremum are initially
-allowed to be infinite. Under the hypotheses of the respective $`L^p`$ maximal
-and sparse overlap estimates, Lean proves that they are finite almost
-everywhere. Their real-valued versions therefore represent the same quantities
-outside a null set, preserving the norms and integrals used in the estimates.
+The public maximal and overlap estimates use these possibly infinite quantities
+directly. The supporting proofs establish almost-everywhere finiteness under
+the hypotheses of the respective $`L^p`$ maximal and sparse overlap estimates.
+Lean proves that passing to real-valued representatives preserves the norms
+and exponential integrals used in those proofs.
 
 Some intermediate bounds use the exponential minus one. Adding the measure of
 the shadow gives the full exponential bounds in the statements, with an enlarged
 constant. This conversion is proved in Lean.
 
-Lean: [weak incomparability](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean#L22),
-[equivalent containment condition](lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean#L37),
-[sparseness](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean#L28),
-[incomparability](lean/ReyZygmund/MathlibOnly/Definitions.lean#L74),
-[equivalent definitions of sparseness](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L22),
-[overlap](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L88),
-[shadow](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L84),
+Lean: [weak incomparability](lean/ReyZygmund/MathlibOnly/Definitions.lean#L90),
+[equivalent containment condition](lean/ReyZygmund/MathlibOnly/Proof/IncomparabilityBridge.lean#L37),
+[sparseness](lean/ReyZygmund/MathlibOnly/Definitions.lean#L98),
+[incomparability](lean/ReyZygmund/MathlibOnly/Definitions.lean#L84),
+[equivalent definitions of sparseness](lean/ReyZygmund/MathlibOnly/Proof/MeasureBridge.lean#L22),
+[overlap](lean/ReyZygmund/MathlibOnly/Definitions.lean#L79),
+[shadow](lean/ReyZygmund/MathlibOnly/Definitions.lean#L73),
 [agreement of the two integral formulas](lean/ReyZygmund/Main/Maximal.lean#L33),
-[the independently defined maximal function](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L54),
-[full exponential bounds](lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean#L52),
+[the independently defined maximal function](lean/ReyZygmund/MathlibOnly/Definitions.lean#L107),
+[agreement of the two maximal-function definitions](lean/ReyZygmund/MathlibOnly/Representation.lean#L80),
+[norms of the real-valued representatives](lean/ReyZygmund/MathlibOnly/Representation.lean#L97),
+[agreement of the exponential integrals](lean/ReyZygmund/MathlibOnly/Representation.lean#L128),
+[full exponential bounds](lean/ReyZygmund/MathlibOnly/Proof/IncomparabilityBridge.lean#L52),
 and the countable-family arguments for
 [maximal functions](lean/ReyZygmund/Maximal/Countable.lean) and
 [overlap](lean/ReyZygmund/Overlap/Countable.lean).
 
 The correspondence between the two grid descriptions preserves all products of
 grid cubes and all rectangles satisfying the prescribed dyadic side-length
-relation. See the [equalities of rectangle families](lean/ReyZygmund/MathlibOnly/FamilyBridge.lean).
+relation. See the [equalities of rectangle families](lean/ReyZygmund/MathlibOnly/Proof/FamilyBridge.lean).
 
 ## Continuous rectangles, rounding and measurability
 
@@ -152,14 +156,15 @@ the resulting maximal functions and checks measurability:
 
 Lean: [continuous rectangles](lean/ReyZygmund/Geometry/PhiRectangles.lean),
 [rounding](lean/ReyZygmund/Geometry/RoundedScales.lean),
-[equality of the continuous families](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L88),
-[shifted cubes](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L100),
-[equality of the rounded families](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L124),
-[agreement of the maximal functions](lean/ReyZygmund/MathlibOnly/OperatorBridge.lean#L60),
+[equality of the continuous families](lean/ReyZygmund/MathlibOnly/Proof/OperatorBridge.lean#L88),
+[shifted cubes](lean/ReyZygmund/MathlibOnly/Definitions.lean#L137),
+[equality of the rounded families](lean/ReyZygmund/MathlibOnly/Proof/OperatorBridge.lean#L124),
+[agreement of the maximal functions](lean/ReyZygmund/MathlibOnly/Proof/OperatorBridge.lean#L60),
+[the independent maximal function with the opposite boundary convention](lean/ReyZygmund/MathlibOnly/Representation.lean#L87),
 [the endpoint maximal function](lean/ReyZygmund/Maximal/Euclidean.lean#L21),
-[rounded level-set measures](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L72),
-[continuous-family boundary equality](lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean#L18),
-and [continuous measurability](lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean#L26).
+[rounded level-set measures](lean/ReyZygmund/MathlibOnly/Proof/MeasureBridge.lean#L72),
+[continuous-family boundary equality](lean/ReyZygmund/MathlibOnly/Proof/BoundaryBridge.lean#L18),
+and [continuous measurability](lean/ReyZygmund/MathlibOnly/Proof/BoundaryBridge.lean#L26).
 
 ## Sharpness integrals
 
@@ -170,13 +175,16 @@ exponential integral over the shadow is finite. The divergence statement says
 that these finite values tend to $`+\infty`$ along the sequence of families.
 Lean proves that the ordinary real integral and the nonnegative integral give
 the same value for each family, and that their formulations of this limiting
-statement agree. The sharpness statement uses the ordinary real integral.
+statement agree. The public sharpness statement uses a finite sum of indicator
+functions and the ordinary real integral. Lean identifies that sum with the
+real-valued overlap used in the supporting estimates.
 
 Lean: [the rectangle construction](lean/ReyZygmund/Sharpness/FlatConstruction.lean),
-[integrability of the exponential](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L93),
-[equality of the integrals](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L109),
-[equivalence of the divergence statements](lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean#L118),
-and [full exponential sharpness](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L116).
+[integrability of the exponential](lean/ReyZygmund/MathlibOnly/Proof/MeasureBridge.lean#L93),
+[equality of the integrals](lean/ReyZygmund/MathlibOnly/Proof/MeasureBridge.lean#L109),
+[equivalence of the divergence statements](lean/ReyZygmund/MathlibOnly/Proof/MeasureBridge.lean#L118),
+[the finite indicator sum](lean/ReyZygmund/MathlibOnly/Representation.lean#L140),
+and [full exponential sharpness](lean/ReyZygmund/MathlibOnly/Solutions.lean#L88).
 
 ## Cross-coordinate averages and the projection
 
@@ -213,8 +221,8 @@ relates differences of $`F`$ in $`m-1`$ coordinates to an average in the
 remaining coordinate.
 
 Lean: [partitions and their averages](lean/ReyZygmund/Geometry/ProductPartitions.lean),
-[the full grid sum and finite projection](lean/ReyZygmund/Projection/SubmittedGrid.lean#L78),
-and [the identity for the projected function](lean/ReyZygmund/Projection/SubmittedCross.lean#L47).
+[the full grid sum and finite projection](lean/ReyZygmund/Projection/CommonCutoff.lean#L78),
+and [the identity for the projected function](lean/ReyZygmund/Projection/CrossProjection.lean#L47).
 
 ## Scope of these checks
 

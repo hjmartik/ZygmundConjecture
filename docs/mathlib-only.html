@@ -11,208 +11,158 @@
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="independently-inspectable-mathematical-statements">Independently inspectable mathematical statements</h1>
 <p>This independent specification is rebuilt from Mathlib primitives.
-The six propositions in <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html">SubmittedStatements.lean</a>
-use only Mathlib and the definitions in <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>
-and <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html">SubmittedDefinitions.lean</a>.
-None of these files imports the proof library. The statements and all definitions
+The six propositions in <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">Statements.lean</a>
+use only Mathlib and the definitions in <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>.
+Neither file imports the proof library. The statements and all definitions
 needed to interpret them can therefore be inspected without reading that library.</p>
 <p>The results concern Henri Martikainen&#39;s <em>The Zygmund conjecture and Rey&#39;s
 exponential integrability conjecture</em>. The central statements are the
-weakly incomparable maximal estimate, Rey&#39;s overlap estimate, and the continuous
-Zygmund endpoint. The rounded endpoint supports the continuous result; the other two statements
-concern overlap for sparse Φ-Zygmund families and sharpness for the classical
-dyadic Zygmund family.</p>
+weakly incomparable maximal estimate, the sparse weakly incomparable overlap
+estimate, and the continuous Zygmund endpoint. The overlap estimate proves
+Rey&#39;s conjecture. The rounded endpoint supports the continuous result; the
+other two statements concern overlap for sparse Φ-Zygmund families and
+sharpness for the classical dyadic Zygmund family.</p>
 <table>
 <thead>
 <tr>
 <th>Mathematical statement</th>
-<th>Proposition in <code>SubmittedStatements.lean</code></th>
+<th>Proposition in <code>Statements.lean</code></th>
 <th>Proof of the independent statement</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Weakly incomparable maximal estimate</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L26">WeaklyIncomparableMaximal</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L37">weakly_incomparable_maximal</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L33">WeaklyIncomparableMaximal</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L19">weakly_incomparable_maximal</a></td>
 </tr>
 <tr>
 <td>Sparse weakly incomparable overlap estimate</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L40">WeaklyIncomparableOverlap</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L50">weakly_incomparable_overlap</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L47">WeaklyIncomparableOverlap</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L31">weakly_incomparable_overlap</a></td>
 </tr>
 <tr>
 <td>Continuous Zygmund endpoint</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L57">ContinuousEndpoint</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L94">continuous_endpoint</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L64">ContinuousEndpoint</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L49">continuous_endpoint</a></td>
 </tr>
 <tr>
 <td>Rounded dyadic endpoint</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L70">RoundedEndpoint</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L97">rounded_endpoint</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L78">RoundedEndpoint</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L59">rounded_endpoint</a></td>
 </tr>
 <tr>
 <td>Sparse Φ-Zygmund overlap</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L83">PhiSparseOverlap</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L105">phi_sparse_overlap</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L92">PhiSparseOverlap</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L69">phi_sparse_overlap</a></td>
 </tr>
 <tr>
 <td>Sharpness for the classical dyadic Zygmund family</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean.html#L97">PhiSparseSharpness</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L116">phi_sparse_sharpness</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L109">PhiSparseSharpness</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L88">phi_sparse_sharpness</a></td>
 </tr>
 </tbody></table>
-<p>The propositions and their proofs are in the namespace
-<code>ReyZygmund.MathlibOnly.Submitted</code>. <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html">SubmittedSolutions.lean</a>
-proves the six statements using the proof library and the connections described
-below.</p>
+<p>The propositions and their proofs are in the namespace <code>ReyZygmund.MathlibOnly</code>.
+<a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html">Solutions.lean</a> derives the six statements from the proof
+library&#39;s theorems. The <a href="consistency.html">consistency guide</a> explains
+the connections between the specification&#39;s definitions and those used in the proofs.</p>
 <p>The maximal statement uses the paper&#39;s <code>1 &lt; p ≤ 2</code> range. The
 <a href="source/lean/ReyZygmund/Maximal/WeakerGlobal.lean.html#L140">underlying theorem</a> proves the same weakly
 incomparable estimate for every real <code>p &gt; 1</code>.</p>
-<p>The maximal function and overlap are defined using nonnegative extended real
-values, which may be infinite. The <code>L^p</code> maximal and sparse overlap statements
-also assert that these quantities are finite almost everywhere under their
-hypotheses. The real-valued functions used in the norms and exponential
-integrals therefore agree with them outside a set of measure zero.</p>
-<p>For the <a href="main-statements.html#sharpness-for-the-classical-dyadic-zygmund-family">classical dyadic Zygmund family</a>,
-the sharpness statement retains a stronger quantified form of the paper&#39;s remark.
-For <code>m ≥ 3</code>, <code>0 &lt; eta &lt; 1</code> and every choice of dyadic grids, it gives a sequence
-of finite incomparable <code>eta</code>-sparse families <code>G_N</code>, <code>N ≥ 2</code>, whose unions have
-measure one.
-For every <code>c &gt; 0</code> and <code>beta &gt; 1/(m-1)</code>, the integrals of <code>exp(c h^beta)</code> over
+<p>The maximal function and overlap take values in <code>[0, ∞]</code>.
+The maximal and overlap bounds use these quantities directly.</p>
+<p>The sharpness result concerns the
+<a href="main-statements.html#sharpness-for-the-classical-dyadic-zygmund-family">classical dyadic Zygmund family</a>.
+Here <code>n = m - 1</code>, where <code>m</code> is the number of cube factors.
+For <code>n ≥ 2</code>, <code>0 &lt; eta &lt; 1</code> and any choice of dyadic grids in the <code>n + 1</code> cube
+factors, it gives a sequence of finite incomparable <code>eta</code>-sparse families <code>G_N</code>,
+<code>N ≥ 2</code>, whose unions have measure one.
+For every <code>c &gt; 0</code> and <code>beta &gt; 1/n</code>, the integrals of <code>exp(c h^beta)</code> over
 these unions tend to infinity, where <code>h</code> is the overlap function of the
 corresponding family. The same sequence works for all such <code>c</code> and <code>beta</code>.</p>
-<h2 id="connections-to-the-proof-library">Connections to the proof library</h2>
-<p>The independent grid definition uses cubes of side length <code>2^k</code> which partition
-the whole space at each integer scale <code>k</code>, with intersecting cubes nested.
-The proof library uses the usual dyadic children obtained by halving each side.
-<a href="source/lean/ReyZygmund/MathlibOnly/GridBridge.lean.html">GridBridge.lean</a> proves that the two grid descriptions are
-equivalent for arbitrary grids, keeping the cubes unchanged and relating the
-scale indices by <code>n = -k</code>. Through this equivalence, the constructed
-<a href="source/lean/ReyZygmund/Geometry/ShiftedGrid.lean.html">shifted grids</a> also give examples of the independent
-grid definition.</p>
-<p>Weak incomparability rules out strict containment in every cube factor.
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean.html#L37">SubmittedBridges.lean</a> proves that this is equivalent
-to the condition used in the proof library: when one rectangle contains another,
-at least one cube factor is unchanged (<code>HasEqualFactorOnContainment</code>).</p>
-<p>The independent sparsity definition allows Lebesgue-measurable subsets of the
-rectangles. Here <code>NullMeasurableSet</code> expresses measurability for completed
-Lebesgue measure. The proof library uses Borel subsets.
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html">SubmittedMeasure.lean</a> proves that each of the subsets
-in the sparsity definition can be replaced by a Borel subset of the same measure,
-preserving containment, pairwise disjointness and the exact sparsity parameter.</p>
-<p>The independent maximal operator is the supremum of averages of <code>|f|</code>, defined
-using nonnegative integrals that may be infinite. For locally integrable <code>f</code>,
-<a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html">OperatorBridge.lean</a> proves that these averages agree with
-the ordinary real-valued averages used in the proofs, and hence define the same
-maximal function. The hypotheses of the maximal estimates supply the required
-integrability on each rectangle.</p>
-<p>The same file identifies the explicitly defined shifted cubes and rounded
-families with those used in the proofs. Different original side lengths can
-give the same first <code>m-1</code> rounded scales but different last scales; all these
-tuples are retained. <a href="source/lean/ReyZygmund/MathlibOnly/FamilyBridge.lean.html">FamilyBridge.lean</a> proves that the two
-grid descriptions give the same families of dyadic rectangles and the same
-families satisfying the prescribed relations between side lengths.</p>
-<p>Mathlib&#39;s boxes use <code>(a,b]</code> in each scalar coordinate, while the paper&#39;s shifted
-grids use <code>[a,b)</code>. For locally integrable <code>f</code>,
-<a href="source/lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean.html">BoundaryBridge.lean</a> proves that the continuous maximal
-functions for the two conventions agree at every point, using continuity of
-the rectangle integrals under translation. For the countable rounded family,
-the maximal functions agree almost everywhere. The same file proves that the
-continuous maximal function is measurable.
-The rounded statement uses <code>[a,b)</code> directly;
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html">SubmittedMeasure.lean</a> proves that changing the convention
-preserves the measures of its maximal-function level sets.</p>
-<p>Some intermediate estimates are written for the exponential minus one.
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean.html#L52">SubmittedBridges.lean</a> converts these to the
-exponential bounds in the statements by adding the measure of the shadow.</p>
-<p>For each finite family in the sharpness construction,
-<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html">SubmittedMeasure.lean</a> proves that the exponential is
-integrable and that its nonnegative and ordinary real integrals agree.
-The sharpness statement uses the real integrals: each is finite, and these
-finite values tend to infinity along the sequence for the coefficients and
-powers specified in the statement.</p>
 <h2 id="definition-reference">Definition reference</h2>
-<p>Every project definition determining the six statements is in the three
-specification files:</p>
+<p>The mathematical objects used in the six statements are defined in
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>:</p>
 <table>
 <thead>
 <tr>
 <th>Definition</th>
-<th>Mathematical meaning and related proofs</th>
+<th>Mathematical meaning</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>CubeGrid</code></td>
-<td>Dyadic cube grids with fixed side lengths, partitions at each scale and nesting; equivalence with the proof-library definition in <a href="source/lean/ReyZygmund/MathlibOnly/GridBridge.lean.html">GridBridge</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L36">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L40">Rectangle</a></td>
+<td>Euclidean points and tuples of box factors</td>
 </tr>
 <tr>
-<td><code>rectangle</code></td>
-<td>Products of cube factors, expressed by Euclidean coordinate inequalities; <code>rectangle_eq_flat</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L44">CubeGrid</a></td>
+<td>Dyadic cube grids with side length <code>2 ^ k</code> at scale <code>k</code>, partitions at each scale and nesting</td>
 </tr>
 <tr>
-<td><code>gridRectangles</code></td>
-<td>All products of cubes from the given grids; <code>gridRectangles_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L60">rectangle</a></td>
+<td>Products of box factors, expressed by Euclidean coordinate inequalities using <code>(lower, upper]</code></td>
 </tr>
 <tr>
-<td><code>shadow</code>, <code>overlap</code></td>
-<td>Union of the rectangles and the number containing each point, allowing infinity; identities in <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html">SubmittedMeasure</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L66">gridRectangles</a></td>
+<td>All products of cubes from the given grids</td>
 </tr>
 <tr>
-<td><code>Submitted.Sparse</code></td>
-<td>Pairwise disjoint Lebesgue-measurable subsets with the required volume fraction; <code>sparse_iff_borel</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L73">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L79">overlap</a></td>
+<td>Union of the rectangles and the number containing each point, allowing infinity</td>
 </tr>
 <tr>
-<td><code>Incomparable</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L98">Sparse</a></td>
+<td>Pairwise disjoint Lebesgue-measurable subsets of the rectangles with the required volume fraction</td>
+</tr>
+<tr>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L84">Incomparable</a></td>
 <td>No two distinct rectangles contain one another</td>
 </tr>
 <tr>
-<td><code>Submitted.WeaklyIncomparable</code></td>
-<td>No strict containment in every cube factor; <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean.html#L37">weaklyIncomparable_iff_equalFactor</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L90">WeaklyIncomparable</a></td>
+<td>No strict containment in every cube factor</td>
 </tr>
 <tr>
-<td><code>maximal</code></td>
-<td>Supremum of averages of <code>|f|</code> over rectangles containing the point; <code>maximal_eq_endpoint</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L107">maximal</a></td>
+<td>Supremum of averages of the absolute value of the function over rectangles containing the point</td>
 </tr>
 <tr>
-<td><code>rectangleIco</code>, <code>maximalIco</code></td>
-<td>Rectangles using <code>[a,b)</code> in each scalar coordinate and their maximal function; <code>rectangleIco_eq</code>, <code>maximalIco_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L153">rectangleIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L160">maximalIco</a></td>
+<td>Rectangles using <code>[lower, upper)</code> in each scalar coordinate and their maximal function</td>
 </tr>
 <tr>
-<td><code>continuousRectangles</code></td>
-<td>Rectangles at all positions with arbitrary positive first side lengths and the last prescribed by <code>phi</code>; <code>continuousRectangles_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L116">continuousRectangles</a></td>
+<td>Rectangles at all positions with arbitrary positive first side lengths and the last prescribed by <code>phi</code></td>
 </tr>
 <tr>
-<td><code>rounding</code>, <code>roundedScales</code></td>
-<td>The ceiling rule for rounding side lengths and every resulting tuple of scales; <code>rounding_eq</code>, <code>roundedScales_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L124">rounding</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L128">roundedScales</a></td>
+<td>The ceiling rule for rounding side lengths and every resulting tuple of scales</td>
 </tr>
 <tr>
-<td><code>shiftedCubes</code>, <code>roundedRectangles</code></td>
-<td>The explicitly defined shifted grids and their rounded rectangle families; <code>shiftedCubes_eq</code>, <code>roundedRectangles_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L137">shiftedCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L146">roundedRectangles</a></td>
+<td>The explicitly defined shifted grids and their rounded rectangle families</td>
 </tr>
 <tr>
-<td><code>phiRectangles</code></td>
-<td>Dyadic rectangles whose last side-length exponent is prescribed by <code>Phi</code> from the other exponents; <code>phiRectangles_eq</code></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L169">phiRectangles</a></td>
+<td>Dyadic rectangles whose last side-length exponent is prescribed by <code>Phi</code> from the other exponents</td>
 </tr>
 <tr>
-<td>The six propositions listed above</td>
-<td>Independent statements of the main results, with proofs in <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html">SubmittedSolutions</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L176">exp</a></td>
+<td>The exponential on <code>[0, ∞]</code>, with <code>exp ∞ = ∞</code></td>
 </tr>
 </tbody></table>
 <p>Boxes, finite coordinate products, Lebesgue measure, integrals, extended
-nonnegative numbers, powers and norms use Mathlib&#39;s definitions directly.</p>
+nonnegative numbers, powers and norms use Mathlib&#39;s definitions directly.
+The Lean source comments explain the notation used in these definitions and
+statements.</p>
+<p>A box <code>Q</code> has corner tuples <code>Q.lower</code> and <code>Q.upper</code>; the expression
+<code>(Q : Set (Fin d → ℝ))</code> denotes the product of the intervals
+<code>(Q.lower j, Q.upper j]</code>. In the sharpness statement,
+<code>Tendsto (fun N =&gt; a N) atTop atTop</code> means <code>a N → +∞</code> as <code>N → ∞</code>.</p>
 <h2 id="verification-and-mathematical-review">Verification and mathematical review</h2>
-<p>The six statements and their definitions were independently reviewed against the
-paper. Their proofs passed the recorded local Lean checks: compilation,
-comparison of registered declarations with their separately written formal
-statements, checks of the axioms used by the proofs and their dependencies, and
-a further kernel check of the selected compiled modules.</p>
-<p>All six independently stated main results passed Comparator comparison, and
-their exported proofs and exported dependencies were accepted by Lean&#39;s default
-kernel, Nanoda and con-ron. Supporting results outside those exports are covered
-by the ordinary Lean checks described in the <a href="verifying.html">verification guide</a>;
-their presence in the library does not imply separate Nanoda or con-ron verification.</p>
-<p>Mathematical review assesses whether the specification expresses the intended
-mathematics. Comparator checks that the supplied theorems match the independent
-specification, including its definitions. Lean, Nanoda and con-ron check the
-exported proofs and their exported dependencies.</p>
+<p>Mathematical review assesses whether the statements and their definitions
+faithfully represent the paper&#39;s results. Comparator checks that the supplied
+theorems match the independent specification, including its definitions.
+Lean&#39;s default kernel, Nanoda and con-ron check the exported proofs and their
+exported dependencies. The <a href="verifying.html">verification guide</a> records
+the checks, their scope and reproduction instructions.</p>
 </main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

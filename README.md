@@ -55,17 +55,17 @@ The three central results are:
 
 | Result | Mathematical role | Formal statement and proof |
 | --- | --- | --- |
-| [Continuous Zygmund endpoint estimate](MAIN-STATEMENTS.md#continuous-zygmund-endpoint-estimate) | Zygmund's conjecture in its continuous form | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L57) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L94) |
-| [Sparse weakly incomparable overlap estimate](MAIN-STATEMENTS.md#sparse-weakly-incomparable-overlap-estimate) | Rey's exponential integrability conjecture, with weak incomparability and arbitrary sparsity parameter | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L40) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L50) |
-| [Weakly incomparable maximal estimate](MAIN-STATEMENTS.md#weakly-incomparable-maximal-estimate) | Central analytic estimate used to prove both conjectures | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L26) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L37) |
+| [Continuous Zygmund endpoint estimate](MAIN-STATEMENTS.md#continuous-zygmund-endpoint-estimate) | Zygmund's conjecture in its continuous form | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L64) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L49) |
+| [Sparse weakly incomparable overlap estimate](MAIN-STATEMENTS.md#sparse-weakly-incomparable-overlap-estimate) | Rey's exponential integrability conjecture, with weak incomparability and arbitrary sparsity parameter | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L47) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L31) |
+| [Weakly incomparable maximal estimate](MAIN-STATEMENTS.md#weakly-incomparable-maximal-estimate) | Central analytic estimate used to prove both conjectures | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L33) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L19) |
 
 We also formalize the following dyadic, overlap and sharpness results:
 
 | Result | Mathematical role | Formal statement and proof |
 | --- | --- | --- |
-| [Rounded dyadic endpoint estimate](MAIN-STATEMENTS.md#rounded-dyadic-endpoint-estimate) | Dyadic endpoint used to obtain the continuous theorem | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L70) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L97) |
-| [Sparse Φ-Zygmund overlap estimate](MAIN-STATEMENTS.md#sparse-φ-zygmund-overlap-estimate) | Overlap estimate without incomparability | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L83) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L105) |
-| [Sharpness for the classical dyadic Zygmund family](MAIN-STATEMENTS.md#sharpness-for-the-classical-dyadic-zygmund-family) | Stronger quantified form of the paper's sharpness remark, even for incomparable families | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L97) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L116) |
+| [Rounded dyadic endpoint estimate](MAIN-STATEMENTS.md#rounded-dyadic-endpoint-estimate) | Dyadic endpoint used to obtain the continuous theorem | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L78) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L59) |
+| [Sparse Φ-Zygmund overlap estimate](MAIN-STATEMENTS.md#sparse-φ-zygmund-overlap-estimate) | Overlap estimate without incomparability | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L92) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L69) |
+| [Sharpness for the classical dyadic Zygmund family](MAIN-STATEMENTS.md#sharpness-for-the-classical-dyadic-zygmund-family) | Sharpness of the exponential power, even for incomparable families | [Statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L109) · [Proof](lean/ReyZygmund/MathlibOnly/Solutions.lean#L88) |
 
 ## Independent specification, verification and correspondence with the paper
 
@@ -75,7 +75,7 @@ Mathematical review checked that the statements and their definitions express th
 
 The mathematical arguments are developed separately in the [proof library](lean/ReyZygmund/), using its own definitions and supporting constructions.
 
-Bridges proved in Lean connect those definitions to the independent specification. The [public proofs](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean) use these bridges to derive the six independently stated results from the library’s theorems. The [consistency guide](CONSISTENCY.md) explains these connections and the mathematical meaning of constructions used within the proofs.
+Bridges proved in Lean connect those definitions to the independent specification. The [public proofs](lean/ReyZygmund/MathlibOnly/Solutions.lean) use these bridges to derive the six independently stated results from the library’s theorems. The [consistency guide](CONSISTENCY.md) explains these connections and the mathematical meaning of constructions used within the proofs.
 
 Comparator compares each resulting theorem with its independent specification, including the definitions determining its meaning. All six comparisons passed. Lean’s default kernel, Nanoda and con-ron accepted the exported proofs and their exported dependencies. The theorem proofs contain no omitted steps (`sorry`) and use only the standard axioms `propext`, `Classical.choice` and `Quot.sound`. The [verification guide](VERIFYING.md) records the checking scope and reproduction instructions.
 
