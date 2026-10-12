@@ -1,32 +1,26 @@
 {
-  "schema_version": 1,
   "specification_modules": [
     "ReyZygmund.MathlibOnly.Definitions",
-    "ReyZygmund.MathlibOnly.Statements"
+    "ReyZygmund.MathlibOnly.SubmittedDefinitions",
+    "ReyZygmund.MathlibOnly.SubmittedStatements"
   ],
+  "expected_comparisons": 6,
   "sha256": {
-    "verification/TARGETS.json": "6236700c973612a44073856fe17d30f967120d51ec656593230306c0a7db6c6f",
-    "verification/comparator/CASES.json": "8869ccae67667d6e6619a1ca8b188373dac11bf569cb629961fe0cd72ea30881",
-    "verification/comparator/Challenge1.lean": "48680ed15846aa1f0f77d5c8bea54a59df0d16361dceabe254fab5fff6385b4b",
-    "verification/comparator/Challenge2.lean": "529cf4426538f061e9faff7487334ad42df70e007bb4d48aac1e0baddb7bce2f",
-    "verification/comparator/Challenge3.lean": "d8c70777ca79df1f21c53965d3a003034c6c45c7a59de6a810c85144035d6d7f",
-    "verification/comparator/Challenge4.lean": "12cedf00d04dd06c8ca83bdc29b95a0d209d71faa33a42b0c22c81cac73367f5",
-    "verification/comparator/Challenge5.lean": "195f76845dc3ada7438d8056b1864836752e3081d039f6664778a7d6cbdf2565",
-    "verification/comparator/Challenge6.lean": "6f74c515a5b6599f0c66affe4a46186108ef35af9e561eda912557eceaecf62d",
-    "verification/comparator/Challenge7.lean": "4f2ef606304c9ad65bad955664a514f0cb68e692ea96792648d4ce4e2610f4de",
-    "verification/comparator/Solution1.lean": "db0488db1026275aa50862513445fca3ff25869c6d422370b97578f4944f436c",
-    "verification/comparator/Solution2.lean": "48d378cf86db833c291b565c9059ab32a286f733f4550156e71b8db60f526d8e",
-    "verification/comparator/Solution3.lean": "20a553d4fb15ec47256157bf1dac126cc6dcf6591058bf9ff7ae7bc40bca4060",
-    "verification/comparator/Solution4.lean": "1084d42b2e6de010cbad4088f874e747135e359e796da08458cf3746a048791e",
-    "verification/comparator/Solution5.lean": "a806a2bc9adbbe7c5c9719a88eb93cb23e8cea50f23661f6c4dc76b541130e96",
-    "verification/comparator/Solution6.lean": "407db409954e853a58ad35ee612f50a249c965ebcc9042a7d96d87ea5de9df35",
-    "verification/comparator/Solution7.lean": "809760e9aee12dd807667d76c8309d0f46044c066ad5b65643ab0c8c55d056eb",
-    "verification/comparator/config-1.json": "de6214e1c76efb7ab6d7f7e01d706ef48eec29aba6a161df245aa0480bf5b2fc",
-    "verification/comparator/config-2.json": "40b518259a4c3a816ac59acd9a8902b38d544b721f50b8c9e5c13b43beac9672",
-    "verification/comparator/config-3.json": "db9a5ef131d0b5010ec68e3d3148584489fa8d558798e81c47e95bedb41dc412",
-    "verification/comparator/config-4.json": "f66e8f5b060ce0782632bc21c484fcd18c5ed58dda81dd9b3a241899fbadc559",
-    "verification/comparator/config-5.json": "99091520c553829a7a4c406d2db793380ce110f169a35c938ede035ca8495c5e",
-    "verification/comparator/config-6.json": "ade54a7e63112a1daccb4982f66f90897a302c9bd15a32a2c2788fe0515c9af2",
-    "verification/comparator/config-7.json": "37dc88d58237ed5c9258e5eb06ab02e6a212a2090eb8852e7c1effa617e8f08e"
+    "verification/TARGETS.json": "f4e9a02ff5f0b0a75594faddefffa60f5e2262fbc9b545b290a832437d8caf44",
+    "verification/SOURCE-MANIFEST.json": "984f4b4728e62d531807cab402cb29b5ae399e4a35800bdb4c5ec638f241eaf4",
+    "verification/comparator/CASES.json": "dc56bbbef1dae1a847f45dc479cc17fdfb7214bc33731f13827040d0e8696e4e",
+    "verification/comparator/SubmittedChallenge1.lean": "7b447f18d7a9ca2ce8c9211c7b2b1dd27deb4a5b1ffa56d74662a822a71cb3ed",
+    "verification/comparator/SubmittedChallenge2.lean": "74f01c8066eae5e8706222bb01844d4013e4d38468dc17d438d6e3f4a4cc2c1e",
+    "verification/comparator/SubmittedChallenge3.lean": "555910dd85d9ab801d78ccdd71d949dabe15c1b64303021c262ed6aad57d6db7",
+    "verification/comparator/SubmittedChallenge4.lean": "ed8b37f9b38826ea6a880ecb2eab14d6f50bb6a4e97df558a9271ae446d3b3b7",
+    "verification/comparator/SubmittedChallenge5.lean": "3664ba5cffc34a2fbb53b1539ddb88945b97b34b945d3e671ee951c14d82ba9a",
+    "verification/comparator/SubmittedChallenge6.lean": "136592ab182e2744876d207c9439e30caa23218c00632e2116e03535135d3322",
+    "verification/comparator/SubmittedSolution.lean": "209f686a5556cc736f88655f61dfc80e1649bcf12472e856fcd8414aac99a23f",
+    "verification/comparator/comparison-1.json": "86b9ed064f71eaeb3ef082d9cd8e0d5b247249d517c5311deb1544758c5487b8",
+    "verification/comparator/comparison-2.json": "e644e078abed2250d539d6178a7974006be4525b1426607804166200e0d85d2a",
+    "verification/comparator/comparison-3.json": "6c5339a19ba7aa438d094d82c1f5373aa48848336f2c47e107bc9d3903a0312e",
+    "verification/comparator/comparison-4.json": "0c58aa2d8a27fb00edc59b4eecb005250026a1732ae1e9b7a7b782a1b368155d",
+    "verification/comparator/comparison-5.json": "7957258649881e65594b7d8c94c64ec13fbe85091f3536a4bc205c20c63d0b29",
+    "verification/comparator/comparison-6.json": "2b304c118773545934565c42416333914ea2a56088bed2eab57dd2d38a773c8f"
   }
 }

@@ -1,7 +1,15 @@
 import ReyZygmund.Overlap.Global
-import ReyZygmund.Overlap.MomentsToExponential
+import ReyZygmund.Overlap.MomentTailExponential
 
-/-! # Uniform exponential integrability from the sparse-overlap moments -/
+/-!
+# Exponential overlap from moments, tails, and layer cake
+
+Apply Chebyshev at a real
+moment order, bound the small thresholds by the shadow measure, and integrate
+the resulting exponential tail. Constants depend only on parameter count and
+total dimension. Adding the shadow measure gives the full exponential estimate
+in `MathlibOnly.SubmittedSolutions`.
+-/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
@@ -86,22 +94,36 @@ theorem weaker_sparse_overlap_exponential :
         (Real.exp (c m (∑ i, d i) *
           Real.rpow (eta * (overlap G x).toReal) (1 / ((m - 1 : ℕ) : ℝ))) - 1)) ≤
         ENNReal.ofReal (B m (∑ i, d i)) * volume (shadow G) := by
-  choose c B hc hB hspec using fun m D =>
-    moments_to_exponential.{0} (max 1 (m - 1)) (le_max_left _ _)
-      (momentConstant m D) (momentConstant_pos m D)
-  refine ⟨c, B, hc, hB, ?_⟩
+  let c (m D : ℕ) :=
+    (Real.exp 2 * momentConstant m D)⁻¹ ^ (1 / ((m - 1 : ℕ) : ℝ))
+  refine ⟨c, (fun _ _ => Real.exp 4), ?_, (fun _ _ => Real.exp_pos _), ?_⟩
+  · intro m D
+    exact Real.rpow_pos_of_pos (inv_pos.mpr
+      (mul_pos (Real.exp_pos _) (momentConstant_pos m D))) _
   intro m d hm hd D G hG hweak eta heta E hEmeas hEsub hEdis hEmass hshadow
   have hcG : G.Countable := (countable_gridRectangles D).mono hG
   let μ := volume.restrict (shadow G)
   let : IsFiniteMeasure μ := isFiniteMeasure_restrict.mpr hshadow.ne
-  have hk : max 1 (m - 1) = m - 1 := max_eq_right (by omega)
-  have hHmeas : Measurable (fun x => eta * (overlap G x).toReal) :=
+  let H := fun x => eta * (overlap G x).toReal
+  have hHmeas : Measurable H :=
     (measurable_overlap G hcG).ennreal_toReal.const_mul eta
-  have h := hspec m (∑ i, d i) μ (fun x => eta * (overlap G x).toReal) hHmeas
-    (fun x => mul_nonneg heta.le ENNReal.toReal_nonneg) (by
+  have hH0 (x) : 0 ≤ H x := mul_nonneg heta.le ENNReal.toReal_nonneg
+  have h := polynomial_moments_exponential μ H hHmeas hH0 (m - 1) (by omega)
+    (momentConstant m (∑ i, d i)) (momentConstant_pos _ _) (by
       intro q hq
-      simpa only [μ, hk, Measure.restrict_apply_univ] using
+      have hq0 : 0 ≤ q := by linarith
+      simpa only [H, μ, Measure.restrict_apply_univ,
+        ENNReal.ofReal_rpow_of_nonneg (hH0 _) hq0,
+        ENNReal.ofReal_rpow_of_nonneg
+          (mul_nonneg (momentConstant_pos _ _).le (pow_nonneg hq0 _)) hq0] using
         scaled_overlap_moment hm hd D G hG hweak eta heta E hEmeas hEsub hEdis hEmass q hq)
-  simpa only [μ, hk, Measure.restrict_apply_univ] using h
+  have hnormalize (x) :
+      (H x / (Real.exp 2 * momentConstant m (∑ i, d i))) ^
+        (1 / ((m - 1 : ℕ) : ℝ)) =
+      c m (∑ i, d i) * H x ^ (1 / ((m - 1 : ℕ) : ℝ)) := by
+    rw [div_eq_mul_inv, Real.mul_rpow (hH0 x)
+      (inv_nonneg.mpr (mul_pos (Real.exp_pos _) (momentConstant_pos _ _)).le), mul_comm]
+  simp_rw [hnormalize] at h
+  simpa only [H, μ, Measure.restrict_apply_univ, Real.rpow_eq_pow] using h
 
 end ReyZygmund.Overlap

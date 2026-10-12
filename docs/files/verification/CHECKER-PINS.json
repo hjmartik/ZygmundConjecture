@@ -1,22 +1,22 @@
 {
+  "schema": 2,
   "lean": {
-    "version": "4.34.0",
-    "revision": "293d5d0c0c3f3dded4688b3ccd6a33939ac5102b"
+    "toolchain": "leanprover/lean4:v4.35.0-rc4",
+    "version": "4.35.0-rc4",
+    "revision": "c29b6dda4f7c20e3eeaa717c4e565663c5cfa364",
+    "bundled_tools": ["lake", "leanexport", "leanchecker", "nanoda_bin", "con-ron"],
+    "linux_aarch64_archive": {
+      "url": "https://github.com/leanprover/lean4/releases/download/v4.35.0-rc4/lean-4.35.0-rc4-linux_aarch64.tar.zst",
+      "sha256": "ed3e64371cf2f11933811f9eddb3054ced7413123bd498bce4ab206bf76a4fc5"
+    }
   },
-  "comparator": {
-    "repository": "https://github.com/leanprover/comparator",
-    "commit": "d03acab154d269c06e60e4de7e4cc85deebff94b"
+  "comparator": {"invocation": ["lake", "comparator", "--config"], "origin": "bundled with the pinned Lean toolchain"},
+  "bubblewrap": {
+    "version": "0.12.0",
+    "source_url": "https://github.com/containers/bubblewrap/releases/download/v0.12.0/bubblewrap-0.12.0.tar.xz",
+    "source_sha256": "9760d007363e3abba7c747489910f9f82d9fca53ba3bd3282e396fa3c97a3314"
   },
-  "lean4export": {
-    "repository": "https://github.com/leanprover/lean4export",
-    "commit": "076e8e57707e813375e8f9da8bf989799ace9680"
-  },
-  "landrun": {
-    "repository": "https://github.com/Zouuup/landrun",
-    "commit": "811cfff51ceaf3d9843708aa6d22e9b84ccac8b4"
-  },
-  "nanoda": {
-    "repository": "https://github.com/ammkrn/nanoda_lib",
-    "commit": "3a2407216ee84a75f9e1aead6803d0578be06ae7"
-  }
+  "required_kernels": {"Lean default": "leanchecker", "nanoda": "nanoda_bin", "con-ron": "con-ron"},
+  "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "binary_identity_policy": "Record actual executable hashes in each run. Do not require one platform's executable hashes on another platform."
 }

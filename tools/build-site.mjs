@@ -61,6 +61,11 @@ function localLink(href, from) {
   const relative = path.posix.normalize(path.posix.join(path.posix.dirname(from), raw));
   if (relative.startsWith('../') || path.isAbsolute(relative)) throw Error('Escaping link: ' + href);
   if (!fs.existsSync(path.join(root, relative))) throw Error('Missing link: ' + relative);
+  // Folder links remain browsable in GitHub; only individual files are copied.
+  if (fs.statSync(path.join(root, relative)).isDirectory()) {
+    return 'https://github.com/hjmartik/ZygmundConjecture/tree/main/' +
+      relative.split('/').map(encodeURIComponent).join('/') + (fragment ? '#' + fragment : '');
+  }
   let target;
   if (pages.has(relative)) target = pages.get(relative);
   else if (Object.hasOwn(inventory, relative)) target = 'source/' + relative + '.html';

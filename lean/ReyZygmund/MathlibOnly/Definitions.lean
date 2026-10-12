@@ -115,8 +115,8 @@ def shiftedCubes {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
       ((z j : ℝ) + (-1 : ℝ) ^ k * ((tau j).val : ℝ) / 3) ∧
     Q.upper j = Q.lower j + (2 : ℝ) ^ k}
 
-/-- Every rectangle in the indicated shifted grids whose scale tuple is in
-the full rounded image. No grid from the proof library is used here. -/
+/-- Every rectangle in the indicated shifted grids whose tuple of side-length
+exponents is produced by rounding the prescribed side lengths. -/
 def roundedRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (tau : ∀ i, Fin (d i) → Fin 3)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :

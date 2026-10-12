@@ -48,12 +48,21 @@ h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
 The family has finite shadow if $`|\mathrm{sh}(\mathcal G)|<\infty`$.
 
 It is **incomparable** if no two distinct members contain one another.
+It is **weakly incomparable** if there are no $`I,J\in\mathcal G`$ with
+$`I^i\subsetneq J^i`$ for every $`i=1,\ldots,m`$.
+Every incomparable family is weakly incomparable; weak incomparability
+allows containment when at least one coordinate factor is unchanged.
+
 For $`0<\eta\leq1`$, it is **$`\eta`$-sparse** if there are pairwise disjoint
 measurable sets $`E_I\subset I`$, $`I\in\mathcal G`$, with $`|E_I|\geq\eta|I|`$.
 
-## Incomparable maximal estimate
+<a id="incomparable-maximal-estimate"></a>
 
-Let $`\mathcal G\subset\mathcal D`$ be incomparable. Then
+<a id="maximal-and-overlap-estimates-under-weaker-containment"></a>
+
+## Weakly incomparable maximal estimate
+
+Let $`\mathcal G\subset\mathcal D`$ be weakly incomparable. Then
 
 ```math
 \|M_{\mathcal G}f\|_p
@@ -63,13 +72,20 @@ Let $`\mathcal G\subset\mathcal D`$ be incomparable. Then
 
 The constant depends only on $`m`$ and $`d`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L25) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionMaximal.lean#L10) · [Theorem in the main development](lean/ReyZygmund/Main/Maximal.lean#L70).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L26) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L37) · [Theorem in the main development](lean/ReyZygmund/Maximal/WeakerGlobal.lean#L140).
 
 <a id="sparse-incomparable-overlap"></a>
 
-## Sparse incomparable overlap estimate
+<a id="sparse-incomparable-overlap-estimate"></a>
 
-Let $`\mathcal G\subset\mathcal D`$ be incomparable and $`\eta`$-sparse,
+## Sparse weakly incomparable overlap estimate
+
+The maximal estimate gives the following overlap bounds by duality.
+Rey states his conjecture for incomparable, $`1/2`$-sparse families.
+The estimate below allows weak incomparability and any sparsity
+parameter $`\eta\in(0,1]`$.
+
+Let $`\mathcal G\subset\mathcal D`$ be weakly incomparable and $`\eta`$-sparse,
 with finite shadow. Then
 
 ```math
@@ -83,40 +99,17 @@ and
 
 ```math
 \int_{\mathrm{sh}(\mathcal G)}
-\left[\exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)-1\right]dx
+\exp\!\left(c_{m,d}(\eta h_{\mathcal G})^{1/(m-1)}\right)dx
 \leq C_{m,d}|\mathrm{sh}(\mathcal G)|.
 ```
 
 The positive constants depend only on $`m`$ and $`d`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L39) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionOverlap.lean#L8) · [Theorem in the main development](lean/ReyZygmund/Main/Overlap.lean#L100).
-
-## Maximal and overlap estimates under weaker containment
-
-Suppose $`\mathcal G\subset\mathcal D`$ satisfies
-
-```math
-I,J\in\mathcal G,\quad I\subset J
-\quad\Longrightarrow\quad I^i=J^i
-\text{ for some }i\in\{1,\ldots,m\}.
-```
-
-Then
-
-```math
-\|M_{\mathcal G}f\|_p
-\leq C_{m,d}(p')^{m-1}\|f\|_p,
-\qquad 1<p\leq2.
-```
-
-The constant depends only on $`m`$ and $`d`$.
-If $`\mathcal G`$ is also $`\eta`$-sparse and has finite shadow, the
-[moment and exponential estimates above](#sparse-incomparable-overlap-estimate)
-hold as well.
-
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L57) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionWeaker.lean#L8) · [Theorem in the main development](lean/ReyZygmund/Main/Overlap.lean#L60).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L40) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L50) · [Exponential estimate in the main development](lean/ReyZygmund/Overlap/Exponential.lean#L78).
 
 ## Continuous Zygmund endpoint estimate
+
+This is the monotone side-length formulation of Zygmund's conjecture.
 
 Let $`m\geq3`$ and let
 $`\phi:(0,\infty)^{m-1}\to(0,\infty)`$ be coordinatewise nondecreasing.
@@ -140,7 +133,7 @@ For every $`f\in L^1_{\mathrm{loc}}(\mathbb R^d)`$ and every $`\lambda>0`$,
 The constant depends only on $`m`$ and $`d`$, not on $`\phi`$.
 No continuity or doubling assumption on $`\phi`$ is imposed.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L81) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionContinuous.lean#L10) · [Theorem in the main development](lean/ReyZygmund/Continuous/Endpoint.lean#L88).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L57) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L94) · [Theorem in the main development](lean/ReyZygmund/Continuous/Endpoint.lean#L88).
 
 <a id="endpoint-estimate-for-the-rounded-dyadic-families"></a>
 
@@ -187,7 +180,7 @@ For every $`f\in L^1_{\mathrm{loc}}(\mathbb R^d)`$ and every $`\lambda>0`$,
 
 The constant depends only on $`m`$ and $`d`$, not on $`\phi`$ or $`\tau`$.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L94) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionRounded.lean#L10) · [Theorem in the main development](lean/ReyZygmund/Main/Endpoints.lean#L19).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L70) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L97) · [Theorem in the main development](lean/ReyZygmund/Main/Endpoints.lean#L19).
 
 <a id="sparse-overlap-with-a-monotone-zygmund-scale-relation"></a>
 
@@ -208,18 +201,21 @@ shadow, where $`0<\eta\leq1`$, then
 
 ```math
 \int_{\mathrm{sh}(\mathcal G)}
-\left[\exp\!\left(c h_{\mathcal G}^{1/(m-1)}\right)-1\right]dx
+\exp\!\left(c h_{\mathcal G}^{1/(m-1)}\right)dx
 \leq C|\mathrm{sh}(\mathcal G)|,
 ```
 
 where $`c,C>0`$ depend only on $`m`$, $`d`$ and $`\eta`$, not on $`\Phi`$
 or the dyadic grids.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L108) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionPhiSparse.lean#L8) · [Theorem in the main development](lean/ReyZygmund/Main/PhiSparse.lean#L51).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L83) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L105) · [Theorem in the main development](lean/ReyZygmund/Main/PhiSparse.lean#L51).
 
 <a id="sharpness-for-sparse-incomparable-zygmund-families"></a>
 
 ## Sharpness for the classical dyadic Zygmund family
+
+The formalization retains the following stronger, quantified form of the
+paper's sharpness remark.
 
 Let $`m\geq3`$, $`0<\eta<1`$, and set
 
@@ -227,23 +223,26 @@ Let $`m\geq3`$, $`0<\eta<1`$, and set
 \Phi(k_1,\ldots,k_{m-1})=k_1+\cdots+k_{m-1}.
 ```
 
-There are finite incomparable $`\eta`$-sparse families
+For every choice of the dyadic grids, there are finite incomparable
+$`\eta`$-sparse families
 $`\mathcal G_N\subset\mathcal Z_\Phi`$, $`N\geq2`$, with
 $`|\mathrm{sh}(\mathcal G_N)|=1`$, such that
 
 ```math
 \lim_{N\to\infty}
 \int_{\mathrm{sh}(\mathcal G_N)}
-\left[\exp\!\left(c h_{\mathcal G_N}^{\beta}\right)-1\right]dx
+\exp\!\left(c h_{\mathcal G_N}^{\beta}\right)dx
 =\infty
 \quad\text{for every }c>0,\quad\beta>\frac1{m-1}.
 ```
+
+The same sequence works for every such $`c`$ and $`\beta`$.
 
 Thus adding incomparability to sparseness and the $`\Phi`$-Zygmund scale
 restriction need not improve the exponential power, even for the classical
 relation above.
 
-Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/Statements.lean#L123) · [Definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SolutionSharpness.lean#L8) · [Theorem in the main development](lean/ReyZygmund/Main/Sharpness.lean#L22).
+Lean: [Independent statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L97) · [Definitions](lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L116) · [Theorem in the main development](lean/ReyZygmund/Main/Sharpness.lean#L22).
 
 ## Notes on the formalization
 
@@ -254,8 +253,8 @@ between the mathematical definitions and their formal representations;
 the [verification guide](VERIFYING.md) describes the checks performed and
 how to repeat them.
 
-The formalization also gives the incomparable maximal estimate for
+The formalization also gives the weakly incomparable maximal estimate for
 $`2<p<\infty`$.
 
-The shifted grids above use $`[0,1)`$, as in the paper; Lean uses $`(0,1]`$.
+The shifted grids above use $`[0,1)`$, as in the paper; the underlying proof uses $`(0,1]`$.
 The corresponding rounded-family maximal functions agree almost everywhere.

@@ -10,16 +10,15 @@
 <a href="consistency.html">Definitions and consistency</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="consistency-checks-of-the-definitions">Consistency checks of the definitions</h1>
-<p><a href="main-statements.html">Main theorems</a> states the seven results in full and
+<p><a href="main-statements.html">Main theorems</a> states the six results in full and
 links each to its independent Lean statement and definitions. This page
 explains how those definitions describe the mathematical objects and how
-they are related to the definitions used in the proofs. It records which
-identifications have been proved in Lean and which have been checked
-mathematically.</p>
+they are related to the definitions used in the proofs. The identifications
+described below are proved in Lean.</p>
 <p>Start with the objects occurring in the theorem you want to inspect: cubes,
 rectangle families, averages, overlap and maximal functions. The
 cross-coordinate averages and projection are constructions used in the proof
-and are described afterward. The <a href="mathlib-only.html">independent-statement guide</a>
+and are described afterward. The <a href="mathlib-only.html">independent specification guide</a>
 explains how the separate statements are organized and connected to the proofs.</p>
 <h2 id="cubes-and-grids">Cubes and grids</h2>
 <p>A dyadic grid in <span class="math-inline">\(\mathbb R^{d_i}\)</span> consists of half-open cubes. At each integer
@@ -27,13 +26,14 @@ scale <span class="math-inline">\(k\)</span>, the cubes have side length <span c
 intersecting cubes are nested. The dyadic children of a cube are obtained by
 halving each side. The results allow arbitrary such grids, with no assumption
 that every finite collection has a common ancestor.</p>
-<p>The proofs and the independent statements describe a grid in two equivalent
-ways: one requires the usual dyadic children, while the other requires nesting
-of intersecting cubes. Their equivalence has been proved for every grid, keeping
-the cubes themselves unchanged. The only difference in indexing is that the
-proofs use generation <span class="math-inline">\(n=-k\)</span>. Standard and shifted grids are constructed
-explicitly. Within a fixed cube, its descendants obtained by repeated halving
-are proved to be exactly the grid cubes of the corresponding smaller side length.</p>
+<p>Both descriptions require cubes of the prescribed side length to partition
+the space at each scale. The independent specification requires intersecting
+cubes to be nested; the proof library requires the usual dyadic children to
+belong to the next generation. Lean proves these descriptions equivalent,
+preserving the cubes themselves. The scale indices are related by <span class="math-inline">\(n=-k\)</span>.
+Standard and shifted grids are constructed explicitly. Within a fixed cube,
+its descendants obtained by repeated halving are proved to be exactly the
+grid cubes of the corresponding smaller side length.</p>
 <p>Lean: <a href="source/lean/ReyZygmund/Geometry/Grids.lean.html#L23">grid used in the proofs</a>,
 <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L31">independent grid definition</a>,
 <a href="source/lean/ReyZygmund/MathlibOnly/GridBridge.lean.html#L141">dyadic children</a>,
@@ -60,36 +60,49 @@ construction, averaging in every coordinate is proved to give exactly
 <a href="source/lean/ReyZygmund/Geometry/ProductOperators.lean.html">coordinate averages</a>, and
 <a href="source/lean/ReyZygmund/Geometry/ProductMean.lean.html#L208">averaging over a rectangle</a>.</p>
 <h2 id="families-overlap-and-maximal-functions">Families, overlap and maximal functions</h2>
-<p>A family is incomparable if no distinct members contain one another. The weaker
-containment condition says that <span class="math-inline">\(I\subset J\)</span> leaves at least one cube factor
-unchanged: <span class="math-inline">\(I^i=J^i\)</span> for some <span class="math-inline">\(i\)</span>. Sparseness means that there are pairwise
+<p>A family is weakly incomparable if there are no members <span class="math-inline">\(I,J\)</span> with
+<span class="math-inline">\(I^i\subsetneq J^i\)</span> for every <span class="math-inline">\(i\)</span>. Equivalently, a containment <span class="math-inline">\(I\subset J\)</span>
+leaves at least one cube factor unchanged: <span class="math-inline">\(I^i=J^i\)</span> for some <span class="math-inline">\(i\)</span>.
+This equivalence is proved in Lean. Ordinary incomparability means that no
+distinct members contain one another and implies weak incomparability.
+Sparseness means that there are pairwise
 disjoint measurable sets <span class="math-inline">\(E_I\subset I\)</span> with <span class="math-inline">\(|E_I|\geq\eta|I|\)</span>.
-These conditions are stated directly in terms of the rectangles and their subsets.</p>
-<p>The definitions in Lean take the sets <span class="math-inline">\(E_I\)</span> to be Borel measurable. This gives
-the usual Lebesgue-measurable notion of sparseness: each Lebesgue-measurable
-<span class="math-inline">\(E_I\)</span> has a Borel subset of the same measure, so replacing the sets this way
-preserves containment, disjointness and the value of <span class="math-inline">\(\eta\)</span>. This measure-theoretic
-argument has been reviewed but is not itself a separate Lean theorem here.
-The proved equivalence between the two Lean definitions compares their Borel
-formulations.</p>
+These conditions are stated directly in terms of the rectangles and their subsets;
+membership in the dyadic grids is a separate hypothesis.</p>
+<p>The independent statements allow Lebesgue-measurable sets <span class="math-inline">\(E_I\)</span>.
+Each has a Borel subset of the same measure, so replacing these sets
+preserves containment, disjointness and the exact value of <span class="math-inline">\(\eta\)</span>.
+This proves the equivalence with the formulation using Borel sets in the proofs.
+The equivalence and its use in the stated results are formalized.</p>
 <p>For a rectangle family <span class="math-inline">\(\mathcal G\)</span>, the overlap counts the rectangles through
 a point, and the shadow is their union:</p>
 <div class="math-display">\[h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf1_I,
 \qquad
 \mathrm{sh}(\mathcal G)=\bigcup_{I\in\mathcal G}I.\]</div>
 <p>The maximal function is the supremum of the averages of <span class="math-inline">\(|f|\)</span> over rectangles
-containing the point. Nonnegative sums, integrals and suprema are allowed to
-be infinite. Where the proofs use real-valued averages, their agreement with
-the nonnegative-integral definition is proved using the required integrability.
-The passage from finite to countable families includes almost-everywhere
-finiteness under the hypotheses of the corresponding estimates; this justifies
-the real-valued functions used in the norm and integral estimates.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L66">conditions on the families</a>,
-<a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L44">equivalent definitions of sparseness</a>,
-<a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L40">overlap</a>,
-<a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L36">shadow</a>,
+containing the point. The specification defines these averages using
+nonnegative integrals, which may take the value infinity. The hypotheses of
+the maximal estimates ensure integrability on each rectangle. Lean proves
+that these averages agree with the ordinary real-valued averages used in
+the proofs.</p>
+<p>For countable families, the overlap sum and maximal supremum are initially
+allowed to be infinite. Under the hypotheses of the respective <span class="math-inline">\(L^p\)</span> maximal
+and sparse overlap estimates, Lean proves that they are finite almost
+everywhere. Their real-valued versions therefore represent the same quantities
+outside a null set, preserving the norms and integrals used in the estimates.</p>
+<p>Some intermediate bounds use the exponential minus one. Adding the measure of
+the shadow gives the full exponential bounds in the statements, with an enlarged
+constant. This conversion is proved in Lean.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html#L22">weak incomparability</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean.html#L37">equivalent containment condition</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedDefinitions.lean.html#L28">sparseness</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L74">incomparability</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L22">equivalent definitions of sparseness</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L88">overlap</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L84">shadow</a>,
 <a href="source/lean/ReyZygmund/Main/Maximal.lean.html#L33">agreement of the two integral formulas</a>,
 <a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L54">the independently defined maximal function</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedBridges.lean.html#L52">full exponential bounds</a>,
 and the countable-family arguments for
 <a href="source/lean/ReyZygmund/Maximal/Countable.lean.html">maximal functions</a> and
 <a href="source/lean/ReyZygmund/Overlap/Countable.lean.html">overlap</a>.</p>
@@ -111,10 +124,12 @@ described independently in the statements are proved to equal those used
 in the proofs.</p>
 <p>For locally integrable <span class="math-inline">\(f\)</span>, the nonnegative integrals defining the averages
 agree with the real integrals, and hence give the same maximal functions.
-Their measurability and boundary conventions are also checked:</p>
+The paper&#39;s shifted grids use <span class="math-inline">\([a,b)\)</span> in each scalar coordinate, while
+Mathlib&#39;s boxes use <span class="math-inline">\((a,b]\)</span>. Lean proves the following agreements between
+the resulting maximal functions and checks measurability:</p>
 <ul>
-<li>For the countable rounded family, using <span class="math-inline">\([a,b)\)</span> instead of <span class="math-inline">\((a,b]\)</span> in each
-scalar coordinate gives the same maximal function almost everywhere.</li>
+<li>For the countable rounded family, the two conventions give
+the same maximal function almost everywhere and the same level-set measures.</li>
 <li>For the continuous family at arbitrary locations, the two conventions give
 the same maximal function at every point. The proof uses continuity under
 translation of the local integrals.</li>
@@ -127,22 +142,26 @@ translation of the local integrals.</li>
 <a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L124">equality of the rounded families</a>,
 <a href="source/lean/ReyZygmund/MathlibOnly/OperatorBridge.lean.html#L60">agreement of the maximal functions</a>,
 <a href="source/lean/ReyZygmund/Maximal/Euclidean.lean.html#L21">the endpoint maximal function</a>,
-<a href="source/lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean.html#L33">rounded-family boundary equality</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L72">rounded level-set measures</a>,
 <a href="source/lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean.html#L18">continuous-family boundary equality</a>,
 and <a href="source/lean/ReyZygmund/MathlibOnly/BoundaryBridge.lean.html#L26">continuous measurability</a>.</p>
 <h2 id="sharpness-integrals">Sharpness integrals</h2>
 <p>The sharpness construction gives finite families of Euclidean rectangles and
 pairwise disjoint subsets establishing their sparseness. For each family,
-the exponential integral of its overlap over the shadow is finite.
-The formalization proves that the nonnegative integral in the statement equals
-this ordinary real integral, and that divergence as the family varies has the
-same meaning in both formulations.</p>
+the overlap is bounded and its shadow has finite measure, so the full
+exponential integral over the shadow is finite. The divergence statement says
+that these finite values tend to <span class="math-inline">\(+\infty\)</span> along the sequence of families.
+Lean proves that the ordinary real integral and the nonnegative integral give
+the same value for each family, and that their formulations of this limiting
+statement agree. The sharpness statement uses the ordinary real integral.</p>
 <p>Lean: <a href="source/lean/ReyZygmund/Sharpness/FlatConstruction.lean.html">the rectangle construction</a>,
-<a href="source/lean/ReyZygmund/Sharpness/FiniteIntegral.lean.html#L63">equality of the integrals</a>,
-and <a href="source/lean/ReyZygmund/Sharpness/FiniteIntegral.lean.html#L85">equivalence of the divergence statements</a>.</p>
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L93">integrability of the exponential</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L109">equality of the integrals</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SubmittedMeasure.lean.html#L118">equivalence of the divergence statements</a>,
+and <a href="source/lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean.html#L116">full exponential sharpness</a>.</p>
 <h2 id="cross-coordinate-averages-and-the-projection">Cross-coordinate averages and the projection</h2>
 <p>Fix a rectangle <span class="math-inline">\(I_0=I_0^1\times\cdots\times I_0^m\)</span>. In each coordinate,
-take the finite collection of dyadic subcubes of <span class="math-inline">\(I_0^i\)</span> down to a fixed smallest size,
+take the finite collection of dyadic subcubes of <span class="math-inline">\(I_0^i\)</span> down to a common smallest size,
 including <span class="math-inline">\(I_0^i\)</span> itself. Let <span class="math-inline">\(\mathcal G\)</span> be a family of rectangles formed
 from these cubes. Fix <span class="math-inline">\(j\)</span> and choose <span class="math-inline">\(K^i\)</span> from these collections for <span class="math-inline">\(i\ne j\)</span>.
 Collect the cubes <span class="math-inline">\(I^j\)</span> from those <span class="math-inline">\(I\in\mathcal G\)</span> for which
@@ -159,19 +178,19 @@ operators are <span class="math-inline">\(\Delta_Q=\sum_{R\in\mathrm{ch}(Q)}E_R-
 For <span class="math-inline">\(f\)</span> constant on the smallest product cubes and extended by zero outside
 <span class="math-inline">\(I_0\)</span>, the projected function <span class="math-inline">\(F\)</span> is obtained by subtracting the product
 martingale differences indexed by subrectangles of members of <span class="math-inline">\(\mathcal G\)</span>,
-each counted once. The formalization proves the paper&#39;s identity</p>
+each counted once. Only finitely many of these differences are nonzero.
+The full grid formula for <span class="math-inline">\(F\)</span> is proved to agree with the finite projection.
+The formalization proves the paper&#39;s identity</p>
 <div class="math-display">\[\Delta_{K^{A_j}}F=X_{K^{A_j}}\Delta_{K^{A_j}}f\]</div>
-<p>for the cubes <span class="math-inline">\(K^i\)</span> above the smallest size. This relates differences of <span class="math-inline">\(F\)</span>
-in <span class="math-inline">\(m-1\)</span> coordinates to an average in the remaining coordinate.</p>
-<p>Lean: <a href="source/lean/ReyZygmund/Geometry/ProductPartitions.lean.html">partitions and their averages</a>
-and <a href="source/lean/ReyZygmund/Projection/CommonProjection.lean.html#L105">the identity for the projected function</a>.</p>
+<p>for all the chosen cubes <span class="math-inline">\(K^i\)</span>, including those of the smallest size. This
+relates differences of <span class="math-inline">\(F\)</span> in <span class="math-inline">\(m-1\)</span> coordinates to an average in the
+remaining coordinate.</p>
+<p>Lean: <a href="source/lean/ReyZygmund/Geometry/ProductPartitions.lean.html">partitions and their averages</a>,
+<a href="source/lean/ReyZygmund/Projection/SubmittedGrid.lean.html#L78">the full grid sum and finite projection</a>,
+and <a href="source/lean/ReyZygmund/Projection/SubmittedCross.lean.html#L47">the identity for the projected function</a>.</p>
 <h2 id="scope-of-these-checks">Scope of these checks</h2>
 <p>The definition review covers the main theorems and the supporting results.
 The examples above highlight the principal constructions. Lebesgue measure,
 integration, powers and limits use their usual Mathlib definitions.</p>
-<p>All seven independently stated main results passed Comparator comparison and
-proof checking by Lean and Nanoda. Some additional results discussed here,
-including the boundary-convention results, were reviewed and checked by Lean
-but were not part of those Nanoda checks. The <a href="verifying.html">verification guide</a>
-records the exact coverage, including ordinary Lean replay.</p>
+<p>All six independently stated main results passed Comparator comparison, and their exported proofs and exported dependencies were accepted by Lean’s default kernel, Nanoda and con-ron. Supporting results outside those exports are covered by the ordinary Lean checks described in the <a href="verifying.html">verification guide</a>; their presence in the library does not imply separate Nanoda or con-ron verification.</p>
 </main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

@@ -1,0 +1,12 @@
+{
+  "challenge_module": "SubmittedChallenge1",
+  "solution_module": "SubmittedSolution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.Submitted.weakly_incomparable_maximal"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

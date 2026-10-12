@@ -1,58 +1,76 @@
 # Linux checker setup
 
-This installs checking software, not mathematical dependencies; complete
-steps 1–2 of [the verification guide](../VERIFYING.md) separately. Use a fresh
-Linux environment if you need isolation from unrelated files. No host home
-mount is required when using a VM.
+Use an unprivileged Linux account with Python 3.12+, user-level systemd,
+cgroup v2 and working bubblewrap namespaces. The recorded checks used Linux
+ARM64. A Linux VM is suitable on macOS; no host home-directory mount is needed.
 
-Prerequisites are Lean 4.34.0, Python 3.12+, Git, a C/C++ toolchain, Go, Rust/Cargo,
-and user-level systemd with cgroup v2. The known-working environment used
-Ubuntu 26.04 ARM64, Go 1.26, Landlock ABI 8 and the exact revisions below.
-Package installation is an explicit setup operation; the proof-checking runner
-itself never installs software or downloads dependencies.
+## Install the pinned tools
 
-From the public repository root, after installing these prerequisites:
+Install the official Lean **4.35.0-rc4** toolchain and pinned dependencies as
+described in [the verification guide](../VERIFYING.md). This toolchain bundles Comparator,
+`leanexport`, `leanchecker`, `nanoda_bin` and `con-ron`.
+
+Supply **bubblewrap 0.12.0** from a trusted installation. Its official source
+archive and SHA-256 are recorded in [CHECKER-PINS.json](CHECKER-PINS.json).
+For a source build, obtain that exact archive, verify its checksum and follow
+the instructions included with it. Do not substitute a mock sandbox.
+
+From the repository root, register the installed executable:
 
 ```sh
-python3 -I -B tools/install-checkers.py
+python3 -I -B tools/install-checkers.py --bwrap /path/to/bwrap
 ```
 
-This fetches and builds the fixed revisions in
-[CHECKER-PINS.json](CHECKER-PINS.json) into `.tools/checkers`, preserves existing
-matching tool checkouts, and refuses different revisions or tracked edits.
-It builds Comparator and lean4export with the pinned Lean version,
-Landrun with Go, and Nanoda with `cargo build --release --locked`.
-Git, Go and Cargo may download their declared software dependencies during
-this setup. Nothing is installed system-wide, and no repository files are uploaded.
+Replace the example path with the actual executable. The command checks the
+version and bundled tools, copies bubblewrap into `.tools/checkers` without
+replacing a different installation, and records hashes. It does not download,
+build software, authenticate an arbitrary binary's provenance or check proofs.
+Use `--lean-bin /path/to/lean/bin` if elan does not select the installed compiler.
 
-Then run, from a user session where `systemctl --user show-environment` works:
+## Check the runtime
+
+Confirm that `systemctl --user show-environment` works. The exporter may require
+a higher memory-mapping limit; the recorded environment used 262144. If needed,
+an administrator can set this explicitly:
+
+```sh
+sudo sysctl -w vm.max_map_count=262144
+```
+
+The checking process itself must not run as root. Its outer bubblewrap sandbox
+isolates the network and makes the filesystem read-only except for its working
+directories. Comparator additionally applies its own build/export sandbox.
 
 ```sh
 python3 -I -B tools/test_comparator_runtime.py
-python3 -I -B tools/comparator.py --case 7
+```
+
+These tiny fixtures require a C compiler available as `cc`, with static libc support for the
+deliberately failing executable. They include three-kernel success, statement
+and definition mismatches, an indirect admission, missing checkers and actual
+checker-process failures. They do not change production configurations.
+
+## Check the main results
+
+```sh
+python3 -I -B tools/comparator.py --prepare-only
 python3 -I -B tools/comparator.py
 ```
 
-The first command tests the real runtime on five isolated fixtures: both
-kernels accepting a valid theorem, missing Nanoda, failing Nanoda, a changed
-referenced definition, and an indirect admission. It uses
-a C compiler with static libc support to create the failing test executable;
-no installed checker is replaced. Success is `PASS_FIXTURES_ONLY`.
+Preparation does not check proofs. The full command compares all six results
+and requires actual Lean, Nanoda and con-ron acceptance. Only `PASS_ALL_SIX`
+records full-suite success. Optional `--case 6` checks just the sharpness export
+and can produce only `PASS_ONE_CASE_ONLY`.
 
-The second command is optional and tests the sparse-family sharpness result.
-Only the third checks all seven Mathlib-only main statements. Allow enough time and disk for
-fresh project builds; dependencies may reuse their installed compatible caches.
+Each case is bounded to 6 GiB of memory, no swap, two CPU cores' worth of quota
+and one hour. A timeout fails the run; it is not a mathematical rejection.
+Keep at least 15 GiB free for working copies, in addition to installed tools
+and dependencies; the actual requirement depends on cache and filesystem sizes.
 
-Both source revisions and executable SHA-256 hashes are recorded. Source
-revision checks alone do not authenticate an arbitrary prebuilt executable;
-build the tools from the fixed checkouts in a trusted setup environment.
-The initial checker tests included negative fixtures for altered statements,
-extra assumptions, admissions, custom axioms, changed definitions and missing
-targets. When run on a new machine, the runner tests effective Landlock/AF_UNIX restrictions
-before invoking Comparator, and failures stop the run.
+The runner operates offline after provisioning. `--packages` selects an
+existing pinned archive-backed dependency tree, copied before compilation.
+`--tools` selects another directory containing bubblewrap. Logs, commands,
+resolved configurations and reports remain under `.runs/`.
 
-Upstream references: [Comparator](https://github.com/leanprover/comparator),
-[lean4export](https://github.com/leanprover/lean4export),
-[Landrun](https://github.com/Zouuup/landrun),
-[Nanoda](https://github.com/ammkrn/nanoda_lib). Their source and license files
-remain in the installed checkouts; they are not vendored into this repository.
+Versions are fixed for this release, not resolved from current upstream branches.
+The [verification guide](../VERIFYING.md) explains scope and acceptance.

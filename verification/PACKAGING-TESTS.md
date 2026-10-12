@@ -1,178 +1,89 @@
-# Tests of the verification tools
+# Tests of the checking programs
 
-The tests below check that the verification tools recognize valid proofs,
-reject invalid inputs, and recover missing compiled dependencies. They use the
-pinned Lean 4.34.0 toolchain. The scope of the mathematical verification is
-described in [the verification guide](../VERIFYING.md).
+These tests check that the verification programs accept valid inputs, reject
+deliberately invalid ones and recover missing compiled dependencies.
+The mathematical verification results are recorded separately in
+[RESULTS.json](RESULTS.json).
 
-## Checks after wording changes, 26 September 2026
+Test outcomes and checking-program identities are recorded in
+[TOOLING-RESULTS.json](TOOLING-RESULTS.json). The Linux runtime and dependency-recovery
+results are retained from earlier runs. The same record explains why those
+results apply to the distributed files.
 
-The public mathematical guides and source comments were edited for clarity.
-Comparison with the checked sources confirmed that all code outside comments
-and all source line numbers are unchanged across the 363 modules. Source
-hashes and generated pages were refreshed. The 453 declaration/contract
-mappings, fourteen comparison adapters, seven configurations, dependency
-pins and public checking programs are unchanged.
+## Lightweight tests
 
-Thirteen lightweight wrapper tests and offline comparison-packet preparation
-passed after the wording changes. The Lean builds, replay, compiled inspection
-tests, Comparator and Nanoda runs described below preceded these editorial changes.
+The 13 tests in `tools/test_checker.py` passed, covering inventories, changed
+or missing sources, duplicate targets, origins, import separation, configuration
+identities, axiom restrictions, archive safety and artifact completeness.
 
-## Checking the Mathlib-only statements, 26 September 2026
+The 13 tests in `tools/test_comparator_acceptance.py` passed, covering the four
+required acceptance reports, failed exits, configuration, environment and
+sandbox command construction. Timeout cleanup uses a mocked process; these
+tests do not themselves execute a sandbox or kernel.
 
-The independent statements and proofs relating them to the main development
-add 14 local modules and 15 registered declarations to the original 349 modules
-and 438 contracts. The combined inventory is 363 modules and 453 declarations,
-covering the same seven main results. The comparison runner uses the reviewed
-Mathlib-only Challenge/Solution pairs and configurations.
-
-The following focused tests passed:
-
-- Thirteen wrapper test methods on macOS and Linux, including exact source
-  and adapter binding, the rounded/continuous target order, missing new
-  modules, transitive proof-library imports into challenges and challenge
-  placeholders imported by solutions.
-- Seven compiled Lean-inspection fixtures on macOS, with the same production
-  inspector and acceptance code. Wrong-origin and definitional-equality
-  boundaries are included.
-- Five Linux runtime fixtures with the pinned Comparator, Lean and
-  Nanoda: valid acceptance, missing Nanoda, failing Nanoda, a changed
-  referenced definition and an indirect admission. The missing/failing
-  Nanoda cases explicitly observed Lean acceptance but rejected overall
-  acceptance.
-- Offline production packet construction and its fourteen local import
-  closures. Each challenge contains only itself and the two independent
-  specification modules; solutions do not import challenge placeholders.
-
-The combined public build/inspection also passed: all **363 modules** compiled
-fresh on macOS and all **453 registered declarations** matched their reviewed
-contracts and permitted transitive axioms. The public Linux runner completed
-all **seven Mathlib-only comparisons**, with successful exits and explicit
-Comparator, Lean default-kernel and Nanoda acceptance for every case. The
-seven cases took about 14 minutes in total with warm dependency caches.
-
-These runs used the distributed checking programs. Their source files,
-comparison inputs and logs were checked for consistency after completion.
-Dependency recovery had already passed the tests described below. Ordinary
-kernel replay had already completed for both the original library and the
-added layer. Those checks were not repeated in this run. The recovery
-implementation and all dependency and checker pins were unchanged.
-
-## Invalid-input rejection, 25 September 2026
-
-On 25 September 2026, the following local tests passed:
-
-- Ten wrapper test methods, including persistent regressions for changed or
-  missing mathematical sources and missing or duplicate registered targets.
-- Seven Lean inspector fixture cases. In particular, a reducible
-  definitionally equal presentation passed, while a merely logically
-  equivalent presentation and a declaration from the wrong source module were
-  rejected. The prior indirect-admission, custom-axiom and changed-statement
-  boundaries remained covered.
-- Comment-stripped dependency-header parsing correctly distinguished a
-  `module` command from that word occurring only in a comment.
-
-On 25 September 2026, five isolated fixtures also passed in the Linux ARM64
-checker environment with the pinned Comparator, Lean, Nanoda and Landrun:
-
-| Fixture | Required and observed behavior |
-| --- | --- |
-| Valid proof | Comparator, Lean and Nanoda all accepted. |
-| Nanoda absent | Lean accepted, but overall acceptance failed. |
-| Nanoda deliberately failing | Lean accepted, but overall acceptance failed. |
-| Changed referenced definition | Comparator rejected the mismatch. |
-| Indirect admission | The exported proof dependency on `sorryAx` was rejected. |
-
-The runner retained complete logs and separate kernel outcomes. These tests
-use small fixture theorems, rather than the seven main results.
-
-## Dependency recovery, 25 September 2026
-
-The recovery completeness check requires the full set of compiled files used by
-the pinned direct compiler: `.olean`, `.olean.server`, `.olean.private`,
-`.ir.sig` and `.ir` for split modules. The same check runs before reuse, after
-compilation and after installation.
-
-On 25 September 2026, all three isolated recovery cases passed on macOS ARM64:
-
-| Deliberately absent from the scratch cache | Observed result |
-| --- | --- |
-| All compiled files for `Mathlib.Analysis.SpecialFunctions.Log.Base` | Import failed; source recovery rebuilt the module; compilation and production contract/axiom inspection then passed. |
-| Only `.olean.server` | The retained `.olean` and `.olean.private` did not mask the omission. Import failed on the server file; recovery rebuilt the module and inspection passed. |
-| Only `.ir`, with `.ir.sig` retained | Import failed on the IR file; recovery rebuilt the module and inspection passed. |
-
-Each case rebuilt only the selected module, preserved the source pins and
-original cache, and checked backups of retained scratch files that were
-replaced. Eight wrapper unit tests passed, including a new test for each member
-of the required set of compiled files. These tests concern dependency setup;
-they do not repeat mathematical verification. The Linux runtime tests had
-already passed in the earlier run below and were not repeated as part of
-these recovery tests.
-
-## Earlier test coverage
-
-| Test | Observed result |
-| --- | --- |
-| Lean inspection fixtures, macOS ARM64 | A valid theorem passed. An imported indirect admission, a custom axiom, a changed conclusion and an extra assumption were rejected. All five use the production Lean inspector and Python acceptance function. |
-| Offline dependency recovery, macOS ARM64 | The compiled files for `Mathlib.Analysis.SpecialFunctions.Log.Base` were omitted from an isolated cache view. A test theorem failed to import it, recovery rebuilt it from the existing pinned source, and the theorem then compiled and passed production contract/axiom inspection. Source pins and the original cache were unchanged. |
-| Comparator/Nanoda fixtures, Linux ARM64 | A tiny valid theorem passed Comparator, Lean and Nanoda. With Nanoda absent, or replaced **only within the fixture** by a deliberately failing executable, Lean still accepted but the run failed overall. All three use the production resource wrapper, child invocation and acceptance function. The sandbox preflight also passed. |
-| Wrapper unit tests | Seven test methods passed, covering inventory, report acceptance/rejection, missing/duplicate reports, archive safety, dependency-header parsing and required-kernel acceptance. |
-| Production packet construction | All seven original Challenge/Solution pairs and configurations were prepared without running the seven-result suite again. |
-
-Fixture sources are in `verification/fixtures/`, outside the production
-inventory (349 modules in these earlier tests; 363 after adding the Mathlib-only statements).
-Negative fixtures deliberately contain invalid
-verification inputs; they are never imported into production proofs. Test
-harnesses do not reduce the registered declaration list, change the seven main
-contracts, or enlarge the allowed axiom set. Success is labeled
-`PASS_FIXTURES_ONLY`, not proof acceptance.
-
-## Repeating the tests
-
-From the repository root:
+These tests require only Python 3.12 or later and the repository.
 
 ```sh
 python3 -I -B tools/test_checker.py
-python3 -I -B tools/test_inspection.py
-python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
+python3 -I -B tools/test_comparator_acceptance.py
 ```
 
-The recovery test needs existing pinned sources and a compatible populated
-dependency cache. It creates three fresh scratch views. Retained artifacts of
-the selected module are copied, not symlinked, so recovery can replace them
-without touching the original cache. Other cached objects are linked for
-read-only use. Each case rebuilds the selected module's complete artifact
-family. It neither downloads anything nor removes files from the original cache.
+## Compiled Lean inspection
 
-After the [Linux checker setup](LINUX-SETUP.md), run in Linux:
+Seven Lean inspection fixtures passed their expected outcomes. A valid theorem
+and a definitionally equal presentation were accepted. A merely logically
+equivalent presentation, indirect admission, custom axiom, changed conclusion
+and extra assumption were rejected. The valid case also tested wrong-origin
+rejection through the production inspector and report checking.
+
+```sh
+python3 -I -B tools/test_inspection.py
+```
+
+## Linux comparisons
+
+Eight Linux fixtures passed their expected outcomes with the pinned tools:
+
+| Fixture | Observed outcome |
+| --- | --- |
+| Valid theorem | Comparator, Lean, Nanoda and con-ron accepted. |
+| Extra assumption | Rejected for the statement mismatch. |
+| Changed definition | Rejected for the mismatch. |
+| Indirect admission | Rejected for `sorryAx`. |
+| Missing Nanoda | Rejected for the missing executable. |
+| Failing Nanoda | The regular executable ran and printed its marker; Lean and con-ron accepted, Comparator rejected. |
+| Missing con-ron | Rejected for the missing executable. |
+| Failing con-ron | The regular executable ran and printed its marker; Lean and Nanoda accepted, Comparator rejected. |
+
+The deliberately failing executables exit 73. The public record includes their
+hashes, invocation markers and log hashes; the full logs remain in the test run
+directories. The runtime preflight tested network
+namespace isolation, denied writes outside the checking directory and permitted
+scratch writes. The checking process confirmed its memory and swap limits.
 
 ```sh
 python3 -I -B tools/test_comparator_runtime.py
 ```
 
-This requires the real pinned Nanoda installation and a C compiler with static
-libc support; the missing/failing variants are controlled fault injections,
-not alternate production checker options. The script retains complete logs
-and separate kernel outcomes. The installed checker binaries remain unchanged.
-Use `--lean-bin` with any fixture script that invokes Lean to select the exact
-installed compiler explicitly; the Linux script also accepts `--tools`.
+## Dependency recovery
 
-Reports and scratch directories are retained under `.runs/`. The repository
-does not include machine-specific logs. `PUBLIC-FILES.sha256` identifies the distributed
-scripts and fixtures. A failed or interrupted fixture run is not a passing test.
+The three dependency-recovery fixtures also passed in the pinned Linux
+environment: a wholly absent compiled module, a missing `.olean.server`, and a
+missing `.ir` with the other artifacts retained. Each detected the intended
+import failure, rebuilt the module from pinned sources, and checked a small
+theorem through the production inspector. The original cache was unchanged.
 
-## Earlier export checks and limitations
+```sh
+python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
+```
 
-The earlier public-export test freshly checked all 349 local modules and
-438 registered declarations and ran the seventh main result through the public
-Linux Comparator/Nanoda runner. Those checks, and the original all-seven
-dual-kernel checks and ordinary replay, are historical evidence. The current
-Mathlib-only integration tests are listed separately above. The original
-mathematical code and contracts remain unchanged; the later editorial revision
-changes only source comments. The added layer and comparison adapters were
-checked against the source files recorded for those runs.
+## Source and packet checks
 
-The recovery test exercised one Mathlib module used by this development, with existing
-compatible dependency caches, not a complete Mathlib rebuild from an empty
-cache. Fresh internet provisioning and other operating systems were not tested
-in the recovery tests.
+Source checks matched all 391 supplied Lean files to the checked code outside
+comments, the seven adapter files and six comparison configurations to the
+checked inputs, and the 497 declaration mappings to their contracts. The selected
+local build/replay closure contains 377 modules. Packet preparation passed its
+source and import-boundary checks; preparation does not verify proofs.
+
+See [the verification guide](../VERIFYING.md) for the mathematical checking scope and
+reproduction instructions.

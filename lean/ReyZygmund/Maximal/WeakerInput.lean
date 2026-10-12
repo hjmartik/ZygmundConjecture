@@ -2,11 +2,11 @@ import ReyZygmund.Maximal.WeakerBound
 import ReyZygmund.Maximal.GeneralInput
 
 /-!
-# General inputs under weaker containment
+# General inputs for weakly incomparable families
 
-Section 6 of the paper reuses the Section 3 positive perturbation and smallest-cube
-averaging reductions. Neither reduction requires incomparability: the weaker
-finite positive estimate supplies the only changed geometric input.
+The finite positive estimate extends to general inputs by positive perturbation
+and averaging on the smallest cubes. Neither reduction requires incomparability;
+weak incomparability supplies the geometric hypothesis of the finite estimate.
 Finite localization supplies all needed integrability. The coefficient-one
 norm triangle inequality bounds the perturbation by its exact constant norm,
 and an elementary real-order argument removes it without dividing by a norm.

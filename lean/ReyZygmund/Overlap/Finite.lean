@@ -71,7 +71,7 @@ theorem memLp_finiteOverlap (G : Finset (∀ i, Box (Fin (d i)))) (p : ℝ≥0�
     MemLp (finiteOverlap G) p volume := by
   apply memLp_finsetSum
   intro Q _
-  apply memLp_indicator_const p (flatProductBox Q).measurableSet_coe (1 : ℝ)
+  apply memLp_indicator_const p (flatProductBox Q).measurableSet_coe.nullMeasurableSet (1 : ℝ)
   right
   exact (flatProductBox Q).isBounded.measure_lt_top.ne
 

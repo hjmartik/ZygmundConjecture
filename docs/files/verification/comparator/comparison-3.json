@@ -1,0 +1,12 @@
+{
+  "challenge_module": "SubmittedChallenge3",
+  "solution_module": "SubmittedSolution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.Submitted.continuous_endpoint"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

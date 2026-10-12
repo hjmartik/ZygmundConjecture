@@ -55,7 +55,7 @@ theorem memLp_finiteSetOverlap {d : ℕ} (H : Finset (Set (Fin d → ℝ)))
     (p : ℝ≥0∞) : MemLp (finiteSetOverlap H) p volume := by
   apply memLp_finsetSum
   intro I hI
-  exact memLp_indicator_const p (hm I hI) 1 (Or.inr (hf I hI).ne)
+  exact memLp_indicator_const p (hm I hI).nullMeasurableSet 1 (Or.inr (hf I hI).ne)
 
 theorem integrable_rpow_finiteSetOverlap {d : ℕ} (H : Finset (Set (Fin d → ℝ)))
     (hm : ∀ I ∈ H, MeasurableSet I) (hf : ∀ I ∈ H, volume I < ∞)

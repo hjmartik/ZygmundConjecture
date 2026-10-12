@@ -1,0 +1,12 @@
+{
+  "challenge_module": "SubmittedChallenge6",
+  "solution_module": "SubmittedSolution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.Submitted.phi_sparse_sharpness"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

@@ -46,7 +46,7 @@ private theorem integral_shadow_le_holder
         Real.rpow (volume.real (finiteShadow G)) (1 / q) := by
   let u := (finiteShadow G).indicator (fun _ => (1 : ℝ))
   have hu : MemLp u (ENNReal.ofReal q) volume :=
-    memLp_indicator_const _ (measurableSet_finiteShadow G) 1
+    memLp_indicator_const _ (measurableSet_finiteShadow G).nullMeasurableSet 1
       (Or.inr (volume_finiteShadow_lt_top G).ne)
   have h := integral_mul_le_Lp_mul_Lq_of_nonneg hpq
     (Filter.Eventually.of_forall hF0)

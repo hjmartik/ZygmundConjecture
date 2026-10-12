@@ -5,7 +5,7 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
 /-!
-# The scalar growth and retention choice in Section 7
+# Scalar growth and the choice of retention scale
 
 The natural power records the mass of the maximum-overlap set. The power
 inside the exponential is a real power. Its exponent is strictly greater

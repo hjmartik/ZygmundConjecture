@@ -1,5 +1,5 @@
-import ReyZygmund.Geometry.LastCoordinate
-import ReyZygmund.Overlap.Finite
+import ReyZygmund.Geometry.SlicedOverlap
+import ReyZygmund.Overlap.FiniteIdentification
 
 /-! # Finite slices, shadows and overlap
 
@@ -61,30 +61,10 @@ theorem finiteOverlap_splitLast_symm
     (y : Fin (∑ i : Fin n, d i.castSucc) → ℝ) (t : Fin (d (Fin.last n)) → ℝ) :
     finiteOverlap G ((splitLastCoordinates d).symm (y, t)) =
       finiteOverlap (finiteSlice G t) y := by
-  have hinj : ∀ R ∈ G.filter (fun R => t ∈ R (Fin.last n)),
-      ∀ S ∈ G.filter (fun S => t ∈ S (Fin.last n)),
-        initialProjection R = initialProjection S → R = S := by
-    intro R hR S hS heq
-    exact (initialProjection_injOn D (↑G) hG hinc t)
-      (Finset.mem_filter.mp hR) (Finset.mem_filter.mp hS) heq
-  unfold finiteOverlap finiteSlice
-  rw [Finset.sum_image hinj, Finset.sum_filter]
-  apply Finset.sum_congr rfl
-  intro R _
-  by_cases ht : t ∈ R (Fin.last n)
-  · by_cases hy : y ∈ (flatProductBox (initialProjection R) : Set (Fin (∑ i : Fin n, d i.castSucc) → ℝ))
-    · have hx : (splitLastCoordinates d).symm (y, t) ∈
-          (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) :=
-        (mem_flatProductBox_splitLast_symm R y t).mpr ⟨hy, ht⟩
-      simp [Set.indicator_of_mem hx, Set.indicator_of_mem hy, ht]
-    · have hx : (splitLastCoordinates d).symm (y, t) ∉
-          (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) :=
-        fun h => hy ((mem_flatProductBox_splitLast_symm R y t).mp h).1
-      simp [Set.indicator_of_notMem hx, Set.indicator_of_notMem hy, ht]
-  · have hx : (splitLastCoordinates d).symm (y, t) ∉
-        (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) :=
-      fun h => ht ((mem_flatProductBox_splitLast_symm R y t).mp h).2
-    simp [Set.indicator_of_notMem hx, ht]
+  have h := overlap_splitLast_symm D (↑G) hG hinc y t
+  rw [← coe_finiteSlice G t, overlap_finset, overlap_finset] at h
+  simpa only [ENNReal.toReal_ofReal (finiteOverlap_nonneg _ _)] using
+    congrArg ENNReal.toReal h
 
 /-- The measures of the slice shadows integrate to the full shadow. -/
 theorem volume_finiteShadow_slices (G : Finset (∀ i, Box (Fin (d i)))) :

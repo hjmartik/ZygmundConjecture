@@ -1,6 +1,6 @@
 import ReyZygmund.Weighted.CrossProductStep
 import ReyZygmund.Maximal.FamilyProperties
-import ReyZygmund.Projection.Properties
+import ReyZygmund.Projection.SubmittedCross
 
 /-!
 # One row of the projected weighted square estimate
@@ -117,8 +117,9 @@ theorem projected_row_energy
     dsimp only
     rw [hXu P hP x hx y hy, hXv P hP x hx y hy]
   have hcross : (productDifferenceMap A Q (finiteProjectionMap I N G F)).1 = Xu :=
-    finite_cross_projection I N hd G (fun R hR i => mem_productDescendants.mp (hG hR) i)
-      f hf j Q hQ
+    finite_cross_projection_descendants I N hd G
+      (fun R hR i => mem_productDescendants.mp (hG hR) i) f hf j Q
+      (fun i hij => interior_subset_descendants (I i) (N i) (hQ i hij))
   change (∫ x in productBox I,
       ((productDifferenceMap A Q (finiteProjectionMap I N G F)).1 x) ^ 2 /
         Real.rpow (M x) (2 - p)) ≤ ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p)

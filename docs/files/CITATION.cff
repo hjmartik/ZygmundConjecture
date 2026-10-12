@@ -6,7 +6,7 @@ authors:
   - family-names: Martikainen
     given-names: Henri
 license: Apache-2.0
-abstract: "Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, together with the underlying incomparable maximal estimate and related extensions and sharpness results. Includes independently stated Mathlib-only specifications and instructions for reproducing verification with Lean, Comparator and Nanoda."
+abstract: "Lean 4 formalization of proofs of the Zygmund conjecture and Rey’s exponential integrability conjecture, together with the underlying weakly incomparable maximal estimate and related dyadic, overlap and sharpness results. Includes an independent specification rebuilt from Mathlib primitives and instructions for reproducing verification with Lean, Comparator, Nanoda and con-ron."
 preferred-citation:
   type: article
   title: "The Zygmund conjecture and Rey's exponential integrability conjecture"

@@ -41,7 +41,7 @@ theorem finite_density_shadow_bound
     (volume_preserving_flattenCoordinates d).measure_preimage_equiv _
   have hSfin : volume S ≠ ∞ := hSvol.trans_ne (volume_finiteShadow_lt_top F).ne
   have hAfin : volume A ≠ ∞ := hAvol.trans_ne (volume_finiteShadow_lt_top G).ne
-  have hf : MemLp f 2 volume := memLp_indicator_const 2 hAmeas 1 (Or.inr hAfin)
+  have hf : MemLp f 2 volume := memLp_indicator_const 2 hAmeas.nullMeasurableSet 1 (Or.inr hAfin)
   have havg (Q : ∀ i, Box (Fin (d i))) :
       (∫ y in productBox Q, |f y|) =
         volume.real ((flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) ∩ finiteShadow G) := by

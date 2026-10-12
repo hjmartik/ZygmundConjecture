@@ -33,12 +33,13 @@ def source_lock():
 
 def source_manifest():
     manifest = read_json(ROOT / 'verification/SOURCE-MANIFEST.json')
-    require(manifest['local_module_count'] == 363, 'Unexpected local module count')
-    require(manifest['registered_declaration_count'] == 453, 'Unexpected target count')
+    require(manifest['local_module_count'] == 377, 'Unexpected local module count')
+    require(manifest['registered_declaration_count'] == 497, 'Unexpected target count')
     files = manifest['sha256']
-    actual = {str(p.relative_to(ROOT)) for base in ['ReyZygmund', 'Verification']
+    actual = {str(p.relative_to(ROOT)) for base in ['ReyZygmund', 'Verification', 'checks']
               for p in (LEAN / base).rglob('*.lean')}
-    require(len(files) == 363 and actual == set(files), 'Local source inventory differs')
+    actual.update(str(p.relative_to(ROOT)) for p in LEAN.glob('*.lean'))
+    require(len(files) == 391 and actual == set(files), 'Local source inventory differs')
     for name, expected in files.items():
         path = ROOT / name
         require(not path.is_symlink() and path.is_file() and digest(path) == expected,
@@ -47,8 +48,8 @@ def source_manifest():
 
 def targets():
     result = read_json(ROOT / 'verification/TARGETS.json')['declarations']
-    require(len(result) == 453 and len({d['name'] for d in result}) == 453,
-            'Expected 453 distinct declarations')
+    require(len(result) == 497 and len({d['name'] for d in result}) == 497,
+            'Expected 497 distinct declarations')
     for d in result:
         require(set(d) == {'name', 'module', 'contract', 'contract_module'}, 'Target schema differs')
         require(all(NAME.fullmatch(s) for s in d.values()), 'Invalid declaration/module name')
@@ -81,11 +82,14 @@ def check_dependencies(packages):
                 path = Path(current) / filename
                 relative = path.relative_to(directory).as_posix()
                 if name == 'proofwidgets' and relative == 'widget/package-lock.json.hash':
+                    require(not path.is_symlink() and re.fullmatch(r'[0-9a-f]{16}', path.read_text()),
+                            'Unexpected generated ProofWidgets metadata')
                     continue
                 content = 'symlink:' + str(path.readlink()) if path.is_symlink() else digest(path)
-                rows.append((relative, f'{relative}\0{content}\n'))
+                rows.append((relative, content))
         rows.sort(key=lambda item: Path(item[0]))
-        actual = hashlib.sha256(''.join(row for _, row in rows).encode()).hexdigest()
+        # The accepted rc4 lock uses a canonical JSON path-to-digest mapping.
+        actual = hashlib.sha256(json.dumps(dict(rows), sort_keys=True).encode()).hexdigest()
         require(len(rows) == item['source_file_count'] and actual == item['source_tree_sha256'],
                 'Dependency source identity differs: ' + name)
         result.append({'name': name, 'commit': item['commit'], 'source_tree_sha256': actual})
@@ -177,8 +181,12 @@ def module_order(manifest):
         active.remove(name)
         done.add(name)
         order.append(name)
-    for name in sorted(available):
+    roots = {t[k] for t in targets() for k in ('module', 'contract_module')}
+    roots.update(['Verification.Inspect', *manifest['additional_build_roots']])
+    require(roots <= available.keys(), 'Missing build root')
+    for name in sorted(roots):
         visit(name)
+    require(len(order) == manifest['local_module_count'], 'Build/replay closure differs')
     return order
 
 def control_hashes():

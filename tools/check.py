@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fresh 453-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
+"""Fresh 497-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -38,7 +38,7 @@ class Run:
         self.record = dict(status='RUNNING', mode=kind, started_utc=datetime.now(timezone.utc).isoformat(),
                            commands=[], dependency_cache_reused=True,
                            semantic_correspondence='Separate human/mathematical review',
-                           comparator='NOT_RUN', nanoda='NOT_RUN')
+                           comparator='NOT_RUN', nanoda='NOT_RUN', con_ron='NOT_RUN')
         print('Run: ' + str(self.path), flush=True)
 
     def save(self):
@@ -71,9 +71,11 @@ def object_hashes(objects, modules):
     for module in modules:
         path = objects / (module.replace('.', '/') + '.olean')
         require(path.is_file(), 'Missing local object: ' + module)
-        require(not Path(str(path) + '.server').exists() and not Path(str(path) + '.private').exists(),
-                'Unexpected local object sidecar: ' + module)
         result[module] = digest(path)
+    # rc4 may emit split objects. Bind the complete emitted artifact set, not
+    # merely the primary olean; additions/removals must invalidate replay too.
+    result['artifacts'] = {str(p.relative_to(objects)): digest(p)
+                           for p in sorted(objects.rglob('*')) if p.is_file()}
     return result
 
 def execute(args):
@@ -152,7 +154,7 @@ def execute(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode', choices=['verify', 'replay'])
-    parser.add_argument('--lean-bin', help='Directory containing the exact Lean 4.34.0 tools; default: elan which lean')
+    parser.add_argument('--lean-bin', help='Directory containing the pinned Lean tools; default: elan which lean')
     parser.add_argument('--packages', type=Path, help='Reuse an existing pinned archive-backed package directory, read-only')
     parser.add_argument('--run', type=Path, help='Successful routine report.json to replay')
     execute(parser.parse_args())

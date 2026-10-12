@@ -1,61 +1,39 @@
 #!/usr/bin/env python3
-"""Explicit Linux software provisioning; not proof acceptance. Apache-2.0."""
+"""Register bundled rc4 checkers and an existing pinned bubblewrap. Apache-2.0.
+
+No downloads, source builds, privilege changes or implicit dependency updates.
+"""
+import argparse
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from common import ROOT,compiler_bin,read_json,require,digest,fresh_run,write_json
+from comparator import tool_paths
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ROOT, require, read_json, compiler_bin, fresh_run, digest, write_json
+def main(args):
+    require(platform.system()=='Linux' and os.geteuid()!=0,'Use an unprivileged Linux user')
+    bindir=compiler_bin(args.lean_bin)
+    source=args.bwrap.expanduser().resolve(strict=True)
+    pins=read_json(ROOT/'verification/CHECKER-PINS.json')
+    require(subprocess.check_output([source,'--version'],text=True).strip()=='bubblewrap '+pins['bubblewrap']['version'],
+            'Bubblewrap version differs')
+    destination=ROOT/'.tools/checkers';destination.mkdir(parents=True,exist_ok=True)
+    target=destination/'bwrap'
+    if target.exists():require(not target.is_symlink() and digest(target)==digest(source),'Existing bubblewrap differs; keep it and use --tools with another directory')
+    else:shutil.copy2(source,target)
+    bins=tool_paths(destination,bindir)
+    run=fresh_run('checker-setup')
+    write_json(run/'receipt.json',dict(status='TOOLS_PRESENT_NOT_PROOFS_CHECKED',pins=pins,
+        tools={n:dict(path=str(p),sha256=digest(p)) for n,p in bins.items()},network=False,
+        bubblewrap_source_archive_verification='Not performed by this registration command'))
+    print('PASS required tools present; runtime and proof checks are separate. Receipt: '+str(run/'receipt.json'))
 
-def main():
-    require(platform.system() == 'Linux' and os.geteuid() != 0, 'Use an unprivileged Linux user')
-    pins = read_json(ROOT / 'verification/CHECKER-PINS.json')
-    bindir = compiler_bin()
-    destination = ROOT / '.tools/checkers'
-    destination.mkdir(parents=True, exist_ok=True)
-    report = fresh_run('install-checkers')
-    env = os.environ.copy()
-    env['PATH'] = str(bindir) + os.pathsep + env.get('PATH', '')
-    env.update(LAKE_NO_CACHE='1', MATHLIB_NO_CACHE_ON_UPDATE='1',
-               TMPDIR=str(report), TMP=str(report), TEMP=str(report))
-    steps = []
-    def call(args, cwd=destination):
-        args = list(map(str, args))
-        log = report / f'{len(steps):02d}.log'
-        with log.open('w') as output:
-            result = subprocess.run(args, cwd=cwd, env=env, stdout=output, stderr=subprocess.STDOUT)
-        steps.append(dict(args=args, log=log.name, exit_code=result.returncode))
-        write_json(report / 'steps.json', steps)
-        require(result.returncode == 0, 'Setup failed; inspect ' + str(log))
-    def checkout(name, path):
-        item = pins[name]
-        if not path.exists():
-            path.mkdir(parents=True)
-            call(['git', 'init', str(path)])
-            call(['git', '-C', path, 'fetch', '--depth=1', item['repository'], item['commit']])
-            call(['git', '-C', path, 'checkout', '--detach', item['commit']])
-        revision = subprocess.run(['git', '-C', str(path), 'rev-parse', 'HEAD'],
-                                  check=True, capture_output=True, text=True).stdout.strip()
-        require(revision == item['commit'], 'Existing checker has a different revision: ' + name)
-        status = subprocess.run(['git', '-C', str(path), 'status', '--porcelain', '--untracked-files=no'],
-                                check=True, capture_output=True, text=True).stdout.strip()
-        require(not status, 'Existing tracked checker edits: ' + name)
-    comparator = destination / 'comparator'
-    checkout('comparator', comparator)
-    checkout('lean4export', comparator / '.lake/packages/lean4export')
-    call([bindir / 'lake', '--no-cache', 'build', 'lean4export', 'comparator'], cwd=comparator)
-    checkout('landrun', destination / 'landrun')
-    call(['go', 'build', '-trimpath', '-o', 'landrun', '.'], cwd=destination / 'landrun')
-    checkout('nanoda', destination / 'nanoda')
-    call(['cargo', 'build', '--release', '--locked'], cwd=destination / 'nanoda')
-    from comparator import tool_paths
-    bins = tool_paths(destination, bindir)
-    write_json(report / 'receipt.json', {'status': 'TOOLS_BUILT_NOT_PROOFS_CHECKED', 'pins': pins,
-                                       'binary_sha256': {name: digest(path) for name, path in bins.items()}})
-    print('Pinned tools built. Runtime preflight and proof checks remain separate.')
-    print('Receipt: ' + str(report / 'receipt.json'))
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--bwrap',type=Path,required=True,help='Existing bubblewrap 0.12.0 executable')
+    parser.add_argument('--lean-bin')
+    main(parser.parse_args())

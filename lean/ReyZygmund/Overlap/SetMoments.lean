@@ -89,7 +89,7 @@ private theorem integral_setShadow_le_holder
         Real.rpow (volume.real (finiteSetShadow H)) (1 / q) := by
   let u := (finiteSetShadow H).indicator (fun _ => (1 : ℝ))
   have hu : MemLp u (ENNReal.ofReal q) volume :=
-    memLp_indicator_const _ (measurableSet_finiteSetShadow H hm) 1
+    memLp_indicator_const _ (measurableSet_finiteSetShadow H hm).nullMeasurableSet 1
       (Or.inr (volume_finiteSetShadow_lt_top H hfin).ne)
   have h := integral_mul_le_Lp_mul_Lq_of_nonneg hpq
     (Filter.Eventually.of_forall hF0)

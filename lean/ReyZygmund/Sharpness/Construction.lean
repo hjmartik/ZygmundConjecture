@@ -22,8 +22,8 @@ private theorem construction_volume_pi_real {m : ℕ} {d : Fin m → ℕ}
     (Set.pi Set.univ U)).toReal = ∏ i, (volume (U i)).toReal
   rw [Measure.pi_pi, ENNReal.toReal_prod]
 
-/-- The concrete finite Section 7 construction, with no conditional retained
-families or sparse/overlap conclusions among the assumptions. -/
+/-- A finite family of rectangles with the stated sparseness and overlap
+properties. These properties are conclusions of the construction. -/
 theorem exists_sharp_spatial_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 ≤ s)
     (d : Fin (n + 3) → ℕ) (hd : ∀ j, 0 < d j)
     (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))

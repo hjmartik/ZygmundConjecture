@@ -1,17 +1,39 @@
 name = "rey_zygmund_v3"
 version = "0.1.0"
-defaultTargets = ["ReyZygmund", "Verification"]
+defaultTargets = ["ReyZygmund.Submitted"]
 
 [leanOptions]
 autoImplicit = false
 
+# Pinned archive at SOURCE_LOCK.json; not a floating/local development dependency.
+# Run python3 -I -B tools/dependencies.py fetch from the repository root for the pinned sources.
 [[require]]
 name = "mathlib"
 path = ".lake/packages/mathlib"
 
 [[lean_lib]]
 name = "ReyZygmund"
-globs = ["ReyZygmund.+"]
+
+[[lean_lib]]
+name = "SubmittedSolution"
+
+[[lean_lib]]
+name = "SubmittedChallenge1"
+
+[[lean_lib]]
+name = "SubmittedChallenge2"
+
+[[lean_lib]]
+name = "SubmittedChallenge3"
+
+[[lean_lib]]
+name = "SubmittedChallenge4"
+
+[[lean_lib]]
+name = "SubmittedChallenge5"
+
+[[lean_lib]]
+name = "SubmittedChallenge6"
 
 [[lean_lib]]
 name = "Verification"

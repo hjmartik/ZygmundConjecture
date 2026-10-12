@@ -6,8 +6,8 @@ import ReyZygmund.Projection.AveragingRectangles
 
 For the averaging family, maximality of one partition cube rules out a
 removed difference strictly above the averaging rectangle in every coordinate.
-The same argument on the original family only needs the weaker containment
-condition of source Section 6, rather than incomparability.
+The same argument on the original family only needs weak incomparability,
+rather than incomparability.
 -/
 
 noncomputable section
@@ -74,9 +74,9 @@ theorem averagingRectangles_preserved
     (Finset.mem_union_left _ hJe) hRJ.le
   exact (not_lt_of_ge hJR) hRJ
 
-/-- Original averages are also preserved under the weaker containment
-condition used later in the paper, without asserting original membership in
-the averaging family. -/
+/-- Original averages are preserved under weak incomparability,
+without requiring the original family to belong to the averaging
+family. -/
 theorem original_averages_preserved_of_weaker_containment
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)

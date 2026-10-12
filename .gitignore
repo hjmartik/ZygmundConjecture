@@ -9,3 +9,5 @@ _site/
 *.ilean
 *.olean.server
 *.olean.private
+*.ir
+*.ir.sig

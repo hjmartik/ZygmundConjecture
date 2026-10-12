@@ -1,6 +1,6 @@
 import ReyZygmund.Sharpness.Growth
 
-/-! Expected propositions for the scalar Section 7 limits. -/
+/-! Statements of the scalar limits used in the sharpness construction. -/
 
 open Filter
 

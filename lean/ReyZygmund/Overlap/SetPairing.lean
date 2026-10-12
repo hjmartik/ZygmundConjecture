@@ -64,7 +64,7 @@ theorem memLp_setFamilyMaximal_finset
   have hb : MemLp b p volume := by
     apply memLp_finsetSum
     intro I hI
-    exact memLp_indicator_const p (hm I hI) _ (Or.inr (hfin I hI).ne)
+    exact memLp_indicator_const p (hm I hI).nullMeasurableSet _ (Or.inr (hfin I hI).ne)
   have hmeas := (measurable_setFamilyMaximal (H : Set _) H.countable_toSet hm f).ennreal_toReal
   apply hb.mono' hmeas.aestronglyMeasurable
   apply Filter.Eventually.of_forall

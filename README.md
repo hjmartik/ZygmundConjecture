@@ -4,9 +4,9 @@
 
 A Lean 4 formalization accompanying Henri Martikainen's [*The Zygmund conjecture and Rey's exponential integrability conjecture*](https://arxiv.org/abs/2609.23895), built on Mathlib.
 
-The formalization covers the two conjectures and their underlying maximal estimate, together with extensions to more general rectangle families and a sparse-family sharpness result. The paper is the primary mathematical exposition.
+The formalization covers the two conjectures and their underlying maximal estimate, together with related dyadic and overlap estimates and a sparse-family sharpness result. The paper is the primary mathematical exposition.
 
-[Main theorems](MAIN-STATEMENTS.md) · [Definitions and consistency](CONSISTENCY.md) · [Checking the formalization](VERIFYING.md)
+[Main theorems](MAIN-STATEMENTS.md) · [Independent specification](lean/ReyZygmund/MathlibOnly/README.md) · [Definitions and identifications](CONSISTENCY.md) · [Checking the formalization](VERIFYING.md)
 
 ## Main results
 
@@ -47,48 +47,43 @@ No continuity or doubling assumption on $`\phi`$ is imposed.
 This weak $`L(\log L)^{m-2}`$ estimate saves one logarithm compared with
 the full $`m`$-parameter strong maximal function, whose logarithmic power is $`m-1`$.
 
-The central analytic estimate is $`\|M_{\mathcal G}f\|_p\leq C_{m,d}(p')^{m-1}\|f\|_p`$, $`1<p\leq2`$, for incomparable $`m`$-parameter dyadic rectangle families, $`m\geq2`$. Here $`p'=p/(p-1)`$. It saves one factor of $`p'`$ compared with the unrestricted product maximal operator. Duality gives Rey's exponential integrability estimate for sparse incomparable families, with power $`1/(m-1)`$.
+The central analytic estimate is $`\|M_{\mathcal G}f\|_p\leq C_{m,d}(p')^{m-1}\|f\|_p`$, $`1<p\leq2`$, for weakly incomparable $`m`$-parameter dyadic rectangle families, $`m\geq2`$. Here $`p'=p/(p-1)`$. Weak incomparability means that no two rectangles are strictly nested in every coordinate factor. The estimate saves one factor of $`p'`$ compared with the unrestricted product maximal operator. Duality gives exponential integrability of the overlap function $`h_{\mathcal G}=\sum_{I\in\mathcal G}\mathbf 1_I`$, with power $`1/(m-1)`$, for sparse weakly incomparable families, and in particular proves Rey's conjecture.
 
-The continuous Zygmund theorem also uses an extension allowing certain containments: the slices arising after dyadic rounding need not be incomparable.
+Weak incomparability also accommodates the slices arising after dyadic rounding in the proof of the continuous Zygmund theorem.
 
 The three central results are:
 
-| Result | Mathematical role | Lean source |
+| Result | Mathematical role | Formal statement and proof |
 | --- | --- | --- |
-| [Continuous Zygmund endpoint estimate](MAIN-STATEMENTS.md#continuous-zygmund-endpoint-estimate) | Zygmund's conjecture in its continuous form | [Continuous/Endpoint.lean](lean/ReyZygmund/Continuous/Endpoint.lean) |
-| [Sparse incomparable overlap estimate](MAIN-STATEMENTS.md#sparse-incomparable-overlap-estimate) | Rey's exponential integrability conjecture | [Main/Overlap.lean](lean/ReyZygmund/Main/Overlap.lean) |
-| [Incomparable maximal estimate](MAIN-STATEMENTS.md#incomparable-maximal-estimate) | Central analytic estimate used to prove both conjectures | [Main/Maximal.lean](lean/ReyZygmund/Main/Maximal.lean) |
+| [Continuous Zygmund endpoint estimate](MAIN-STATEMENTS.md#continuous-zygmund-endpoint-estimate) | Zygmund's conjecture in its continuous form | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L57) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L94) |
+| [Sparse weakly incomparable overlap estimate](MAIN-STATEMENTS.md#sparse-weakly-incomparable-overlap-estimate) | Rey's exponential integrability conjecture, with weak incomparability and arbitrary sparsity parameter | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L40) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L50) |
+| [Weakly incomparable maximal estimate](MAIN-STATEMENTS.md#weakly-incomparable-maximal-estimate) | Central analytic estimate used to prove both conjectures | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L26) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L37) |
 
-We also formalize the following extensions, transfer steps and sharpness result:
+We also formalize the following dyadic, overlap and sharpness results:
 
-| Result | Mathematical role | Lean source |
+| Result | Mathematical role | Formal statement and proof |
 | --- | --- | --- |
-| [Maximal and overlap estimates under weaker containment](MAIN-STATEMENTS.md#maximal-and-overlap-estimates-under-weaker-containment) | Applies to the slices used in the continuous reduction | [Main/Overlap.lean](lean/ReyZygmund/Main/Overlap.lean) |
-| [Rounded dyadic endpoint estimate](MAIN-STATEMENTS.md#rounded-dyadic-endpoint-estimate) | Dyadic endpoint used to obtain the continuous theorem | [Main/Endpoints.lean](lean/ReyZygmund/Main/Endpoints.lean) |
-| [Sparse Φ-Zygmund overlap estimate](MAIN-STATEMENTS.md#sparse-φ-zygmund-overlap-estimate) | Overlap estimate without incomparability | [Main/PhiSparse.lean](lean/ReyZygmund/Main/PhiSparse.lean) |
-| [Sharpness for the classical dyadic Zygmund family](MAIN-STATEMENTS.md#sharpness-for-the-classical-dyadic-zygmund-family) | Sharpness even for incomparable families | [Main/Sharpness.lean](lean/ReyZygmund/Main/Sharpness.lean) |
+| [Rounded dyadic endpoint estimate](MAIN-STATEMENTS.md#rounded-dyadic-endpoint-estimate) | Dyadic endpoint used to obtain the continuous theorem | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L70) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L97) |
+| [Sparse Φ-Zygmund overlap estimate](MAIN-STATEMENTS.md#sparse-φ-zygmund-overlap-estimate) | Overlap estimate without incomparability | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L83) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L105) |
+| [Sharpness for the classical dyadic Zygmund family](MAIN-STATEMENTS.md#sharpness-for-the-classical-dyadic-zygmund-family) | Stronger quantified form of the paper's sharpness remark, even for incomparable families | [Statement](lean/ReyZygmund/MathlibOnly/SubmittedStatements.lean#L97) · [Proof](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean#L116) |
 
-## Scope and faithfulness
+## Independent specification, verification and correspondence with the paper
 
-[Main theorems](MAIN-STATEMENTS.md) gives the seven self-contained mathematical statements, including the hypotheses and constants for each setting. The links beneath each result lead to its independent Lean statement, definitions and proofs. No software installation is needed to inspect them.
+[Main theorems](MAIN-STATEMENTS.md) presents the six results in mathematical prose. Their precise formal meaning is given by an [independent specification rebuilt from Mathlib primitives](lean/ReyZygmund/MathlibOnly/README.md), without importing the proof library. The specification states the results and defines the mathematical objects needed to interpret them. No software installation is needed to inspect these statements and definitions.
 
-Separate mathematical reviews checked the correspondence between these formal statements and definitions and the paper. The [mathematical scope notes](VERIFYING.md#mathematical-scope) describe the coverage of the formalization relative to the paper.
+Mathematical review checked that the statements and their definitions express the intended results of the paper. This addresses the central question: does the Lean specification faithfully represent the mathematics we intend to prove? The formal checks then verify that the supplied proofs establish those statements.
 
-## Consistency checks of the definitions
+The mathematical arguments are developed separately in the [proof library](lean/ReyZygmund/), using its own definitions and supporting constructions.
 
-The [consistency guide](CONSISTENCY.md) explains how the mathematical objects are represented in Lean and how the independently written definitions are related to those used in the proofs. It links to the relevant definitions and identifications, distinguishing identities proved in Lean from comparisons checked mathematically.
+Bridges proved in Lean connect those definitions to the independent specification. The [public proofs](lean/ReyZygmund/MathlibOnly/SubmittedSolutions.lean) use these bridges to derive the six independently stated results from the library’s theorems. The [consistency guide](CONSISTENCY.md) explains these connections and the mathematical meaning of constructions used within the proofs.
 
-## Verified against a Mathlib-only statement
+Comparator compares each resulting theorem with its independent specification, including the definitions determining its meaning. All six comparisons passed. Lean’s default kernel, Nanoda and con-ron accepted the exported proofs and their exported dependencies. The theorem proofs contain no omitted steps (`sorry`) and use only the standard axioms `propext`, `Classical.choice` and `Quot.sound`. The [verification guide](VERIFYING.md) records the checking scope and reproduction instructions.
 
-Each of the seven results has an [independent Lean statement](lean/ReyZygmund/MathlibOnly/Statements.lean) using [definitions](lean/ReyZygmund/MathlibOnly/Definitions.lean) that depend only on Mathlib. Neither file imports the proof development. Identities proved in Lean relate these definitions to those used in the proofs, so the main theorems give the independently stated results.
-
-On 26 September 2026, all seven results passed Comparator's comparison of the formal statements and their definitions. Their exported proofs, including the declarations on which they depend, were accepted by both Lean's default kernel and Nanoda.
-
-The theorem proofs contain no omitted steps (`sorry`) and use only the standard axioms `propext`, `Classical.choice` and `Quot.sound`. See the [verification summary](VERIFYING.md#what-has-been-checked) for the recorded checks and their scope, and the [reproduction instructions](VERIFYING.md#4-comparator-with-nanoda-on-linux) to repeat the Comparator and two-kernel checks.
+A checked proof of a faithful specification establishes the intended mathematical results; whether it follows the paper’s argument is a separate question. This formalization was developed to follow the paper’s proof strategies closely. Separate mathematical reviews examined that correspondence and found agreement in the main lines of argument. The consistency guide explains how the paper’s definitions and supporting constructions are represented in Lean.
 
 ## Building
 
-The development uses Lean 4.34.0 and a pinned Mathlib version. See the [verification guide](VERIFYING.md) for dependency setup, build options and checking commands.
+The development uses Lean 4.35.0-rc4 and a pinned Mathlib version. See the [verification guide](VERIFYING.md) for dependency setup, build options and checking commands.
 
 For ordinary compilation after that setup:
 
@@ -101,11 +96,11 @@ lake build
 
 | Location | Contents |
 | --- | --- |
-| [MAIN-STATEMENTS.md](MAIN-STATEMENTS.md) | The seven mathematical statements and source links |
+| [MAIN-STATEMENTS.md](MAIN-STATEMENTS.md) | The six mathematical statements and source links |
 | `lean/ReyZygmund/` | The proof development |
-| [MathlibOnly/README.md](lean/ReyZygmund/MathlibOnly/README.md) | Independently written statements and their relation to the proofs |
-| `lean/Verification/` | Reviewed formal statements and programs for checking them |
-| `verification/comparator/` | The seven Mathlib-only comparison adapters and configurations |
+| [MathlibOnly/README.md](lean/ReyZygmund/MathlibOnly/README.md) | Guide to the independent specification and its proofs |
+| `lean/Verification/` | Supporting declaration checks and verification programs |
+| `verification/comparator/` | The six statement-comparison configurations and their adapters |
 | [CONSISTENCY.md](CONSISTENCY.md) | Mathematical definitions and the identities relating their descriptions |
 | [VERIFYING.md](VERIFYING.md) | Reproduction instructions and checking scope |
 | `tools/` | Checking and site-generation programs |
@@ -113,7 +108,7 @@ lake build
 
 ## How this was built
 
-The formalization was developed with AI assistance, with separate reviews of its scope and faithfulness to the intended mathematics. The main Lean codebase was produced using GPT-6-Astra at Max reasoning effort, in a workflow with specialized subagents. Claude Fable 5.1 provided additional independent and blind review of the mathematical specifications.
+The formalization was developed with AI assistance, with separate reviews of its scope and faithfulness to the intended mathematics. The main Lean codebase was produced using GPT-6-Astra in a workflow with specialized subagents. Claude Fable 5.1 provided additional independent and blind reviews of the mathematical specifications and of the correspondence between the formal proofs and the paper’s main arguments.
 
 ## Authors and citation
 
