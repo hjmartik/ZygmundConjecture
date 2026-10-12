@@ -67,7 +67,7 @@ Let $`\mathcal G\subset\mathcal D`$ be weakly incomparable. Then
 ```math
 \|M_{\mathcal G}f\|_p
 \leq C_{m,d}(p')^{m-1}\|f\|_p,
-\qquad 1<p\leq2.
+\qquad 1\lt p\leq2.
 ```
 
 The constant depends only on $`m`$ and $`d`$.
