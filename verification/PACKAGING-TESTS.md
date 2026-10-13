@@ -6,9 +6,8 @@ The mathematical verification results are recorded separately in
 [RESULTS.json](RESULTS.json).
 
 Test outcomes and checking-program identities are recorded in
-[TOOLING-RESULTS.json](TOOLING-RESULTS.json). The compiled inspection, Linux runtime
-and dependency-recovery results are retained from earlier runs; those fixtures
-were not rerun for this update. The same record explains why they still apply.
+[TOOLING-RESULTS.json](TOOLING-RESULTS.json). The eight Linux runtime fixtures
+passed in the freshly provisioned VM used for the six-result checks.
 
 ## Lightweight tests
 
@@ -30,11 +29,22 @@ python3 -I -B tools/test_comparator_acceptance.py
 
 ## Compiled Lean inspection
 
+The [statement-and-axiom checking program](../lean/Verification/Inspect.lean),
+written in Lean, compares each registered theorem with a separately written
+expected statement, called its contract. It checks definitional equality with
+full unfolding transparency: definitions may be unfolded, but merely logically
+equivalent statements do not count as matching. The expected statements are
+listed in [TARGETS.json](TARGETS.json). The surrounding Python checks reject
+missing or duplicate reports, wrong declaration origins and unapproved axioms,
+including indirect uses of an omitted proof. The fresh-build command also
+rejects compiler warnings and changed source files.
+
 Seven Lean inspection fixtures passed their expected outcomes. A valid theorem
 and a definitionally equal presentation were accepted. A merely logically
 equivalent presentation, indirect admission, custom axiom, changed conclusion
 and extra assumption were rejected. The valid case also tested wrong-origin
-rejection through the production inspector and report checking.
+rejection through the [statement-and-axiom checking program](../lean/Verification/Inspect.lean)
+and its report checks.
 
 ```sh
 python3 -I -B tools/test_inspection.py
@@ -65,13 +75,41 @@ scratch writes. The checking process confirmed its memory and swap limits.
 python3 -I -B tools/test_comparator_runtime.py
 ```
 
+## Native macOS comparisons
+
+The optional local runner was tested on an Apple Silicon Mac with the pinned
+Lean toolchain. Its nine small cases cover a valid theorem, an extra assumption,
+a changed definition, an indirect admission, a custom axiom, and missing or
+deliberately failing Nanoda and con-ron executables. Each produced its intended
+outcome. Both failing executables ran and printed their markers; Lean and the
+other checker accepted while Comparator rejected.
+
+Three additional checks covered the required trust acknowledgement, selection
+of the local toolchain without inherited checker overrides, and an actual
+timeout. The test receipt is recorded under `native_macos_fixtures` in
+[TOOLING-RESULTS.json](TOOLING-RESULTS.json).
+
+```sh
+python3 -I -B tools/test_comparator_local.py --trust-project-code
+```
+
+These tests deliberately run **without a sandbox** and do not establish sandbox
+protection. Their success label is `PASS_LOCAL_FIXTURES_ONLY`. The existing
+sandboxed Linux procedure and its test results are unchanged.
+
+The complete local command was also exercised on all six main results using
+the existing matching Mathlib cache. All six comparisons and all three proof
+checkers succeeded, with status `PASS_ALL_SIX_UNSANDBOXED`. This validates the
+native Mac procedure; the recorded sandboxed verification remains the one
+described in [the verification guide](../VERIFYING.md#what-has-been-checked).
+
 ## Dependency recovery
 
-The three dependency-recovery fixtures also passed in the pinned Linux
-environment: a wholly absent compiled module, a missing `.olean.server`, and a
+The three dependency-recovery fixtures passed with the pinned Linux tools:
+a wholly absent compiled module, a missing `.olean.server`, and a
 missing `.ir` with the other artifacts retained. Each detected the intended
 import failure, rebuilt the module from pinned sources, and checked a small
-theorem through the production inspector. The original cache was unchanged.
+theorem through the same statement-and-axiom checker. The original cache was unchanged.
 
 ```sh
 python3 -I -B tools/test_recovery.py --packages lean/.lake/packages

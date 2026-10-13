@@ -256,5 +256,8 @@ how to repeat them.
 The formalization also gives the weakly incomparable maximal estimate for
 $`2<p<\infty`$.
 
+The examples cited in the paper to establish sharpness of the incomparable
+maximal power are not formalized.
+
 The shifted grids above use $`[0,1)`$, as in the paper; the underlying proof uses $`(0,1]`$.
 The corresponding rounded-family maximal functions agree almost everywhere.

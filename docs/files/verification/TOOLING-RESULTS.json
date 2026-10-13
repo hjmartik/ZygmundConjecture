@@ -1,4 +1,204 @@
 {
+  "linux_runtime_fixtures": {
+    "status": "PASS_FIXTURES_ONLY",
+    "checked_date": "2026-10-12",
+    "theorem_runs": false,
+    "fixture_report_sha256": "59be2fb397ac802a5b10fb9484106ee6e9de269ca30ee665a1911a625af8bfe6",
+    "tool_sha256": {
+      "lean": "72d674b469a5732f69b4d6408c215040c227cc25b4c6b7c7826c16fe19e088b3",
+      "lake": "3c36a30874edda465d5c0ca9da80d738cb9162bae54bd8d6395b8217fd89503e",
+      "leanexport": "c0d5e538684916f76a81e5a016909a244ae29446afc8232c6921095ac6ebd500",
+      "leanchecker": "525f3825e509584271babe5dfc397197ff703153de9d227e26e5b8d0b8a8904c",
+      "nanoda_bin": "09411b94b320d8cc42d83787fc0588082ddda4e0ecbc3cfa6190280eddd0b318",
+      "con-ron": "bcddfcae579fb0e6d9fe80e85fe91e0c7f89e6fa1ec47bb8c03e248aa8b47296",
+      "bwrap": "fe6674bdd33a20ad8eb6d37c1862b2e302c49c8bbe3b7d2ad4197d450caa15f5"
+    },
+    "cases": [
+      {
+        "name": "valid",
+        "log_sha256": "6f6cdde0a425a9895207e0271f54449f7add5008981f627883127347fc739b76",
+        "outcome": {
+          "exit_code": 0,
+          "lean_accepted": true,
+          "nanoda_accepted": true,
+          "con_ron_accepted": true,
+          "comparator_accepted": true,
+          "passed": true
+        },
+        "expected_failure": null,
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "45aa380408cadc4627ab6d8dbdc6b3da61c1e721df5373fcdf24063b58e89af2",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "config.json": "45b451085c641ce9f18eb35f85cb157a1e47af2da089f8fc11564052596223d2"
+        }
+      },
+      {
+        "name": "extra-assumption",
+        "log_sha256": "f6dfbd05651ce700e539f92ab460c84a234339baf999fc416c247c33adfa62c3",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "match",
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "379d70f05cc496fd83ec2ff3a81d1dfbf5980416a0726e52c7d7986f78ef1b07",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "config.json": "45b451085c641ce9f18eb35f85cb157a1e47af2da089f8fc11564052596223d2"
+        }
+      },
+      {
+        "name": "changed-definition",
+        "log_sha256": "2407b0d948fa3fa81e63690275719ed776567d4a97cd17ed7312ab5049d62390",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "match",
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "7284def356c697a14201a99f0b3024f7d415b1b8db6e13a91cebf5a3c4cf2828",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "e14743c2b967eb872922983da710fa56d8bcebdb417bb304be26527459e9ce3e",
+          "config.json": "45b451085c641ce9f18eb35f85cb157a1e47af2da089f8fc11564052596223d2"
+        }
+      },
+      {
+        "name": "indirect-admission",
+        "log_sha256": "d4891f9c22c87a46a800e5544a27a3484eff7bd172920a90bcda9d7d23caf1d9",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "sorryAx",
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "2afa31c7a6c5f6d8f0e970c0ea9749a52d8b24f49e516d8fc003deccc3beaf39",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "config.json": "45b451085c641ce9f18eb35f85cb157a1e47af2da089f8fc11564052596223d2"
+        }
+      },
+      {
+        "name": "missing-nanoda",
+        "log_sha256": "57e6ea8a7590ddd657aae6f0fe7fa8e15173d954092fef936a5d420768356ec9",
+        "outcome": {
+          "exit_code": 2,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "was not found",
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "45aa380408cadc4627ab6d8dbdc6b3da61c1e721df5373fcdf24063b58e89af2",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "config.json": "708696d356239a096d476dcec30a6fd109f73163aee20ca0d27baf6f86841072"
+        }
+      },
+      {
+        "name": "failing-nanoda",
+        "log_sha256": "e520fcdb2d8bc0b8bb8827de6bb5ca811c97e524ffb03ce77f6e0244848eacad",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": true,
+          "nanoda_accepted": false,
+          "con_ron_accepted": true,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "nanoda kernel rejected",
+        "invocation_marker": "PUBLIC_FIXTURE_NANODA_EXIT_73",
+        "inputs": {
+          "Solution.lean": "45aa380408cadc4627ab6d8dbdc6b3da61c1e721df5373fcdf24063b58e89af2",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "fixture-failing-nanoda": "eed6603df381f282a4ab277a3de9d8ef1b6fe95fd554e1a79bd6cd16a2a56cc0",
+          "failure.c": "7d5d5e1c0cdc11c98816692ed296bd5bd473f4a31b996f151b13bf164ee31446",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "config.json": "0fada91d25675af2ce0e50299b607c8435663198b9f22d40b2090a68f11d2a84"
+        }
+      },
+      {
+        "name": "missing-con-ron",
+        "log_sha256": "44fd2ee78d143a145629922ada6ff46c0c8ca5edb7824d5ae68772b060fa2147",
+        "outcome": {
+          "exit_code": 2,
+          "lean_accepted": false,
+          "nanoda_accepted": false,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "was not found",
+        "invocation_marker": null,
+        "inputs": {
+          "Solution.lean": "45aa380408cadc4627ab6d8dbdc6b3da61c1e721df5373fcdf24063b58e89af2",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "config.json": "7c23089a9d525896451698f721cb279aeb7da06046234b13b2d78cf9da2c6646"
+        }
+      },
+      {
+        "name": "failing-con-ron",
+        "log_sha256": "e6a6ae463b73180a0042d2cb282b87b984e7981451c6e0d317b0305803410c7e",
+        "outcome": {
+          "exit_code": 1,
+          "lean_accepted": true,
+          "nanoda_accepted": true,
+          "con_ron_accepted": false,
+          "comparator_accepted": false,
+          "passed": false
+        },
+        "expected_failure": "con-ron kernel rejected",
+        "invocation_marker": "PUBLIC_FIXTURE_CON_RON_EXIT_73",
+        "inputs": {
+          "Solution.lean": "45aa380408cadc4627ab6d8dbdc6b3da61c1e721df5373fcdf24063b58e89af2",
+          "fixture-failing-con-ron": "f3593342007db3e9fb5355e2b5d9863c2385301da44ff25fd940181202fabde0",
+          "lakefile.toml": "6a20b7ca42365aef96d26a832c9e123b00335d200b52b5080cc6de98f4f04543",
+          "failure.c": "a8f1a06f5fbd24f35afc7995bbf3b772d39af9e1e265e8c52b7b013274e8b5b2",
+          "lake-manifest.json": "fc90fc455cc84c3ed2e0111c2ece32f59db66dec1fbe249a661e732d19a38e21",
+          "lean-toolchain": "8f89aa44fccdb1a0b6cc768c7c9f54b94cd40e47a08d582f82d1235f13075cf7",
+          "Challenge.lean": "86fd3da3e5b71dcf806a26df28d316af50948d13e1c99bd2e8ffc666abdcd18c",
+          "build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "config.json": "079d9b90987217871cb83ff423ce42db5e497dd41b6fbaad06bcddd52459118d"
+        }
+      }
+    ],
+    "provenance": "Run in the freshly provisioned Linux environment before the six theorem comparisons."
+  },
   "status": "PASS_FIXTURES_ONLY",
   "theorem_runs": false,
   "checked_date": "2026-10-12",
@@ -67,7 +267,7 @@
   "retained_fixture_evidence": {
     "status": "PASS_IDENTITY_RECONCILIATION",
     "previous_record_sha256": "a7394ed6d4476654f137711d62326ea5a2e6913c2fc93225c86d642ce9a74646",
-    "statement": "Compiled inspection, Linux runtime and dependency-recovery fixtures were not rerun for this update. Their programs, fixture sources, inspector and dependency pins are byte-identical to the previous release. Shared-helper changes only update exact production inventory counts; the verification driver changes only its count in the docstring. The renamed public modules and revised import boundary were checked by the 26 rerun lightweight tests and production packet preparation.",
+    "statement": "Compiled inspection and dependency-recovery fixtures apply to this package. Their programs, fixture sources, inspector and dependency pins match the checked versions. Shared-helper changes only updated exact production inventory counts; the verification driver changed only its count in the docstring. The public modules and import boundary passed the wrapper tests and production packet preparation.",
     "unchanged_since_previous_release": {
       "lean/SOURCE_LOCK.json": "21f3220c9e0093f2e5ba67f4a2eeebd4dd4eaacfcf8f1eefa9c17dfefc12d3fd",
       "lean/lake-manifest.json": "bf22662858af28855818b5556042b8286857df9a29849f2e7f75682c1785fcb1",
@@ -139,121 +339,6 @@
       "exit_code": 0,
       "log_sha256": "967f45f7318d4822bebbcc00a0d2a6e1c3977e3e82de3c237e04b06c6bb92582"
     },
-    "linux_runtime_report_sha256": "3d3187236a0f588afd4acef0616f1236dc84423318f38538c513d374c91c68b0",
-    "linux_cases": [
-      {
-        "name": "valid",
-        "outcome": {
-          "exit_code": 0,
-          "lean_accepted": true,
-          "nanoda_accepted": true,
-          "con_ron_accepted": true,
-          "comparator_accepted": true,
-          "passed": true
-        },
-        "log_sha256": "2cc339323d1bc67c5d8cb476768f105ffbe1384fe68b3e072da1b4bdeceb8f5a",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "extra-assumption",
-        "outcome": {
-          "exit_code": 1,
-          "lean_accepted": false,
-          "nanoda_accepted": false,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "37633f5fdb009508f7d0e609a689cbeda8864548f2efd57982d4c79281bc5597",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "changed-definition",
-        "outcome": {
-          "exit_code": 1,
-          "lean_accepted": false,
-          "nanoda_accepted": false,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "2443820a61cd82b2d216685c5cd4c622e357414251cb8a4ac7d63399c78be4b0",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "indirect-admission",
-        "outcome": {
-          "exit_code": 1,
-          "lean_accepted": false,
-          "nanoda_accepted": false,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "61cdfaadb7eff5ef14d7bbf2a5b865d446390f39066c3cae7eb30cf71b9a8a71",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "missing-nanoda",
-        "outcome": {
-          "exit_code": 2,
-          "lean_accepted": false,
-          "nanoda_accepted": false,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "c225e76b4b123377aec66f3184d4f70cfd65c67f1d1b16678b98e52e4382b04a",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "failing-nanoda",
-        "outcome": {
-          "exit_code": 1,
-          "lean_accepted": true,
-          "nanoda_accepted": false,
-          "con_ron_accepted": true,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "013b882033c2769284c9ba5fb1633cd52e8f98ce5e6df347e06573b08f7cbe85",
-        "invocation_marker": "PUBLIC_FIXTURE_NANODA_EXIT_73",
-        "failure_executable_sha256": "9a114eae9308e8891202253dafaee231537bd68529c336d2c7ca1b1282fbd5a0"
-      },
-      {
-        "name": "missing-con-ron",
-        "outcome": {
-          "exit_code": 2,
-          "lean_accepted": false,
-          "nanoda_accepted": false,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "8e621e5dd2a3b50fb01b98619eb7ac759820d73351aedc8d9f1e9e53f1ac7ff5",
-        "invocation_marker": null,
-        "failure_executable_sha256": null
-      },
-      {
-        "name": "failing-con-ron",
-        "outcome": {
-          "exit_code": 1,
-          "lean_accepted": true,
-          "nanoda_accepted": true,
-          "con_ron_accepted": false,
-          "comparator_accepted": false,
-          "passed": false
-        },
-        "log_sha256": "a4604e8031bf8f5dc58271cfc9a916a24ead8a33d95dfaa871cf8205253c4ad3",
-        "invocation_marker": "PUBLIC_FIXTURE_CON_RON_EXIT_73",
-        "failure_executable_sha256": "8dc8126e45dacbafc8671cc9058db8d7d31d182adda4ff443be9a733946ffacf"
-      }
-    ],
     "recovery_suite_sha256": "3974b09ef8a84b742112b388e0e9c2819fa75676b847afcc4c1e126024fc8e2c",
     "recovery_cases": [
       "whole-family",
@@ -304,5 +389,150 @@
     "packet_status": "PREPARED_NOT_CHECKED",
     "packet_report_sha256": "07ad4aa1196b0a2207870676ef6306ae66b59738591e5fa28e5285fceb282c14",
     "theorem_checks_rerun": false
+  },
+  "native_macos_fixtures": {
+    "status": "PASS_LOCAL_FIXTURES_ONLY",
+    "sandboxed": false,
+    "theorem_runs": false,
+    "scope": "Small examples for the optional trusted-code local runner; not sandbox acceptance",
+    "finished_utc": "2026-10-13T03:31:09.315238+00:00",
+    "platform": "macOS 27.0.1",
+    "architecture": "arm64",
+    "fixture_report_sha256": "28dc38caf9f6cacbb8039b48f8bd140f3c7942316e2cd3d579d96ba244ea71f7",
+    "tool_sha256": {
+      "lean": "d1d9c26a539f54fe839d2aa7760bf1ac1dd76a30b26e2c9684bebf2900038fcf",
+      "lake": "d2d63c80ca10bd2cc9557d11d59221b95c6eefb078c9652a11ef887ab8a068a5",
+      "leanexport": "92104293b343d52046207d46427d6fa42043166dd79282d7c1e2825e61857427",
+      "leanchecker": "d70e645ea2b0e597d0ff4cf67aa0c268483fac0b5b2b991ca2d4cd7fb78ab73c",
+      "nanoda_bin": "b5a75a50d07b06a25b3ddb9519144ebdeed8e0f3489222c88ba4049dfe8ce627",
+      "con-ron": "5d2a39e47a7e61b569906f66d1ee3d7f760315b73b0fcae1660c848ffaacd2e7"
+    },
+    "program_sha256": {
+      "tools/common.py": "a5d16dcf6ff54562487039c9a728b6f5ed33d33de9548781d8b141f08890bcd7",
+      "tools/check.py": "9aaa268f87b38622aebae7c1600e4eddd3a8495a9edc5900b60733dea17145e0",
+      "tools/comparator.py": "14832661d3c22e463a51ddf7c8192f5001ec322c209a1bf5f5dc59e03cd67a0d",
+      "tools/comparator_runtime.py": "a02658a31a9e91e278da519e9171c51d68cd051b1490b7f47631324fa0e1fe75",
+      "tools/comparator-child.py": "29b82994af017190174a9b74fe6921ddff2c3f4d6e52a77d45cf4222c3fe8880",
+      "tools/comparator-preflight.py": "cb17892227b5c1c7296151ff3b1ec4859257fedbc5580eea019f83fcd05c047e",
+      "tools/comparator_local.py": "bfa14c89fd1bd98e75754af29b819c0c3f88423a00810bffcb65765239d20531",
+      "tools/test_comparator_local.py": "71a1029000d8da3ae545373ab1484734d1b4400a96552ab1c0543f625fc858ee"
+    },
+    "cases": [
+      {
+        "name": "valid",
+        "exit_code": 0,
+        "lean_accepted": true,
+        "nanoda_accepted": true,
+        "con_ron_accepted": true,
+        "comparator_accepted": true,
+        "passed": true,
+        "expected_failure": null,
+        "invocation_marker": null,
+        "log_sha256": "0c25e304c09e7e89f41c6e8ab3530b7c094a3befe68a546f03380b68595c3688"
+      },
+      {
+        "name": "extra-assumption",
+        "exit_code": 1,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "match",
+        "invocation_marker": null,
+        "log_sha256": "53d98f7f0c9e6eeb69a3c4d0559b2883d2d766223f5d48d5b6075e1d3e4fb73f"
+      },
+      {
+        "name": "changed-definition",
+        "exit_code": 1,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "match",
+        "invocation_marker": null,
+        "log_sha256": "4c0b413369dcc2beb69445837168a6012c4065e4ddb55de52254da271cd1534f"
+      },
+      {
+        "name": "indirect-admission",
+        "exit_code": 1,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "sorryAx",
+        "invocation_marker": null,
+        "log_sha256": "c9d0ec354b8fb39f7d9946c9e8f174501a1c2b53269f5190c071b2327de9c83e"
+      },
+      {
+        "name": "custom-axiom",
+        "exit_code": 1,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "unjustified",
+        "invocation_marker": null,
+        "log_sha256": "a9456d61c850a56387597206a0e5c227473d45398372df771e305a41f738f1b7"
+      },
+      {
+        "name": "missing-nanoda",
+        "exit_code": 2,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "was not found",
+        "invocation_marker": null,
+        "log_sha256": "109fb997520dead0ba9a7f485721d827fc9a246945238e72f2c873a20c26405a"
+      },
+      {
+        "name": "failing-nanoda",
+        "exit_code": 1,
+        "lean_accepted": true,
+        "nanoda_accepted": false,
+        "con_ron_accepted": true,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "nanoda kernel rejected",
+        "invocation_marker": "LOCAL_FIXTURE_NANODA_EXIT_73",
+        "log_sha256": "2c413b3e226dad3a524e47f3b456fc6bb9062cf33fbb65a4bac76f745a2b7bad",
+        "failure_executable_sha256": "ab022b14c5abee2b78a2330017ac36d312c143ea3066df273274e0ccd4b454f0"
+      },
+      {
+        "name": "missing-con-ron",
+        "exit_code": 2,
+        "lean_accepted": false,
+        "nanoda_accepted": false,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "was not found",
+        "invocation_marker": null,
+        "log_sha256": "964067cfdf650e0f1b02818a21f6731af3d5fb4a46a4f533947541d78f5b60a2"
+      },
+      {
+        "name": "failing-con-ron",
+        "exit_code": 1,
+        "lean_accepted": true,
+        "nanoda_accepted": true,
+        "con_ron_accepted": false,
+        "comparator_accepted": false,
+        "passed": false,
+        "expected_failure": "con-ron kernel rejected",
+        "invocation_marker": "LOCAL_FIXTURE_CON_RON_EXIT_73",
+        "log_sha256": "0a862ba095c7a0f008fae7a93d4451013cb45c9ad9cf7ccfdf48d49feeae82b3",
+        "failure_executable_sha256": "de68dc44b8641edccab64d55a6457a5e1491dcb70cd5c3a9b4c23f55f629ed4a"
+      }
+    ],
+    "wrapper_tests": [
+      "explicit-trust-required",
+      "controlled-environment-not-a-sandbox",
+      "actual-timeout-is-not-success"
+    ]
   }
 }

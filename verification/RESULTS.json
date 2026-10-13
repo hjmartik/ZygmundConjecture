@@ -419,10 +419,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 342.354,
-      "log_sha256": "b85e00da7a7fc37969e8b5c713ed510f656a0b05738a4b65c5ec0de9f4395414",
+      "seconds": 293.796,
+      "log_sha256": "651848b0cd692841917785e9f45995c0a9778ea638b1046657ccf2b25a1aaf02",
       "configuration_sha256": "09ee16c9146dc6ff8d90ddfedfc53140121065b8e9e02620e4ad92321b3a62b8",
-      "runtime_configuration_sha256": "51413de3a4bf5567a10ed0a2f571088d3786858250c58b5054bc93e731f53e43"
+      "runtime_configuration_sha256": "d22c769daf6b6cb5d55b52232e5b01c018d1f6b57ebd5b60e4404fbd6c242385"
     },
     {
       "id": "main-2",
@@ -436,10 +436,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 100.755,
-      "log_sha256": "fd40ad1620dc00b9d6fce5d7c91235f43ca004d908e76c976527e67e077bd441",
+      "seconds": 95.546,
+      "log_sha256": "74080d2ccc735a7626eeac28d54d0c748b48a9ca9b930799604171664d6c4811",
       "configuration_sha256": "f19fd1a13ce2dc15120cd97fc53af3fb0180ea8ab02dbbf2cd1bce98ce0708d0",
-      "runtime_configuration_sha256": "a4f959715090b135367e2844bb652ec26c6f00319d6c1108d2559fdbcf3f45d5"
+      "runtime_configuration_sha256": "471a686e9d350b7be9dd4a9e0f61fede8e4047b24337b842991e422227266ead"
     },
     {
       "id": "main-3",
@@ -453,10 +453,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 102.29,
-      "log_sha256": "766c39dc633bed62f206fb940a97adf5b3c88a4f9269c6923f8a28e2be0ac530",
+      "seconds": 95.401,
+      "log_sha256": "eaf055369968dbef7bb62bb94a01a62e9a2423fe39bdacd5795ca704021a283b",
       "configuration_sha256": "00bdf8054038cf6cd5a50cbbc45e33bba5e9a1fe561bf47de4c7c68eec2c0cd9",
-      "runtime_configuration_sha256": "f93b7ac0a42f9deedb7fb4b40058343f6613aa2d02446156adab73f9ae34c02d"
+      "runtime_configuration_sha256": "d41265dace28f083e2c3940698edec76448d09826ed84822f4668146562c890c"
     },
     {
       "id": "main-4",
@@ -470,10 +470,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 98.875,
-      "log_sha256": "ad4f69b5bd26f6fe58dba445e51aa57333a28d647ada51ce019f684c0f83be1f",
+      "seconds": 98.681,
+      "log_sha256": "4aa71c7a76bcb56e6ffcda0c1bbe7b6bd29ddabf6ed24ad3e5abeb2a13f52d88",
       "configuration_sha256": "f9e2d5f5ab8b2e66275b568c0a7a49b818ac52c8ba670a8a0297f7874af83734",
-      "runtime_configuration_sha256": "b63afafba9831936ef0631bea9d3956dfcf30ca5f47c42a637ea67ebc00f43ee"
+      "runtime_configuration_sha256": "445cb751be57174e7cac8f4e12aec6216610ac0a3850fcb43deb8b8d67c07a2f"
     },
     {
       "id": "main-5",
@@ -487,10 +487,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 103.026,
-      "log_sha256": "0686a4518e2e118be6a38ec09574b7d841e9920c9c1a802b6146268e4aa659a3",
+      "seconds": 103.757,
+      "log_sha256": "30f0d60d4fde3af758a6eedb36e7d596e4c41da223661f7592de2150ddefd1db",
       "configuration_sha256": "7629e5186116fa40194e260c044c4741263827bef23148f720f22a18aa19f6bf",
-      "runtime_configuration_sha256": "ab0e40380f5d663ceb7d53e2288a63ab28caa199a54803ddfb0405ee92013284"
+      "runtime_configuration_sha256": "f22fa8e6129e39a9630203a3803707dc083656244aad11b4a53651af660bf03b"
     },
     {
       "id": "main-6",
@@ -504,10 +504,10 @@
         "nanoda": true,
         "con-ron": true
       },
-      "seconds": 66.133,
-      "log_sha256": "dcb7a3082c176ed6fb43f07f5ae251333f6bb3611751feda36b53961b04cd66b",
+      "seconds": 63.653,
+      "log_sha256": "48560db028106f6e51f6f142d7e8a29c1bea4544bf73a97fec9680a01e4e8c1d",
       "configuration_sha256": "880226fd92df8303e7189c51054169d7c4ab3a6bcb07a6ee788f659c5da23bfa",
-      "runtime_configuration_sha256": "c2782e8f763cd4af2116da60f0e97d15e7076907cd8d91fcac7c2737701ead83"
+      "runtime_configuration_sha256": "7acb9af30892777804aa6375e54c60a49669ae1b77b91d715b5009d8e49f9f5b"
     }
   ],
   "tools": {
@@ -530,7 +530,7 @@
       "sha256": "bcddfcae579fb0e6d9fe80e85fe91e0c7f89e6fa1ec47bb8c03e248aa8b47296"
     },
     "bwrap": {
-      "sha256": "6dcff9073783e3b59d1bd83a5ed5661e4c40785a80de836f26cb0aaaa267bd26"
+      "sha256": "fe6674bdd33a20ad8eb6d37c1862b2e302c49c8bbe3b7d2ad4197d450caa15f5"
     }
   },
   "dependency_sources": [
@@ -580,7 +580,31 @@
       "source_tree_sha256": "b676a2088335df34655dfa8e2d76f2f31944b65550fa8b96f74878a90caeccec"
     }
   ],
-  "comparison_report_sha256": "643c4b22add2c7b9c1e96adf9a5a7d282a8245889c79fe52d871e2607cafeba9",
+  "comparison_report_sha256": "9161838610cb98c12d725f95dd2fb1cda08661785a5247bdb54143fa1a845461",
+  "comparison_environment": {
+    "fresh_vm": true,
+    "architecture": "aarch64",
+    "os_image_url": "https://cloud-images.ubuntu.com/releases/resolute/release-20260720/ubuntu-26.04-server-cloudimg-arm64.img",
+    "os_image_sha256": "7bcf159e29ad0000bfed9c57875908c39268f5ed1257f4958fa6a9f5f60edd54",
+    "kernel": "7.0.0-28-generic",
+    "host_folder_mounts": false,
+    "forwarded_ssh_agent": false,
+    "unprivileged_checking": true,
+    "imported_project_build_artifacts": false,
+    "trusted_dependency_cache_used": true,
+    "project_first_build_inside_comparator": true,
+    "sandbox": "Official bundled Comparator bubblewrap sandbox plus offline outer bubblewrap",
+    "baseline_sha256": "5c3fa572260f09337c603b42bb649cff0eefac7f368212fca0c5d888141bf9a7",
+    "precomparison_attestation_sha256": "eab2a2513dc32e06af23d42441e761f1e075abac97401cd4fb517220f9c9350e"
+  },
+  "comparison_input_archive_sha256": "f6a3461938045666b68e601bd5d139f043b41bdb1b5ba9495f51f5843deb4968",
+  "comparison_evidence_archive_sha256": "5eac6d6f5db61974fda4f90c463ecd9a5d344aac6fd22f90453b15a924cd132b",
+  "comparison_reproduction_command": [
+    "python3",
+    "-I",
+    "-B",
+    "tools/comparator.py"
+  ],
   "comparison_controls": {
     "tools/common.py": "a5d16dcf6ff54562487039c9a728b6f5ed33d33de9548781d8b141f08890bcd7",
     "tools/check.py": "9aaa268f87b38622aebae7c1600e4eddd3a8495a9edc5900b60733dea17145e0",
@@ -1055,7 +1079,6 @@
       "verification/SOURCE-MANIFEST.json": "6687f25a7ea4b3a94939d5c902112c93439bb298c48d3eb4a89cc1aa45ab8c17",
       "verification/AUDIT-MANIFEST.json": "01550d14d79fad18253b32ca103b6e07cbd788fc311564f48438eb6daa790e5f"
     },
-    "theorem_checks_rerun": false,
-    "fresh_vm_guide_changes_included": false
+    "theorem_checks_rerun": false
   }
 }

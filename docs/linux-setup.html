@@ -10,56 +10,199 @@
 <a href="consistency.html">Definitions and consistency</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="linux-checker-setup">Linux checker setup</h1>
-<p>Use an unprivileged Linux account with Python 3.12+, user-level systemd,
-cgroup v2 and working bubblewrap namespaces. The recorded checks used Linux
-ARM64. A Linux VM is suitable on macOS; no host home-directory mount is needed.</p>
-<h2 id="install-the-pinned-tools">Install the pinned tools</h2>
-<p>Install the official Lean <strong>4.35.0-rc4</strong> toolchain and pinned dependencies as
-described in <a href="verifying.html">the verification guide</a>. This toolchain bundles Comparator,
-<code>leanexport</code>, <code>leanchecker</code>, <code>nanoda_bin</code> and <code>con-ron</code>.</p>
-<p>Supply <strong>bubblewrap 0.12.0</strong> from a trusted installation. Its official source
-archive and SHA-256 are recorded in <a href="files/verification/CHECKER-PINS.json">CHECKER-PINS.json</a>.
-For a source build, obtain that exact archive, verify its checksum and follow
-the instructions included with it. Do not substitute a mock sandbox.</p>
-<p>From the repository root, register the installed executable:</p>
-<pre><code class="language-sh">python3 -I -B tools/install-checkers.py --bwrap /path/to/bwrap
+<p>This guide gives the sandboxed Linux procedure for checking all six main
+results with Comparator, Lean, Nanoda and con-ron. It assumes you can create
+a Linux virtual machine or use an existing Linux computer and install system
+software. The <a href="verifying.html">verification guide</a> explains the tools and
+offers <a href="verifying.html#local-checking-on-macos">local macOS checking</a> as an
+alternative.</p>
+<p><strong>Follow steps 1–4 in order, using a terminal inside Linux throughout.</strong> First
+prepare the system and tools; then obtain the repository, prepare its libraries
+and run the checks. Wait for each command to finish successfully before
+continuing. You do not need to switch back to the verification guide.</p>
+<p>Before running the checks, read the
+<a href="mathlib-only.html">independent statements and their definitions</a>
+to assess whether they express the mathematics you want to verify. This
+procedure uses <code>lake comparator</code> bundled with Lean <strong>4.35.0-rc4</strong> and its
+<strong>bubblewrap</strong> sandbox, following the
+<a href="https://github.com/leanprover/lean4/blob/c29b6dda4f7c20e3eeaa717c4e565663c5cfa364/src/lake/Lake/CLI/Help.lean#L403-L499">documentation for that version</a>.</p>
+<p><a id="choose-a-clean-checking-environment"></a>
+<a id="install-the-pinned-tools"></a>
+<a id="2-install-lean-the-libraries-and-the-sandbox"></a></p>
+<h2 id="1-prepare-linux-and-install-the-tools">1. Prepare Linux and install the tools</h2>
+<p>We recommend a fresh Linux VM from a trusted image. Once it is running,
+open its Linux terminal. A correctly configured Linux computer also works.
+Use an ordinary user account for the checks; administrator privileges are
+needed only to install system packages and adjust the settings below.
+There is no need to clone the project yet.</p>
+<p>The system needs user-level systemd, cgroup v2 and support for unprivileged
+user namespaces. Install these prerequisites from trusted sources:</p>
+<ul>
+<li>Python 3.12 or later, Git and <code>curl</code>.</li>
+<li>A C compiler available as <code>cc</code>, with static C-library support for the
+small test programs.</li>
+<li><a href="https://github.com/leanprover/elan">elan</a>, the Lean toolchain manager.</li>
+<li><strong>bubblewrap 0.12.0</strong>. If your distribution does not provide this version,
+use its <a href="https://github.com/containers/bubblewrap/blob/v0.12.0/README.md#installation">official source-build instructions</a>.
+Building it requires Meson, Ninja, pkg-config and libcap development headers
+in addition to the C compiler. <a href="files/verification/CHECKER-PINS.json">CHECKER-PINS.json</a> records
+the source archive and its checksum; verify the checksum before building.</li>
+</ul>
+<p>Install Lean and confirm the bubblewrap installation:</p>
+<pre><code class="language-sh">elan toolchain install leanprover/lean4:v4.35.0-rc4
+bwrap --version
+command -v bwrap
 </code></pre>
-<p>Replace the example path with the actual executable. The command checks the
-version and bundled tools, copies bubblewrap into <code>.tools/checkers</code> without
-replacing a different installation, and records hashes. It does not download,
-build software, authenticate an arbitrary binary&#39;s provenance or check proofs.
-Use <code>--lean-bin /path/to/lean/bin</code> if elan does not select the installed compiler.</p>
-<h2 id="check-the-runtime">Check the runtime</h2>
-<p>Confirm that <code>systemctl --user show-environment</code> works. The exporter may require
-a higher memory-mapping limit; the recorded environment used 262144. If needed,
-an administrator can set this explicitly:</p>
+<p>Lean includes Comparator, its proof exporter, and all three proof checkers.
+The second command must print <code>bubblewrap 0.12.0</code>; keep the executable path
+printed by the third command for step 2. No mock sandbox or sandbox-disabling
+option is used in this procedure.</p>
+<p>Check that the user-level system service is available and inspect the
+memory-mapping limit:</p>
+<pre><code class="language-sh">systemctl --user show-environment
+sysctl vm.max_map_count
+</code></pre>
+<p>The first command must succeed. Use a memory-mapping limit of at least
+262144 for this procedure. If the second command reports a lower value,
+an administrator can raise it:</p>
 <pre><code class="language-sh">sudo sysctl -w vm.max_map_count=262144
 </code></pre>
-<p>The checking process itself must not run as root. Its outer bubblewrap sandbox
-isolates the network and makes the filesystem read-only except for its working
-directories. Comparator additionally applies its own build/export sandbox.</p>
+<p>For a VM, we recommend four virtual CPU cores and 8 GiB of memory. The six
+cases run one at a time, each limited to 6 GiB without swap, leaving memory
+for Linux itself. Allow at least 15 GiB of free disk space for working copies
+after installing the tools and libraries.</p>
+<p><a id="1-enter-linux-and-obtain-the-repository"></a></p>
+<h2 id="2-obtain-the-repository-and-register-the-tools">2. Obtain the repository and register the tools</h2>
+<p>Now clone the repository inside Linux:</p>
+<pre><code class="language-sh">git clone https://github.com/hjmartik/ZygmundConjecture.git
+cd ZygmundConjecture
+git rev-parse HEAD
+</code></pre>
+<p>Record the commit printed by the last command. A fresh clone supplies the
+sources without compiled project files. Do not add <code>.lake</code>, <code>.runs</code> or
+<code>.tools</code> directories from another installation.</p>
+<p><strong>Run every remaining repository command from this directory.</strong> It contains
+<code>README.md</code>, <code>tools/</code> and <code>lean/</code>. There is no need to enter <code>lean/</code> or the
+working copies created by the checking programs.</p>
+<p>Before running repository scripts, inspect the checking scripts, Lake
+configuration, dependency manifest, and challenge files with their imports.
+These are trusted inputs to the procedure. The six challenges import the
+independent <code>Definitions.lean</code> and <code>Statements.lean</code>, whose other imports
+come from Mathlib. The configurations select the six targets and the three
+permitted foundational axioms.
+<a href="files/verification/SOURCE-MANIFEST.json">SOURCE-MANIFEST.json</a> and
+<a href="files/verification/AUDIT-MANIFEST.json">AUDIT-MANIFEST.json</a> identify the source and adapter
+files; the runner checks them against these inventories.</p>
+<p>Do not run an ordinary project build, <code>tools/check.py verify</code>, or the Lean
+inspection tests in this environment before Comparator. Nor should you open
+the files in a Lean-enabled editor that automatically processes them. Read
+the source as text or through the published source pages. The project proofs
+will first be compiled inside Comparator&#39;s sandbox.</p>
+<p>Register the tools installed in step 1:</p>
+<pre><code class="language-sh">python3 -I -B tools/install-checkers.py --bwrap /absolute/path/to/bwrap
+</code></pre>
+<p>Replace the placeholder with the bubblewrap path you recorded. The command
+checks the tool versions, copies bubblewrap into <code>.tools/checkers</code> and records
+executable hashes. It does not download or install missing tools, authenticate
+an arbitrary binary&#39;s origin, or check proofs.</p>
+<p>Some Linux systems require permission for this copied executable to create
+a sandbox. Check whether AppArmor&#39;s user-namespace restriction is enabled:</p>
+<pre><code class="language-sh">sysctl -n kernel.apparmor_restrict_unprivileged_userns
+</code></pre>
+<p>If it prints <code>1</code>, complete the
+<a href="#if-apparmor-restricts-bubblewrap">path-specific setup below</a> before step 3.
+If it prints <code>0</code>, or reports that this setting does not exist, continue to
+step 3. This permission depends on the repository&#39;s location, so it is
+configured after cloning. The setup tests in step 3 must still pass.</p>
+<p><a id="check-the-runtime"></a>
+<a id="3-test-the-checking-environment"></a></p>
+<h2 id="3-prepare-the-libraries-and-test-the-setup">3. Prepare the libraries and test the setup</h2>
+<p>Download the background-library sources and their compiled files:</p>
+<pre><code class="language-sh">python3 -I -B tools/dependencies.py fetch
+python3 -I -B tools/dependencies.py cache
+</code></pre>
+<p>The scripts select the Lean version from <code>lean/lean-toolchain</code>; no change
+to elan&#39;s global default is needed. They verify the library source archives,
+build Mathlib&#39;s cache utility using the reviewed Lake configuration, and obtain
+the matching compiled files from <code>cache.mathlib.org</code>. This saves building
+the background libraries. It does not compile the project proofs.</p>
+<p>This setup trusts those upstream sources and the official compiled cache.
+Keep the recorded versions; do not replace these commands with <code>lake update</code>.</p>
+<p>Next, test the checking environment:</p>
 <pre><code class="language-sh">python3 -I -B tools/test_comparator_runtime.py
 </code></pre>
-<p>These tiny fixtures require a C compiler available as <code>cc</code>, with static libc support for the
-deliberately failing executable. They include three-kernel success, statement
-and definition mismatches, an indirect admission, missing checkers and actual
-checker-process failures. They do not change production configurations.</p>
-<h2 id="check-the-main-results">Check the main results</h2>
-<pre><code class="language-sh">python3 -I -B tools/comparator.py --prepare-only
-python3 -I -B tools/comparator.py
+<p>These eight small examples include a valid proof and deliberately invalid
+cases: changed statements or definitions, an indirect admission, and missing
+or failing checkers. They exercise the same sandbox and checking programs as
+the main run without compiling the project proofs or changing its configurations.</p>
+<p>Continue only if the command exits successfully and its report says
+<strong><code>PASS_FIXTURES_ONLY</code></strong>. A sandbox error is not a successful negative test;
+resolve setup failures before proceeding.</p>
+<p><a id="check-the-main-results"></a></p>
+<h2 id="4-run-comparator-on-all-six-results">4. Run Comparator on all six results</h2>
+<p>The tools and libraries are now installed and the setup tests have passed.
+The project proofs have not yet been compiled. From the same repository
+directory inside Linux, run:</p>
+<pre><code class="language-sh">python3 -I -B tools/comparator.py
 </code></pre>
-<p>Preparation does not check proofs. The full command compares all six results
-and requires actual Lean, Nanoda and con-ron acceptance. Only <code>PASS_ALL_SIX</code>
-records full-suite success. Optional <code>--case 6</code> checks just the sharpness export
-and can produce only <code>PASS_ONE_CASE_ONLY</code>.</p>
-<p>Each case is bounded to 6 GiB of memory, no swap, two CPU cores&#39; worth of quota
-and one hour. A timeout fails the run; it is not a mathematical rejection.
-Keep at least 15 GiB free for working copies, in addition to installed tools
-and dependencies; the actual requirement depends on cache and filesystem sizes.</p>
-<p>The runner operates offline after provisioning. <code>--packages</code> selects an
-existing pinned archive-backed dependency tree, copied before compilation.
-<code>--tools</code> selects another directory containing bubblewrap. Logs, commands,
-resolved configurations and reports remain under <code>.runs/</code>.</p>
-<p>Versions are fixed for this release, not resolved from current upstream branches.
-The <a href="verifying.html">verification guide</a> explains scope and acceptance.</p>
+<p>This command prepares its own source-only working copy, compiles the project
+inside the sandbox, and compares all six results with their independent
+specifications. No separate preparation command or ordinary build is needed.</p>
+<p>Success requires the command to exit successfully and <strong><code>PASS_ALL_SIX</code></strong> in
+the report whose path it prints. For each result, that requires successful
+Comparator comparison and explicit acceptance by Lean, Nanoda and con-ron.
+A partial or failed run does not verify all six results.</p>
+<p>Each case has a two-core CPU quota and a one-hour limit. A timeout fails the
+run; it is not a mathematical rejection. Before reporting success, the runner
+rechecks the identities of the sources, libraries, configurations and tools.</p>
+<p>Keep the complete <code>.runs/comparator-*/</code> result directory, including its
+<code>report.json</code> and logs, together with the repository commit and the setup-test
+reports. The <a href="verifying.html">verification guide</a> explains the mathematical
+coverage and the optional broader checks.</p>
+<h2 id="what-the-sandbox-protects">What the sandbox protects</h2>
+<p>The Linux checking scripts automatically place each comparison in an outer
+bubblewrap sandbox, using the executable registered in step 2. It keeps
+checking offline and makes the filesystem read-only except for the run&#39;s
+working directories. Inside it, Comparator additionally sandboxes
+configuration evaluation, compilation, proof export and external checker
+execution. Its inner sandbox protects source files and hides the user&#39;s
+home. Comparator does not load the project&#39;s compiled Lean files into the
+process deciding the verdict. The outer network restriction also covers
+dependency resolution.</p>
+<p>These restrictions reduce trust in the proof library&#39;s executable code.
+They do not remove the need to assess the independent specification or to
+trust the system image, tools, background libraries and checking scripts.</p>
+<h2 id="if-apparmor-restricts-bubblewrap">If AppArmor restricts bubblewrap</h2>
+<p>On systems with this restriction, an administrator must authorize the
+<strong>registered executable&#39;s path</strong>, not just the original installation. From
+the repository directory, obtain that path:</p>
+<pre><code class="language-sh">realpath .tools/checkers/bwrap
+</code></pre>
+<p>Use the resulting absolute path in this profile:</p>
+<pre><code class="language-text">abi &lt;abi/4.0&gt;,
+include &lt;tunables/global&gt;
+profile zygmund-comparator-bwrap /absolute/path/to/repository/.tools/checkers/bwrap flags=(unconfined) {
+  userns,
+}
+</code></pre>
+<p>An administrator can save it as <code>/etc/apparmor.d/zygmund-comparator-bwrap</code>
+and load it with:</p>
+<pre><code class="language-sh">sudo apparmor_parser -r /etc/apparmor.d/zygmund-comparator-bwrap
+</code></pre>
+<p>This grants namespace permission to that executable; bubblewrap still
+enforces the checker sandbox. Do not disable the system-wide restriction or
+run the checker as root. Once the profile is loaded, continue with step 3.</p>
+<h2 id="alternative-tool-locations">Alternative tool locations</h2>
+<p>The numbered procedure uses elan and keeps the downloaded libraries inside
+this repository. No extra options are needed for that route.</p>
+<p>If using an extracted official Lean archive instead of elan,
+<a href="files/verification/CHECKER-PINS.json">CHECKER-PINS.json</a> records the version and the official
+Linux ARM64 archive URL and SHA-256. Verify that checksum before using the
+archive; other architectures need their corresponding official release. Append
+<code>--lean-bin /absolute/path/to/lean/bin</code> to the <code>install-checkers.py</code>,
+<code>dependencies.py cache</code>, <code>test_comparator_runtime.py</code> and <code>comparator.py</code>
+commands, using the archive&#39;s extracted <code>bin</code> directory.</p>
+<p>The runner&#39;s <code>--packages</code> option can select a separately provisioned pinned
+dependency tree. Use libraries obtained from trusted sources, not from a
+potentially compromised environment.</p>
 </main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

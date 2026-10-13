@@ -1,4 +1,4 @@
-# Building and maintaining the website
+# Previewing and rebuilding the website
 
 These instructions explain how to preview and rebuild the optional website
 from the repository's Markdown and Lean files. The generated pages in `docs/`
@@ -17,11 +17,11 @@ script from the jsDelivr CDN. The text and source pages remain readable without 
 No analytics, cookies or external fonts are added by the site itself.
 
 The HTML is generated from the Markdown documents and exact Lean source
-inventory. Use GitHub's fenced `math` blocks for displayed equations and
-dollar-and-backtick delimiters for inline math. The generator preserves the
-same TeX expressions for the website.
+inventory. Displayed equations use GitHub's fenced `math` blocks; inline math
+uses dollar-and-backtick delimiters. The generator preserves the same TeX
+expressions for the website.
 
-To regenerate it after editorial changes, use Node.js 20+ and Marked 17.0.5:
+To rebuild the pages locally (optional), use Node.js 20+ and Marked 17.0.5:
 
 ```sh
 npm install --prefix .tools/site --ignore-scripts --save-exact marked@17.0.5
@@ -32,8 +32,6 @@ Marked is a build-time dependency and is not vendored. MathJax is loaded from
 its public CDN, not copied into this repository. Their respective upstream
 licenses remain applicable to those tools.
 
-GitHub Pages can serve `docs/` from the chosen branch; `.nojekyll` keeps it a
-plain static site. The repository README is also a complete landing page
-without Pages.
-
-See GitHub's [publishing-source instructions](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+The [published website](https://hjmartik.github.io/ZygmundConjecture/) serves
+the generated pages in `docs/`. The same guides can also be read as rendered
+Markdown in the [GitHub repository](https://github.com/hjmartik/ZygmundConjecture).
