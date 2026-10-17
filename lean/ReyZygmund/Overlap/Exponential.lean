@@ -14,6 +14,8 @@ in `MathlibOnly.Proof.EstimateSolutions`.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund.Overlap
 
 open Geometry
@@ -34,12 +36,12 @@ theorem momentConstant_eq {m : ℕ} (d : Fin m → ℕ) :
 
 private theorem scaled_overlap_moment
     {m : ℕ} {d : Fin m → ℕ}
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (hEmass : ∀ R ∈ G, ENNReal.ofReal eta *
@@ -72,19 +74,18 @@ private theorem scaled_overlap_moment
       rw [momentConstant_eq]
       field_simp
 
-/-- Dimension-only constants work for every sparse family satisfying the
-weaker containment condition. They are chosen before the grids, family,
-sparsity fraction and shadow. -/
+/-- Constants depending only on dimension give the exponential overlap bound for
+sparse weakly incomparable families. -/
 theorem weaker_sparse_overlap_exponential :
     ∃ c B : ℕ → ℕ → ℝ,
       (∀ m D, 0 < c m D) ∧ (∀ m D, 0 < B m D) ∧
       ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
-      ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+      ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
       G ⊆ gridRectangles D →
-      (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i) →
+      (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i) →
       ∀ eta : ℝ, 0 < eta →
       ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-      (∀ R ∈ G, MeasurableSet (E R)) →
+      (∀ R ∈ G, NullMeasurableSet (E R) volume) →
       (∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
       Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →
       (∀ R ∈ G, ENNReal.ofReal eta *

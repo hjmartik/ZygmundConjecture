@@ -11,6 +11,8 @@ disjoint sparse subsets and geometric conditions restrict to every subfamily.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund.Overlap
 
 open Geometry
@@ -18,12 +20,12 @@ open Geometry
 variable {m : ℕ} {d : Fin m → ℕ}
 
 theorem weaker_sparse_overlap_lintegral
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (hEmass : ∀ R ∈ G, ENNReal.ofReal eta *
@@ -50,12 +52,12 @@ theorem weaker_sparse_overlap_lintegral
   exact hf.trans (mul_le_mul_right (measure_mono (finiteShadow_subset_shadow G H)) _)
 
 theorem weaker_sparse_overlap_ae_finite
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (hEmass : ∀ R ∈ G, ENNReal.ofReal eta *
@@ -72,12 +74,12 @@ theorem weaker_sparse_overlap_ae_finite
   exact (ENNReal.rpow_lt_top_iff_of_pos (by norm_num : (0 : ℝ) < 2)).mp hx
 
 theorem weaker_sparse_overlap_eLpNorm
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (hEmass : ∀ R ∈ G, ENNReal.ofReal eta *

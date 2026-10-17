@@ -5,12 +5,13 @@ import ReyZygmund.Maximal.SignedGlobalLimit
 
 An almost-everywhere finite difference expansion gives a bounded measurable
 representative of the input. Uniform finite averaging estimates and directed
-convergence then give the full-grid maximum, including at p = 1. No additional
-regularity of the input is assumed.
+convergence then give the full-grid maximum, including at p = 1.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmund
 
@@ -21,7 +22,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 /-- The power-integral estimate has one dimensional constant, independent of
 the averaging tests, expansion size, grid and exponent in the stated range. -/
 theorem signed_grid_square_lintegral
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : (↑H : Set _) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
     (hex : F.1 = fun x => ∑ Q ∈ H, rawProductDifference Q F.1 x)
@@ -37,10 +38,10 @@ theorem signed_grid_square_lintegral
   obtain ⟨R, _, rfl⟩ := Finset.mem_image.mp hQ
   exact R.2
 
-/-- Full source square estimate and the finiteness facts required for its
-ordinary Lp interpretation. The finite expansion is only assumed AE. -/
+/-- The square estimate for an input equal almost everywhere to a finite difference
+sum, with the finiteness facts needed for its ordinary Lp interpretation. -/
 theorem full_grid_square_estimate
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : (↑H : Set _) ⊆ gridRectangles D)
     (g : ProductPoint d → ℝ)
     (hex : g =ᵐ[volume] fun x => ∑ Q ∈ H, rawProductDifference Q g x)

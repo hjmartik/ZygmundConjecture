@@ -5,13 +5,14 @@ import ReyZygmund.Overlap.EndpointGlobal
 
 /-! # Sparse overlap for monotone side relations
 
-The endpoint constant is chosen before the grids and side function. The
-finite sparse estimate then passes to the countable overlap. No
-incomparability assumption is used in this branch of the argument.
+The endpoint constant is chosen before the grids and side function. The finite
+sparse estimate then passes to the countable overlap.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles dyadicZygmundRectangles)
 
 namespace ReyZygmund.Overlap
 
@@ -21,11 +22,11 @@ theorem phi_sparse_overlap_moments :
     ∀ (n totalDim : ℕ), 2 ≤ n →
     ∃ K : ℝ, 0 < K ∧
     ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
-    ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicPhiRectangles D Phi →
+    ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+    ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicZygmundRectangles D Phi →
     ∀ (eta : ℝ), 0 < eta →
     ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-    (∀ R ∈ G, MeasurableSet (E R)) →
+    (∀ R ∈ G, NullMeasurableSet (E R) volume) →
     (∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
     Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →
     (∀ R ∈ G, ENNReal.ofReal eta *
@@ -60,12 +61,12 @@ theorem phi_sparse_overlap_moments :
       (by simpa using hendpoint d hd hdim D Phi hPhi g hg t ht)
     intro x hx
     change ENNReal.ofReal t < euclideanFamilyMaximal (F : Set _) g x at hx
-    change ENNReal.ofReal t < euclideanFamilyMaximal (dyadicPhiRectangles D Phi) g x
+    change ENNReal.ofReal t < euclideanFamilyMaximal (dyadicZygmundRectangles D Phi) g x
     apply hx.trans_le
     unfold euclideanFamilyMaximal
     apply iSup_le
     intro R
-    exact le_iSup_of_le (⟨R.1, hG (hFG R.1 R.2)⟩ : dyadicPhiRectangles D Phi) le_rfl
+    exact le_iSup_of_le (⟨R.1, hG (hFG R.1 R.2)⟩ : dyadicZygmundRectangles D Phi) le_rfl
   apply finite_endpoint_sparse_overlap_lintegral F eta heta E
     (fun R hR => hEm R (hFG R hR))
     (fun R hR => hEs R (hFG R hR))
@@ -83,10 +84,10 @@ theorem phi_sparse_overlap_exponential :
     ∀ eta : ℝ, 0 < eta →
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
     ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
-    ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicPhiRectangles D Phi →
+    ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+    ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicZygmundRectangles D Phi →
     ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-    (∀ R ∈ G, MeasurableSet (E R)) →
+    (∀ R ∈ G, NullMeasurableSet (E R) volume) →
     (∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
     Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →
     (∀ R ∈ G, ENNReal.ofReal eta *

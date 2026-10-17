@@ -1,7 +1,10 @@
 import ReyZygmund.Maximal.Euclidean
+import ReyZygmund.Maximal.Constants
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmundVerification
 
@@ -20,18 +23,18 @@ def euclideanMaximalMeasurableContract : Prop :=
 
 def euclideanMaximalFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
-    (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S) →
+    (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S) →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
       ∀ᵐ x ∂volume, euclideanFamilyMaximal G f x < ∞
 
 def euclideanMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
-    (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S) →
+    (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S) →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
     eLpNorm (fun x => (euclideanFamilyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤

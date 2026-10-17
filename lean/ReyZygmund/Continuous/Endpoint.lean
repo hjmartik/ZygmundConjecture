@@ -12,6 +12,8 @@ bounded explicitly; every constant is chosen before the side function.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (zygmundRectangles)
+
 namespace ReyZygmund.Continuous
 
 open Geometry
@@ -57,7 +59,7 @@ theorem continuous_levelset_subset_rounded {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (lam : ℝ) (hlam : 0 < lam) :
-    {x | ENNReal.ofReal lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} ⊆
+    {x | ENNReal.ofReal lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x} ⊆
       ⋃ tau : (∀ i, Fin (d i) → Fin 3),
         {x | ENNReal.ofReal (lam / (8 : ℝ) ^ (∑ i, d i)) <
           euclideanFamilyMaximal
@@ -93,7 +95,7 @@ theorem continuous_endpoint_theorem :
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
     ∀ (lam : ℝ), 0 < lam →
       volume {x | ENNReal.ofReal lam <
-        euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} ≤
+        euclideanFamilyMaximal (zygmundRectangles d phi) f x} ≤
       ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
         (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2)) := by
   intro n totalDim hn
@@ -134,7 +136,7 @@ theorem continuous_endpoint_theorem :
   have hpow : (8 : ℝ) ^ (∑ i, d i) = A := by rw [hsum]
   rw [hpow] at hsub
   have hmain : volume {x | ENNReal.ofReal lam <
-      euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} ≤
+      euclideanFamilyMaximal (zygmundRectangles d phi) f x} ≤
       ((Fintype.card (∀ i, Fin (d i) → Fin 3) : ℝ≥0∞) *
         (ENNReal.ofReal C0 * ENNReal.ofReal B)) * F := by
     calc

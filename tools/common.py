@@ -33,13 +33,17 @@ def source_lock():
 
 def source_manifest():
     manifest = read_json(ROOT / 'verification/SOURCE-MANIFEST.json')
-    require(manifest['local_module_count'] == 382, 'Unexpected local module count')
-    require(manifest['registered_declaration_count'] == 508, 'Unexpected target count')
+    binding = read_json(ROOT / 'verification/AUDIT-MANIFEST.json')['sha256']
+    require(digest(ROOT / 'verification/SOURCE-MANIFEST.json') == binding['verification/SOURCE-MANIFEST.json'],
+            'Reviewed source manifest differs')
+    require(manifest['local_module_count'] == 404, 'Unexpected local module count')
+    require(manifest['registered_declaration_count'] == 516, 'Unexpected target count')
+    require(manifest['distributed_lean_file_count'] == 409, 'Unexpected distributed source count')
     files = manifest['sha256']
     actual = {str(p.relative_to(ROOT)) for base in ['ReyZygmund', 'Verification', 'checks']
               for p in (LEAN / base).rglob('*.lean')}
     actual.update(str(p.relative_to(ROOT)) for p in LEAN.glob('*.lean'))
-    require(len(files) == 396 and actual == set(files), 'Local source inventory differs')
+    require(len(files) == 409 and actual == set(files), 'Local source inventory differs')
     for name, expected in files.items():
         path = ROOT / name
         require(not path.is_symlink() and path.is_file() and digest(path) == expected,
@@ -48,8 +52,8 @@ def source_manifest():
 
 def targets():
     result = read_json(ROOT / 'verification/TARGETS.json')['declarations']
-    require(len(result) == 508 and len({d['name'] for d in result}) == 508,
-            'Expected 508 distinct declarations')
+    require(len(result) == 516 and len({d['name'] for d in result}) == 516,
+            'Expected 516 distinct declarations')
     for d in result:
         require(set(d) == {'name', 'module', 'contract', 'contract_module'}, 'Target schema differs')
         require(all(NAME.fullmatch(s) for s in d.values()), 'Invalid declaration/module name')

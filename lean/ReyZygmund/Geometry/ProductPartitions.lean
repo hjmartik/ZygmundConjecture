@@ -63,32 +63,32 @@ theorem productStep_coordinate_leafConstant
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (i : Fin m) (x : ProductPoint d) :
     ∀ Q ∈ leaves (I i) (N i), ∀ y ∈ Q, ∀ z ∈ Q,
-      (productBox I).indicator f (Function.update x i y) =
-        (productBox I).indicator f (Function.update x i z) := by
+      (productRectangle I).indicator f (Function.update x i y) =
+        (productRectangle I).indicator f (Function.update x i z) := by
   intro Q hQ y hy z hz
-  by_cases hxy : Function.update x i y ∈ productBox I
+  by_cases hxy : Function.update x i y ∈ productRectangle I
   · obtain ⟨P, hP, hyP⟩ := productLeaves_cover I N _ hxy
     have hPi : P i = Q := (level (I i) (N i)).eq_of_mem_of_mem
       (Fintype.mem_piFinset.mp hP i) hQ
-      (by simpa using (mem_productBox P _).mp hyP i) hy
-    have hzP : Function.update x i z ∈ productBox P := by
-      apply (mem_productBox P _).mpr
+      (by simpa using (mem_productRectangle P _).mp hyP i) hy
+    have hzP : Function.update x i z ∈ productRectangle P := by
+      apply (mem_productRectangle P _).mpr
       intro j
       by_cases hji : j = i
       · subst j
         simpa [hPi] using hz
-      · simpa [hji] using (mem_productBox P _).mp hyP j
+      · simpa [hji] using (mem_productRectangle P _).mp hyP j
     rw [Set.indicator_of_mem hxy, Set.indicator_of_mem (productLeaves_subset hP hzP)]
     exact hf P hP _ hyP _ hzP
-  · have hxz : Function.update x i z ∉ productBox I := by
+  · have hxz : Function.update x i z ∉ productRectangle I := by
       intro hxz
       apply hxy
-      apply (mem_productBox I _).mpr
+      apply (mem_productRectangle I _).mpr
       intro j
       by_cases hji : j = i
       · subst j
         simpa using (level (I i) (N i)).le_of_mem hQ hy
-      · simpa [hji] using (mem_productBox I _).mp hxz j
+      · simpa [hji] using (mem_productRectangle I _).mp hxz j
     simp only [Set.indicator_of_notMem hxy, Set.indicator_of_notMem hxz]
 
 /-- The exact global complement identity for a fixed eligible projection family. -/
@@ -97,20 +97,20 @@ theorem coordinateCrossAverage_complement
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (i : Fin m) (hd : 0 < d i) (eligible : Finset (Box (Fin (d i))))
     (he : eligible ⊆ descendants (I i) (N i)) :
-    (productBox I).indicator f -
-        coordinateCrossAverage i (I i) (N i) eligible ((productBox I).indicator f) =
+    (productRectangle I).indicator f -
+        coordinateCrossAverage i (I i) (N i) eligible ((productRectangle I).indicator f) =
       ∑ L ∈ (interior (I i) (N i)).filter (fun L => ∃ J ∈ eligible, L ≤ J),
-        coordinateDifference i L ((productBox I).indicator f) := by
+        coordinateDifference i L ((productRectangle I).indicator f) := by
   funext x
   have ht := congrFun (finiteCrossAverage_complement (d i) hd (I i) (N i) eligible he
-    (fun y => (productBox I).indicator f (Function.update x i y))
+    (fun y => (productRectangle I).indicator f (Function.update x i y))
     (productStep_coordinate_leafConstant I N f hf i x)) (x i)
   have hs : (I i : Set (Fin (d i) → ℝ)).indicator
-      (fun y => (productBox I).indicator f (Function.update x i y)) (x i) =
-        (productBox I).indicator f x := by
+      (fun y => (productRectangle I).indicator f (Function.update x i y)) (x i) =
+        (productRectangle I).indicator f x := by
     by_cases hx : x i ∈ I i
     · simp [hx]
-    · have hxI : x ∉ productBox I := fun h => hx ((mem_productBox I x).mp h i)
+    · have hxI : x ∉ productRectangle I := fun h => hx ((mem_productRectangle I x).mp h i)
       simp [hx, hxI]
   simpa only [Pi.sub_apply, Finset.sum_apply, hs, coordinateCrossAverage,
     coordinateDifference_slice] using ht

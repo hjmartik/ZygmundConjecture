@@ -25,19 +25,19 @@ variable {m : ℕ} {d : Fin m → ℕ}
 noncomputable def familyMaximal
     (G : Set (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
     (x : ProductPoint d) : ℝ≥0∞ :=
-  ⨆ Q : G, ENNReal.ofReal ((productBox Q.1).indicator
-    (fun _ => (∫ y in productBox Q.1, |f y|) / volume.real (productBox Q.1)) x)
+  ⨆ Q : G, ENNReal.ofReal ((productRectangle Q.1).indicator
+    (fun _ => (∫ y in productRectangle Q.1, |f y|) / volume.real (productRectangle Q.1)) x)
 
-/-- Countable families give measurable extended-valued maxima, even when the
-input has no regularity. Each totalized integral is a scalar coefficient. -/
+/-- Countable families give measurable extended-valued maxima: the integral
+coefficients are scalars and the supporting rectangles are measurable. -/
 theorem measurable_familyMaximal
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G.Countable)
     (f : ProductPoint d → ℝ) : Measurable (familyMaximal G f) := by
   have := hG.to_subtype
   exact Measurable.iSup (fun Q : G =>
     ((measurable_const : Measurable (fun _ : ProductPoint d =>
-      (∫ y in productBox Q.1, |f y|) / volume.real (productBox Q.1))).indicator
-        (measurableSet_productBox Q.1)).ennreal_ofReal)
+      (∫ y in productRectangle Q.1, |f y|) / volume.real (productRectangle Q.1))).indicator
+        (measurableSet_productRectangle Q.1)).ennreal_ofReal)
 
 private theorem finiteFunctionMaximal_le_familyMaximal
     (G : Set (∀ i, Box (Fin (d i)))) (H : Finset G)
@@ -46,18 +46,16 @@ private theorem finiteFunctionMaximal_le_familyMaximal
       familyMaximal G f x := by
   by_cases h : (H.image Subtype.val).Nonempty
   · obtain ⟨Q, hQ, hmax⟩ := Finset.exists_mem_eq_sup' h
-      (fun Q => (productBox Q).indicator
-        (fun _ => (∫ y in productBox Q, |f y|) / volume.real (productBox Q)) x)
+      (fun Q => (productRectangle Q).indicator
+        (fun _ => (∫ y in productRectangle Q, |f y|) / volume.real (productRectangle Q)) x)
     obtain ⟨R, _, rfl⟩ := Finset.mem_image.mp hQ
     rw [finiteFunctionMaximal, dite_eq_left h, hmax]
-    exact le_iSup (fun Q : G => ENNReal.ofReal ((productBox Q.1).indicator
-      (fun _ => (∫ y in productBox Q.1, |f y|) / volume.real (productBox Q.1)) x)) R
+    exact le_iSup (fun Q : G => ENNReal.ofReal ((productRectangle Q.1).indicator
+      (fun _ => (∫ y in productRectangle Q.1, |f y|) / volume.real (productRectangle Q.1)) x)) R
   · rw [finiteFunctionMaximal, dite_eq_right h, ENNReal.ofReal_zero]
     exact zero_le
 
-/-- The family maximum is exactly the supremum of its finite maxima.
-This pointwise identity needs no countability assumption and includes empty
-families and empty finite subfamilies. -/
+/-- The family maximum is pointwise the supremum of its finite maxima. -/
 theorem familyMaximal_eq_iSup_finset
     (G : Set (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
     (x : ProductPoint d) :
@@ -103,9 +101,8 @@ theorem lintegral_familyMaximal_rpow_eq_iSup
     _ = ⨆ H : Finset G, ∫⁻ x, F H x :=
       lintegral_iSup_directed_of_measurable hmeas hdir
 
-/-- Any uniform extended power-integral bound for all finite subfamilies
-passes to the countable family. This is a limit implication, not a maximal
-inequality supplied without its finite hypotheses. -/
+/-- A uniform extended power-integral bound for all finite subfamilies
+passes to the countable family. -/
 theorem lintegral_familyMaximal_rpow_le
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G.Countable)
     (f : ProductPoint d → ℝ) (p : ℝ) (hp : 0 < p) (C : ℝ≥0∞)

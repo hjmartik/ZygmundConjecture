@@ -4,7 +4,7 @@ import Mathlib.Topology.Instances.ENNReal.Lemmas
 /-! # Overlaps of measurable-set families
 
 The finite overlap is real-valued; the countable overlap uses extended
-nonnegative summation. The definitions impose no geometric assumptions.
+nonnegative summation.
 -/
 
 open MeasureTheory

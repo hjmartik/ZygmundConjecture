@@ -26,13 +26,13 @@ theorem finite_representation_maximal_norm
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
     (p : ℝ) (hp : 1 ≤ p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal (averagingRectangles I N G) f x) p) (1 / p) ≤
       (2 : ℝ) ^ m * ∑ j,
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j)
             (finiteProjectionMap I N G f) x) p) (1 / p) := by
   let P := finiteProjectionMap I N G f
@@ -69,7 +69,7 @@ theorem finite_representation_maximal_norm
 private theorem complement_square_leaf
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteComplementSquareFunction I N F) := by
   intro Q hQ x hx y hy
   simp only [finiteComplementSquareFunction_eq_partial]
@@ -98,10 +98,10 @@ private theorem partial_square_le_complement
 private theorem partial_square_norm_le_complement
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (j : Fin m) (p : ℝ) (hp : 0 < p) :
-    Real.rpow (∫ x in productBox I,
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (j : Fin m) (p : ℝ) (hp : 0 < p) :
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteSquareFunction I N (Finset.univ.erase j) F x) p) (1 / p) ≤
-      Real.rpow (∫ x in productBox I,
+      Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteComplementSquareFunction I N F x) p) (1 / p) := by
   have hS0 (x : ProductPoint d) :
       0 ≤ finiteSquareFunction I N (Finset.univ.erase j) F x := Real.sqrt_nonneg _
@@ -125,16 +125,16 @@ theorem finite_maximal_to_square
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
     let C := (m : ℝ) * (2 : ℝ) ^ m *
       ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) + (2 : ℝ) ^ (m - 1))
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal (averagingRectangles I N G) f x) p) (1 / p) ≤
       C * (p / (p - 1)) ^ (m - 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) +
-      C * Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) +
+      C * Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteComplementSquareFunction I N (finiteProjectionMap I N G f) x) p)
         (1 / p) := by
   let P := finiteProjectionMap I N G f
@@ -142,10 +142,10 @@ theorem finite_maximal_to_square
   let b : ℝ := (2 : ℝ) ^ (m - 1)
   let a : ℝ := (m : ℝ) * (2 : ℝ) ^ m
   let q : ℝ := (p / (p - 1)) ^ (m - 2)
-  let Y := Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p)
-  let W := Real.rpow (∫ x in productBox I,
+  let Y := Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p)
+  let W := Real.rpow (∫ x in productRectangle I,
     Real.rpow (finiteComplementSquareFunction I N P x) p) (1 / p)
-  let V := fun j => Real.rpow (∫ x in productBox I,
+  let V := fun j => Real.rpow (∫ x in productRectangle I,
     Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j) P x) p) (1 / p)
   have hP := finiteProjectionMap_productStep_closure I N G f hf hs
   have hc : 0 ≤ c := by positivity

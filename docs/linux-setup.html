@@ -7,15 +7,16 @@
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head><body><header><nav aria-label="Main navigation">
 <a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
-<a href="consistency.html">Definitions and consistency</a>
+<a href="supporting-statements.html">Supporting results</a>
+<a href="mathlib-only.html">Specification and definitions</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="linux-checker-setup">Linux checker setup</h1>
-<p>This guide gives the sandboxed Linux procedure for checking all six main
-results with Comparator, Lean, Nanoda and con-ron. It assumes you can create
-a Linux virtual machine or use an existing Linux computer and install system
-software. The <a href="verifying.html">verification guide</a> explains the tools and
-offers <a href="verifying.html#local-checking-on-macos">local macOS checking</a> as an
-alternative.</p>
+<p>This guide gives the sandboxed Linux procedure for checking the three main
+and nineteen selected supporting results with Comparator, Lean, Nanoda and con-ron,
+under the same checking standard. It assumes you can create a Linux virtual
+machine or use an existing Linux computer and install system software. The
+<a href="verifying.html">verification guide</a> explains the tools and offers
+<a href="verifying.html#local-checking-on-macos">local macOS checking</a> as an alternative.</p>
 <p><strong>Follow steps 1–4 in order, using a terminal inside Linux throughout.</strong> First
 prepare the system and tools; then obtain the repository, prepare its libraries
 and run the checks. Wait for each command to finish successfully before
@@ -67,7 +68,7 @@ sysctl vm.max_map_count
 an administrator can raise it:</p>
 <pre><code class="language-sh">sudo sysctl -w vm.max_map_count=262144
 </code></pre>
-<p>For a VM, we recommend four virtual CPU cores and 8 GiB of memory. The six
+<p>For a VM, we recommend four virtual CPU cores and 8 GiB of memory. The twenty-two
 cases run one at a time, each limited to 6 GiB without swap, leaving memory
 for Linux itself. Allow at least 15 GiB of free disk space for working copies
 after installing the tools and libraries.</p>
@@ -86,10 +87,11 @@ sources without compiled project files. Do not add <code>.lake</code>, <code>.ru
 working copies created by the checking programs.</p>
 <p>Before running repository scripts, inspect the checking scripts, Lake
 configuration, dependency manifest, and challenge files with their imports.
-These are trusted inputs to the procedure. The six challenges import the
-independent <code>Definitions.lean</code> and <code>Statements.lean</code>, whose other imports
-come from Mathlib. The configurations select the six targets and the three
-permitted foundational axioms.
+These are trusted inputs to the procedure. The twenty-two challenges import the
+independent <code>Statements.lean</code> or <code>SupportingStatements.lean</code>, together with
+their definition modules. These five specification modules use Mathlib without
+importing the proof library. The configurations select the twenty-two targets and
+the three permitted foundational axioms.
 <a href="files/verification/SOURCE-MANIFEST.json">SOURCE-MANIFEST.json</a> and
 <a href="files/verification/AUDIT-MANIFEST.json">AUDIT-MANIFEST.json</a> identify the source and adapter
 files; the runner checks them against these inventories.</p>
@@ -139,19 +141,19 @@ the main run without compiling the project proofs or changing its configurations
 <strong><code>PASS_FIXTURES_ONLY</code></strong>. A sandbox error is not a successful negative test;
 resolve setup failures before proceeding.</p>
 <p><a id="check-the-main-results"></a></p>
-<h2 id="4-run-comparator-on-all-six-results">4. Run Comparator on all six results</h2>
+<h2 id="4-run-comparator-on-all-twenty-two-results">4. Run Comparator on all twenty-two results</h2>
 <p>The tools and libraries are now installed and the setup tests have passed.
 The project proofs have not yet been compiled. From the same repository
 directory inside Linux, run:</p>
 <pre><code class="language-sh">python3 -I -B tools/comparator.py
 </code></pre>
 <p>This command prepares its own source-only working copy, compiles the project
-inside the sandbox, and compares all six results with their independent
+inside the sandbox, and compares all twenty-two results with their independent
 specifications. No separate preparation command or ordinary build is needed.</p>
-<p>Success requires the command to exit successfully and <strong><code>PASS_ALL_SIX</code></strong> in
+<p>Success requires the command to exit successfully and <strong><code>PASS_ALL_TWENTY_TWO</code></strong> in
 the report whose path it prints. For each result, that requires successful
 Comparator comparison and explicit acceptance by Lean, Nanoda and con-ron.
-A partial or failed run does not verify all six results.</p>
+A partial or failed run does not verify all twenty-two results.</p>
 <p>Each case has a two-core CPU quota and a one-hour limit. A timeout fails the
 run; it is not a mathematical rejection. Before reporting success, the runner
 rechecks the identities of the sources, libraries, configurations and tools.</p>

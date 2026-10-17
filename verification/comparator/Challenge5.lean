@@ -1,3 +1,3 @@
-import ReyZygmund.MathlibOnly.Statements
+import ReyZygmund.MathlibOnly.SupportingStatements
 
-theorem ReyZygmund.MathlibOnly.phi_sparse_overlap : ReyZygmund.MathlibOnly.PhiSparseOverlap := by sorry
+theorem ReyZygmund.MathlibOnly.sparse_phi_zygmund_overlap_estimate : ReyZygmund.MathlibOnly.SparsePhiZygmundOverlapEstimate := by sorry

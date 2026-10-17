@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge21",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.half_sparse_slices"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

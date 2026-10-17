@@ -6,8 +6,8 @@ import Mathlib.Tactic.Linarith
 
 /-! # The tail estimate obtained from a real moment
 
-This records the Chebyshev step separately from exponential-series arguments.
-The moment order is real and the normalized measure may be zero or infinite.
+Chebyshev's inequality is applied at a real moment order. The normalized measure
+may be zero or infinite.
 -/
 
 open MeasureTheory

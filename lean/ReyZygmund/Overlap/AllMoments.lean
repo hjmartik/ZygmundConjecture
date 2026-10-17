@@ -4,7 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 /-! # Completing the real moment range without losing the second-moment constant
 
 The sparse-duality bound retains `(q - 1)^k`. At q = 2 this is one,
-so finite-measure Holder fills the range down to one with the same constant.
+so finite-measure Hölder fills the range down to one with the same constant.
 -/
 
 open MeasureTheory

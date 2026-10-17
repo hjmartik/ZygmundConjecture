@@ -3,8 +3,7 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 
 /-! # Increasing bounded tests recover the measurable-set maximum
 
-Both the averages and the final power integral remain extended nonnegative
-integrals. No finite integral is assigned to an arbitrary measurable input.
+Both the averages and the final power integral use extended nonnegative integrals.
 -/
 
 open Filter MeasureTheory

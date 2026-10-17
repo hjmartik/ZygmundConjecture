@@ -20,8 +20,7 @@ open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The selected partition member supplies the formerly unused coordinate.
-Only the other factors of the original tuple must be descendants. -/
+/-- The selected partition member supplies the omitted coordinate. -/
 theorem update_mem_averagingRectangles
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
@@ -55,8 +54,7 @@ private theorem productAverageMap_univ_update
   rw [productAverageMap_insert (Finset.univ.erase j) j (by simp),
     Function.update_self, heq]
 
-/-- The selected partition cube identifies the averaged denominator. Other point
-coordinates and the unused factor `Q j` are unrestricted. -/
+/-- The selected partition cube identifies the averaged denominator. -/
 theorem averagedDenominator_eq_productAverage
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)

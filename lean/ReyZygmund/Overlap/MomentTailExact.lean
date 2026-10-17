@@ -15,7 +15,7 @@ open scoped ENNReal
 namespace ReyZygmund.Overlap
 
 /-- Integrating a unit exponential tail starting at one costs at most three
-times the total measure. No tail assumption is needed below one. -/
+times the total measure. -/
 theorem exponential_tail_from_one
     {X : Type} [MeasurableSpace X] (mu : Measure X) [IsFiniteMeasure mu]
     (Y : X → ℝ) (hm : Measurable Y) (_hn : ∀ x, 0 ≤ Y x)
@@ -89,8 +89,8 @@ theorem exponential_tail_from_one
         ENNReal.ofReal_one, mul_assoc, add_mul, one_mul]
     _ ≤ _ := mul_le_mul_left (by simpa using ENNReal.ofReal_le_ofReal hcoeff) _
 
-/-- The complete real-moment scale, including orders between one and two,
-gives the precise normalized exponential in the admitted support lemma. -/
+/-- Moment bounds for every real order at least one give the normalized
+exponential estimate. -/
 theorem all_polynomial_moments_exponential
     {X : Type} [MeasurableSpace X] (mu : Measure X) [IsFiniteMeasure mu]
     (H : X → ℝ) (hm : Measurable H) (hn : ∀ x, 0 ≤ H x)

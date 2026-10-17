@@ -66,7 +66,7 @@ theorem productLeafConstant_finiteSignedPartialMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)) (F : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteSignedPartialMaximal I N A F) := by
   intro P hP x hx y hy
   apply Finset.sup'_congr _ rfl
@@ -93,21 +93,21 @@ private theorem average_at_product_leaf
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
     (P : ∀ i, Box (Fin (d i))) (hP : P ∈ productLeaves I N)
-    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productBox P) :
+    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle P) :
     (averageMap j (P j) F).1 x = F.1 x := by
   rw [averageMap_apply, coordinateAverage_of_mem j (P j) F.1 x
-    ((mem_productBox P x).mp hx j)]
+    ((mem_productRectangle P x).mp hx j)]
   have heq : (∫ y in (P j : Set (Fin (d j) → ℝ)), F.1 (Function.update x j y)) =
       ∫ _ in (P j : Set (Fin (d j) → ℝ)), F.1 x := by
     apply setIntegral_congr_fun (P j).measurableSet_coe
     intro y hy
     apply hf P hP _ ?_ x hx
-    apply (mem_productBox P _).mpr
+    apply (mem_productRectangle P _).mpr
     intro i
     by_cases hij : i = j
     · subst i
       simpa using hy
-    · simpa [hij] using (mem_productBox P x).mp hx i
+    · simpa [hij] using (mem_productRectangle P x).mp hx i
   rw [heq]
   simp only [integral_const, smul_eq_mul]
   simpa only [Measure.real, Measure.restrict_apply_univ] using
@@ -125,9 +125,9 @@ in fewer coordinates, including the case of no averaging at all. -/
 theorem finiteSignedPartialMaximal_mono
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (B A : Finset (Fin m)) (hBA : B ⊆ A)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     finiteSignedPartialMaximal I N B F x ≤ finiteSignedPartialMaximal I N A F x := by
   have hm : Monotone (fun S => finiteSignedPartialMaximal I N S F x) := by
     apply Finset.monotone_iff_forall_le_insert.mpr

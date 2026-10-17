@@ -52,8 +52,7 @@ theorem icoFlatProductBox_volume_pos_finite (Q : ∀ i, Box (Fin (d i))) :
   rw [volumeReal_icoFlatProductBox, volume_icoFlatProductBox]
   exact ⟨box_volume_pos (flatProductBox Q), (flatProductBox Q).measure_coe_lt_top volume⟩
 
-/-- Equality of the restricted measures gives equality of integrals for any signed
-input. The next lemma establishes integrability for the analytic application. -/
+/-- Equality of the restricted measures gives equality of integrals for signed inputs. -/
 theorem integral_icoFlatProductBox (Q : ∀ i, Box (Fin (d i)))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) :
     (∫ x in icoFlatProductBox Q, f x) =
@@ -105,8 +104,7 @@ theorem icoEuclideanFamilyMaximal_ae_eq
   simp only [integral_icoFlatProductBox, volumeReal_icoFlatProductBox,
     Set.indicator_apply, hx Q]
 
-/-- In particular the strict positive-level measures agree. Neither
-finite maximal values nor a finite total shadow measure are assumed. -/
+/-- The strict positive-level measures agree. -/
 theorem icoEuclideanFamilyMaximal_levelset_measure
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G.Countable)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (lam : ℝ) (_hlam : 0 < lam) :

@@ -34,26 +34,26 @@ private theorem dyadic_weight_shift (p : ℝ) (n : ℤ) :
     show p * (n : ℝ) + -2 * (n : ℝ) = (p - 2) * (n : ℝ) by ring]
 
 /-- The power-integral estimate on the top rectangle, conditional on the distribution
-bound. Convergence is proved, and values outside the rectangle are unrestricted. -/
+bound. -/
 theorem integral_rpow_le_of_dyadic_distribution
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (H K : ProductPoint d → ℝ)
     (hH : ProductLeafConstant I N H) (hK : ProductLeafConstant I N K)
-    (hH0 : ∀ x ∈ productBox I, 0 ≤ H x) (hK0 : ∀ x ∈ productBox I, 0 ≤ K x)
+    (hH0 : ∀ x ∈ productRectangle I, 0 ≤ H x) (hK0 : ∀ x ∈ productRectangle I, 0 ≤ K x)
     (C : ℝ) (hC : 0 ≤ C)
     (hdistribution : ∀ n : ℤ,
-      volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < H x} ≤
-        C * (volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < K x} +
+      volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < H x} ≤
+        C * (volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < K x} +
           Real.rpow 2 (-2 * (n : ℝ)) *
             ∑' j : ℤ, if j < n then Real.rpow 2 (2 * (j : ℝ)) *
-              volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (j : ℝ) < K x} else 0))
+              volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (j : ℝ) < K x} else 0))
     (p : ℝ) (hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    (∫ x in productBox I, Real.rpow (H x) p) ≤
-      32 * C * (∫ x in productBox I, Real.rpow (K x) p) := by
+    (∫ x in productRectangle I, Real.rpow (H x) p) ≤
+      32 * C * (∫ x in productRectangle I, Real.rpow (K x) p) := by
   let hLevels : ℤ → ℝ := fun n =>
-    volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < H x}
+    volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < H x}
   let kLevels : ℤ → ℝ := fun n =>
-    volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < K x}
+    volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < K x}
   let weightedH : ℤ → ℝ := fun n => Real.rpow 2 (p * (n : ℝ)) * hLevels n
   let weightedK : ℤ → ℝ := fun n => Real.rpow 2 (p * (n : ℝ)) * kLevels n
   let tail : ℤ → ℝ := fun n =>
@@ -114,13 +114,13 @@ theorem integral_rpow_le_of_dyadic_distribution
       _ = _ := by ring
   have hHbound := (dyadic_layerCake_integral_bounds I N H hH hH0 p hp hp3).1
   have hKbound := (dyadic_layerCake_integral_bounds I N K hK hK0 p hp hp3).2
-  change (∫ x in productBox I, Real.rpow (H x) p) / 4 ≤ ∑' n : ℤ, weightedH n at hHbound
-  change (∑' n : ℤ, weightedK n) ≤ 2 * (∫ x in productBox I, Real.rpow (K x) p) at hKbound
+  change (∫ x in productRectangle I, Real.rpow (H x) p) / 4 ≤ ∑' n : ℤ, weightedH n at hHbound
+  change (∑' n : ℤ, weightedK n) ≤ 2 * (∫ x in productRectangle I, Real.rpow (K x) p) at hKbound
   calc
-    (∫ x in productBox I, Real.rpow (H x) p) ≤ 4 * (∑' n : ℤ, weightedH n) := by linarith
+    (∫ x in productRectangle I, Real.rpow (H x) p) ≤ 4 * (∑' n : ℤ, weightedH n) := by linarith
     _ ≤ 16 * C * (∑' n : ℤ, weightedK n) := by linarith [hsum4]
-    _ ≤ 16 * C * (2 * (∫ x in productBox I, Real.rpow (K x) p)) :=
+    _ ≤ 16 * C * (2 * (∫ x in productRectangle I, Real.rpow (K x) p)) :=
       mul_le_mul_of_nonneg_left hKbound (mul_nonneg (by norm_num : (0 : ℝ) ≤ 16) hC)
-    _ = 32 * C * (∫ x in productBox I, Real.rpow (K x) p) := by ring
+    _ = 32 * C * (∫ x in productRectangle I, Real.rpow (K x) p) := by ring
 
 end ReyZygmund

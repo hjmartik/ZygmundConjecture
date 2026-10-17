@@ -2,10 +2,9 @@ import ReyZygmund.Geometry.ProductOrthogonality
 
 /-! # Children of a product rectangle
 
-Bisecting each side partitions the product rectangle. We compute the subrectangles' volumes
-and prove constancy of the full product difference on each one, including the
-half-open boundaries and empty-coordinate case.
-
+Bisecting each side partitions the product rectangle. We compute the
+subrectangles' volumes and prove pointwise constancy of the full product
+difference on each one.
 -/
 
 open BoxIntegral MeasureTheory
@@ -44,19 +43,12 @@ private theorem child_volume {k : ℕ} {Q R : Box (Fin k)}
   rw [Finset.prod_div_distrib]
   simp
 
-private theorem productBox_volume_real (Q : ∀ i, Box (Fin (d i))) :
-    volume.real (productBox Q) = ∏ i, volume.real (Q i : Set (Fin (d i) → ℝ)) := by
-  change (Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (Q i : Set (Fin (d i) → ℝ))))).toReal =
-      ∏ i, (volume (Q i : Set (Fin (d i) → ℝ))).toReal
-  rw [Measure.pi_pi, ENNReal.toReal_prod]
-
-/-- The exact volume of each Cartesian product child, in the measure. -/
+/-- The exact volume of each Cartesian product child, as a real number. -/
 theorem product_child_volume (Q R : ∀ i, Box (Fin (d i)))
     (hR : R ∈ productLeaves Q (fun _ => 1)) :
-    volume.real (productBox R) =
-      volume.real (productBox Q) / (2 : ℝ) ^ (∑ i, d i) := by
-  rw [productBox_volume_real R, productBox_volume_real Q]
+    volume.real (productRectangle R) =
+      volume.real (productRectangle Q) / (2 : ℝ) ^ (∑ i, d i) := by
+  rw [productRectangle_volume_real R, productRectangle_volume_real Q]
   have hcoord (i : Fin m) : volume.real (R i : Set (Fin (d i) → ℝ)) =
       volume.real (Q i : Set (Fin (d i) → ℝ)) / (2 : ℝ) ^ d i :=
     child_volume (product_child_mem_splitCenter Q R hR i)
@@ -77,18 +69,18 @@ private theorem full_difference_child_update
 
 private theorem constant_of_coordinate_updates
     (R : ∀ i, Box (Fin (d i))) (g : ProductPoint d → ℝ)
-    (hg : ∀ (i : Fin m) (x : ProductPoint d), x ∈ productBox R →
+    (hg : ∀ (i : Fin m) (x : ProductPoint d), x ∈ productRectangle R →
       ∀ z ∈ R i, g (Function.update x i z) = g x) :
-    ∀ x ∈ productBox R, ∀ y ∈ productBox R, g x = g y := by
+    ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R, g x = g y := by
   intro x hx y hy
   let z (A : Finset (Fin m)) : ProductPoint d :=
     fun i => if i ∈ A then y i else x i
-  have hz (A : Finset (Fin m)) : z A ∈ productBox R := by
-    apply (mem_productBox R _).mpr
+  have hz (A : Finset (Fin m)) : z A ∈ productRectangle R := by
+    apply (mem_productRectangle R _).mpr
     intro i
     by_cases hi : i ∈ A
-    · simpa only [z, ite_eq_left hi] using (mem_productBox R y).mp hy i
-    · simpa only [z, ite_eq_right hi] using (mem_productBox R x).mp hx i
+    · simpa only [z, ite_eq_left hi] using (mem_productRectangle R y).mp hy i
+    · simpa only [z, ite_eq_right hi] using (mem_productRectangle R x).mp hx i
   have h (A : Finset (Fin m)) : g (z A) = g x := by
     induction A using Finset.induction_on with
     | empty => simp [z]
@@ -99,7 +91,7 @@ private theorem constant_of_coordinate_updates
         · subst j
           simp only [z, Finset.mem_insert_self, ite_true, Function.update_self]
         · simp only [z, Finset.mem_insert, hji, false_or, Function.update_of_ne hji]
-      rw [heq, hg i (z A) (hz A) (y i) ((mem_productBox R y).mp hy i)]
+      rw [heq, hg i (z A) (hz A) (y i) ((mem_productRectangle R y).mp hy i)]
       exact ih
   simpa only [z, Finset.mem_univ, ite_true] using (h Finset.univ).symm
 
@@ -107,19 +99,19 @@ private theorem constant_of_coordinate_updates
 theorem productDifference_constant_on_child
     (Q R : ∀ i, Box (Fin (d i))) (hR : R ∈ productLeaves Q (fun _ => 1))
     (F : boundedMeasurableFunctions d) :
-    ∀ x ∈ productBox R, ∀ y ∈ productBox R,
+    ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R,
       (productDifferenceMap Finset.univ Q F).1 x =
         (productDifferenceMap Finset.univ Q F).1 y := by
   apply constant_of_coordinate_updates R (productDifferenceMap Finset.univ Q F).1
   intro i x hx z hz
   exact full_difference_child_update Q R hR F i x
-    ((mem_productBox R x).mp hx i) z hz
+    ((mem_productRectangle R x).mp hx i) z hz
 
 private theorem full_difference_zero_off_parent
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
-    (x : ProductPoint d) (hx : x ∉ productBox Q) :
+    (x : ProductPoint d) (hx : x ∉ productRectangle Q) :
     (productDifferenceMap Finset.univ Q F).1 x = 0 := by
-  have hnot : ¬ ∀ i, x i ∈ Q i := fun h => hx ((mem_productBox Q x).mpr h)
+  have hnot : ¬ ∀ i, x i ∈ Q i := fun h => hx ((mem_productRectangle Q x).mpr h)
   push Not at hnot
   obtain ⟨i, hi⟩ := hnot
   rw [productDifferenceMap_eq_mul_erase Finset.univ i (Finset.mem_univ i) Q]
@@ -131,7 +123,7 @@ theorem productDifference_exists_nonzero_child
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
     (hne : productDifferenceMap Finset.univ Q F ≠ 0) :
     ∃ R ∈ productLeaves Q (fun _ => 1), ∃ c : ℝ,
-      c ≠ 0 ∧ ∀ x ∈ productBox R,
+      c ≠ 0 ∧ ∀ x ∈ productRectangle R,
         (productDifferenceMap Finset.univ Q F).1 x = c := by
   have hex : ∃ x, (productDifferenceMap Finset.univ Q F).1 x ≠ 0 := by
     by_contra h
@@ -142,7 +134,7 @@ theorem productDifference_exists_nonzero_child
     by_contra hx
     exact h ⟨x, hx⟩
   obtain ⟨x, hx0⟩ := hex
-  have hx : x ∈ productBox Q := by
+  have hx : x ∈ productRectangle Q := by
     by_contra h
     exact hx0 (full_difference_zero_off_parent Q F x h)
   obtain ⟨R, hR, hxR⟩ := productLeaves_cover Q (fun _ => 1) x hx

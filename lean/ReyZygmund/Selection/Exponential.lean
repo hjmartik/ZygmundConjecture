@@ -6,14 +6,15 @@ import ReyZygmund.Overlap.FiniteExponential
 /-! # Exponential integrability of the selected rounded family
 
 The half-overlap bound makes the full family incomparable. Each last-coordinate
-slice is half-sparse and satisfies weaker containment. The overlap estimate and
-nonnegative Fubini give power `1 / (m - 2)`. We integrate the original finite
-overlap, so no jointly measurable choice of the disjoint subsets in the slices is
-needed.
+slice is half-sparse and weakly incomparable. The slice overlap estimate
+and nonnegative Fubini, applied to the original finite overlap, give power
+`1 / (m - 2)`.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
 
 namespace ReyZygmund.Selection
 
@@ -25,7 +26,7 @@ statement separately makes the dependence on total dimension uniform. -/
 theorem selected_rounded_exponential
     (n : ℕ) (d : Fin (n + 1) → ℕ) (hn : 2 ≤ n) (hd : ∀ i, 0 < d i) :
     ∃ c B : ℝ, 0 < c ∧ 0 < B ∧
-      ∀ (D : ∀ i, DyadicGrid (d i))
+      ∀ (D : ∀ i, CubeGrid (d i))
         (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
       ∀ G : Finset (∀ i, Box (Fin (d i))),
       (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ roundedGridRectangles D phi →
@@ -55,16 +56,16 @@ theorem selected_rounded_exponential
       rw [heq]
       exact sliceFamily_subset_grid D (↑G) hgrid t
     have hweak : ∀ R ∈ finiteSlice G t, ∀ S ∈ finiteSlice G t,
-        productBox R ⊆ productBox S → ∃ i, R i = S i := by
+        productRectangle R ⊆ productRectangle S → ∃ i, R i = S i := by
       intro R hR S hS hRS
       have hR' : R ∈ sliceFamily (↑G) t := by rw [← heq]; exact hR
       have hS' : S ∈ sliceFamily (↑G) t := by rw [← heq]; exact hS
       exact sliceFamily_weaker_containment (by omega) D phi hphi (↑G) hG hinc t
-        R hR' S hS' ((productBox_subset_iff R S).mp hRS)
+        R hR' S hS' ((productRectangle_subset_iff R S).mp hRS)
     rw [← heq] at hE hdis
     exact hspec n (fun i => d i.castSucc) hn (fun i => hd i.castSucc)
       (fun i => D i.castSucc) (finiteSlice G t) hsliceGrid hweak E
-      (fun R hR => (hE R hR).1) (fun R hR => (hE R hR).2.1) hdis
+      (fun R hR => (hE R hR).1.nullMeasurableSet) (fun R hR => (hE R hR).2.1) hdis
       (fun R hR => (hE R hR).2.2)
   let f := fun x => ENNReal.ofReal
     (Real.exp (c n Dfirst * Real.rpow (finiteOverlap G x) (1 / ((n - 1 : ℕ) : ℝ))))

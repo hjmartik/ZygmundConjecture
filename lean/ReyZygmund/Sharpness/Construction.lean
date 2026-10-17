@@ -11,6 +11,8 @@ integrals. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmund.Sharpness
 
 open Geometry
@@ -22,28 +24,27 @@ private theorem construction_volume_pi_real {m : ℕ} {d : Fin m → ℕ}
     (Set.pi Set.univ U)).toReal = ∏ i, (volume (U i)).toReal
   rw [Measure.pi_pi, ENNReal.toReal_prod]
 
-/-- A finite family of rectangles with the stated sparseness and overlap
-properties. These properties are conclusions of the construction. -/
+/-- A finite family of rectangles with the stated sparseness and overlap properties. -/
 theorem exists_sharp_spatial_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 ≤ s)
     (d : Fin (n + 3) → ℕ) (hd : ∀ j, 0 < d j)
-    (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
-    (hQ : ∀ j, Q j ∈ (D j).cubes 0) :
+    (D : ∀ j, CubeGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
+    (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0) :
     ∃ G : Finset (∀ j, Box (Fin (d j))),
       ∃ E : (∀ j, Box (Fin (d j))) → Set (ProductPoint d),
         ∃ L : Set (ProductPoint d),
       (↑G : Set (∀ j, Box (Fin (d j)))) ⊆
-        Continuous.dyadicPhiRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
-      (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S) ∧
-      (⋃ R ∈ G, productBox R) = productBox Q ∧
-      (∀ R ∈ G, MeasurableSet (E R) ∧ E R ⊆ productBox R ∧
+        MathlibOnly.dyadicZygmundRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
+      (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S) ∧
+      (⋃ R ∈ G, productRectangle R) = productRectangle Q ∧
+      (∀ R ∈ G, MeasurableSet (E R) ∧ E R ⊆ productRectangle R ∧
         volume.real (E R) = (1 - (2 : ℝ) ^ (-(s : ℤ))) ^ (n + 2) *
-          volume.real (productBox R)) ∧
+          volume.real (productRectangle R)) ∧
       Set.PairwiseDisjoint (↑G : Set (∀ j, Box (Fin (d j)))) E ∧
-      MeasurableSet L ∧ L ⊆ (⋃ R ∈ G, productBox R) ∧
+      MeasurableSet L ∧ L ⊆ (⋃ R ∈ G, productRectangle R) ∧
       L = {x : ProductPoint d | (∑ R ∈ G,
-        (productBox R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2)} ∧
+        (productRectangle R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2)} ∧
       volume.real L = ((2 : ℝ) ^ (-(s : ℤ))) ^ ((n + 2) * (N - 1)) *
-        volume.real (productBox Q) := by
+        volume.real (productRectangle Q) := by
   obtain ⟨P, _, hzero, hgen, _, hnest, hmeas, hmass, hlocal⟩ :=
     exists_coordinate_retention n N s hN (fun i => d i.succ) (fun i => hd i.succ)
       (fun i => D i.succ) (fun i => Q i.succ) (fun i => hQ i.succ)
@@ -82,7 +83,7 @@ theorem exists_sharp_spatial_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 �
   · rw [hG.2.2.1]
     intro x hx
     rw [hLset] at hx
-    apply (mem_productBox Q x).mpr
+    apply (mem_productRectangle Q x).mpr
     intro j
     refine Fin.cases ?_ (fun i => ?_) j
     · exact hx.1
@@ -93,10 +94,10 @@ theorem exists_sharp_spatial_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 �
         ∏ i : Fin (n + 2), volume.real (boxUnion (P i (N - 1))) := by
       simp only [L, construction_volume_pi_real, Fin.prod_univ_succ,
         Fin.cons_zero, Fin.cons_succ]
-    have hvolQ : volume.real (productBox Q) =
+    have hvolQ : volume.real (productRectangle Q) =
         volume.real (Q 0 : Set (Fin (d 0) → ℝ)) *
           ∏ i : Fin (n + 2), volume.real (Q i.succ : Set (Fin (d i.succ) → ℝ)) := by
-      rw [productBox, construction_volume_pi_real, Fin.prod_univ_succ]
+      rw [productRectangle_volume_real, Fin.prod_univ_succ]
     rw [hvolL, hvolQ]
     simp_rw [hmass]
     rw [Finset.prod_mul_distrib]

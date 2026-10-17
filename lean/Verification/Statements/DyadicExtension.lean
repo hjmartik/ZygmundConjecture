@@ -6,6 +6,8 @@ open BoxIntegral
 open ReyZygmund ReyZygmund.Geometry ReyZygmund.Continuous
 open scoped BigOperators Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid zygmundRectangles dyadicZygmundRectangles)
+
 namespace ReyZygmundVerification
 
 def dyadicExtensionMonotoneContract : Prop :=
@@ -20,14 +22,14 @@ def dyadicExtensionRecoveryContract : Prop :=
 
 def dyadicContinuousInclusionContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ),
-    dyadicPhiRectangles D Phi ⊆ continuousPhiRectangles d (dyadicPhiExtension Phi)
+    (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ),
+    dyadicZygmundRectangles D Phi ⊆ zygmundRectangles d (dyadicPhiExtension Phi)
 
 def dyadicContinuousMaximalContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ)
+    (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (x : Fin (∑ i, d i) → ℝ),
-    euclideanFamilyMaximal (dyadicPhiRectangles D Phi) f x ≤
-      euclideanFamilyMaximal (continuousPhiRectangles d (dyadicPhiExtension Phi)) f x
+    euclideanFamilyMaximal (dyadicZygmundRectangles D Phi) f x ≤
+      euclideanFamilyMaximal (zygmundRectangles d (dyadicPhiExtension Phi)) f x
 
 end ReyZygmundVerification

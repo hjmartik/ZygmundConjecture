@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge19",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.cordoba_fefferman_selection"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

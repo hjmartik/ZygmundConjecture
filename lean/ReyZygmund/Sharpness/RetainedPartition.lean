@@ -3,13 +3,15 @@ import ReyZygmund.Geometry.GridOrder
 
 /-! # One retention step over a finite grid partition
 
-All unions below are unions of half-open boxes. The retained family
-will be constructed from the proved one-box retention lemma; local fractions
-are derived from the grid containment and disjointness properties.
+All unions below are unions of half-open boxes. Construct the retained family
+from the one-box retention lemma. Grid containment and disjointness give the
+local fractions.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid)
 
 namespace ReyZygmund.Sharpness
 
@@ -40,8 +42,7 @@ private theorem boxUnion_biUnion {d : ℕ} (P : Finset (Box (Fin d)))
   · rintro ⟨Q, hQ, R, hR, hxR⟩
     exact ⟨R, ⟨Q, hQ, hR⟩, hxR⟩
 
-/-- Finite refinement preserves the union pointwise, including boundaries. Neither a
-common top cube nor disjointness is needed. -/
+/-- Finite refinement preserves the union pointwise, including boundaries. -/
 theorem boxUnion_level_biUnion {d : ℕ} (P : Finset (Box (Fin d))) (t : ℕ) :
     boxUnion (P.biUnion (fun Q => (level Q t).boxes)) = boxUnion P := by
   rw [boxUnion_biUnion]
@@ -68,9 +69,9 @@ private theorem volume_inter_biUnion {d : ℕ} (P : Finset (Box (Fin d)))
   · intro Q hQ
     exact ((measure_mono Set.inter_subset_right).trans_lt (hfin Q hQ)).ne
 
-private theorem local_fraction_of_grid_order {d : ℕ} (D : DyadicGrid d)
-    {n k : ℤ} {Q I : Box (Fin d)} (hQ : Q ∈ D.cubes n)
-    (hI : I ∈ D.cubes k) (hkn : k ≤ n) (U : Set (Fin d → ℝ))
+private theorem local_fraction_of_grid_order {d : ℕ} (D : CubeGrid d)
+    {n k : ℤ} {Q I : Box (Fin d)} (hQ : Q ∈ D.cubesAtGeneration n)
+    (hI : I ∈ D.cubesAtGeneration k) (hkn : k ≤ n) (U : Set (Fin d → ℝ))
     (hU : U ⊆ (Q : Set (Fin d → ℝ))) (c : ℝ)
     (hmass : volume.real U = c * volume.real (Q : Set (Fin d → ℝ))) :
     volume.real ((I : Set (Fin d → ℝ)) ∩ U) =
@@ -93,17 +94,17 @@ private theorem local_fraction_of_grid_order {d : ℕ} (D : DyadicGrid d)
 
 /-- Retain the same exact fraction in each member of a finite grid partition.
 Every coarser same-grid box sees that fraction of its original intersection. -/
-theorem exists_retained_partition {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
-    (n : ℤ) (P : Finset (Box (Fin d))) (hP : ∀ Q ∈ P, Q ∈ D.cubes n) (s : ℕ) :
+theorem exists_retained_partition {d : ℕ} (hd : 0 < d) (D : CubeGrid d)
+    (n : ℤ) (P : Finset (Box (Fin d))) (hP : ∀ Q ∈ P, Q ∈ D.cubesAtGeneration n) (s : ℕ) :
     ∃ F : Finset (Box (Fin d)),
       F ⊆ P.biUnion (fun Q => (level Q s).boxes) ∧
-      (∀ R ∈ F, R ∈ D.cubes (n + (s : ℤ))) ∧
+      (∀ R ∈ F, R ∈ D.cubesAtGeneration (n + (s : ℤ))) ∧
       Set.PairwiseDisjoint (↑F : Set (Box (Fin d))) (fun R => (R : Set (Fin d → ℝ))) ∧
       boxUnion F ⊆ boxUnion P ∧
       MeasurableSet (boxUnion F) ∧
       volume (boxUnion F) < ⊤ ∧
       volume.real (boxUnion F) = (2 : ℝ) ^ (-(s : ℤ)) * volume.real (boxUnion P) ∧
-      ∀ (k : ℤ), k ≤ n → ∀ I ∈ D.cubes k,
+      ∀ (k : ℤ), k ≤ n → ∀ I ∈ D.cubesAtGeneration k,
         volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion F) =
           (2 : ℝ) ^ (-(s : ℤ)) *
             volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion P) := by
@@ -127,7 +128,7 @@ theorem exists_retained_partition {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
     intro R hR
     obtain ⟨Q, hQ, hRQ⟩ := Finset.mem_biUnion.mp hR
     exact Finset.mem_biUnion.mpr ⟨Q, hQ, hTlevel Q hRQ⟩
-  have hgrid (R : Box (Fin d)) (hR : R ∈ F) : R ∈ D.cubes (n + (s : ℤ)) := by
+  have hgrid (R : Box (Fin d)) (hR : R ∈ F) : R ∈ D.cubesAtGeneration (n + (s : ℤ)) := by
     obtain ⟨Q, hQ, hRQ⟩ := Finset.mem_biUnion.mp (hFlevel hR)
     exact D.mem_cubes_of_mem_level (hP Q hQ) hRQ
   have hFdis : Set.PairwiseDisjoint (↑F : Set (Box (Fin d)))

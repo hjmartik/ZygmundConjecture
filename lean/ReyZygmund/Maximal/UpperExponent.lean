@@ -2,10 +2,9 @@ import ReyZygmund.Maximal.FamilyProperties
 
 /-! # The upper exponent range on a finite top rectangle
 
-For real `p ≥ 3/2`, the ordinary finite-family norm estimate costs at most `3 * (p
-/ (p - 1))^(m - 1)`. The input may be signed and the family need not be
-incomparable. All integrals are over the top rectangle.
-
+For real `p ≥ 3/2`, the ordinary finite-family norm estimate costs at most
+`3 * (p / (p - 1))^(m - 1)`. The input may be signed. All integrals are over
+the top rectangle.
 -/
 
 open BoxIntegral MeasureTheory
@@ -25,15 +24,15 @@ theorem finite_family_maximal_norm_upper
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (p : ℝ) (hp : (3 : ℝ) / 2 ≤ p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal G F x) p) (1 / p) ≤
       3 * (p / (p - 1)) ^ (m - 1) *
-        Real.rpow (∫ x in productBox I, Real.rpow |F.1 x| p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow |F.1 x| p) (1 / p) := by
   let c := p / (p - 1)
-  let L := ∫ x in productBox I, Real.rpow (finiteFamilyMaximal G F x) p
-  let Y := ∫ x in productBox I, Real.rpow |F.1 x| p
+  let L := ∫ x in productRectangle I, Real.rpow (finiteFamilyMaximal G F x) p
+  let Y := ∫ x in productRectangle I, Real.rpow |F.1 x| p
   have hp1 : 1 < p := by linarith
   have hp0 : 0 < p := zero_lt_one.trans hp1
   have hc0 : 0 ≤ c := div_nonneg hp0.le (sub_pos.mpr hp1).le

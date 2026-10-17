@@ -5,9 +5,7 @@ import Mathlib.MeasureTheory.Constructions.Pi
 /-! # Product coordinates and Euclidean coordinates
 
 The coordinate identification is a measurable equivalence preserving Lebesgue
-measure. The finite-product calculation includes empty products and
-zero-dimensional factors.
-
+measure.
 -/
 
 open MeasureTheory

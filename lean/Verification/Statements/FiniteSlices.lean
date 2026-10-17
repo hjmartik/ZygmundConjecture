@@ -3,13 +3,15 @@ import ReyZygmund.Geometry.FiniteSlices
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry ReyZygmund.Overlap
 
 def finiteSlicedOverlapContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
     (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D →
     (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
     ∀ (y : Fin (∑ i : Fin n, d i.castSucc) → ℝ) (t : Fin (d (Fin.last n)) → ℝ),

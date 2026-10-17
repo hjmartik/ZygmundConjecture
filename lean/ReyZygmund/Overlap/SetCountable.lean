@@ -5,7 +5,6 @@ import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 /-! # Countable measurable-set overlaps
 
 The nonnegative series is the increasing supremum of finite overlaps.
-No spatial boundedness or almost-everywhere finiteness is assumed in this passage.
 -/
 
 open MeasureTheory
@@ -97,8 +96,8 @@ theorem lintegral_setOverlap_rpow_eq_iSup
     _ = ∫⁻ x, ⨆ H : Finset G, F H x := lintegral_congr heq
     _ = _ := lintegral_iSup_directed_of_measurable hmeas hdir
 
-/-- A uniform finite-family moment bound passes to the countable sum.
-The bound is on the full shadow; no enumeration changes the overlap. -/
+/-- A uniform finite-family moment bound on the full shadow passes to the
+countable sum. -/
 theorem countable_set_moment_of_finite
     (G : Set (Set (Fin d → ℝ))) (hG : G.Countable)
     (hm : ∀ I ∈ G, MeasurableSet I) (q : ℝ) (hq : 0 < q) (C : ℝ≥0∞)

@@ -20,8 +20,8 @@ noncomputable def flatProductBox (Q : ∀ i, Box (Fin (d i))) : Box (Fin (∑ i,
     simpa only [flattenCoordinates_apply] using (Q i).lower_lt_upper k
 
 theorem mem_flatProductBox (Q : ∀ i, Box (Fin (d i))) (x : ProductPoint d) :
-    flattenCoordinates d x ∈ flatProductBox Q ↔ x ∈ productBox Q := by
-  rw [mem_productBox]
+    flattenCoordinates d x ∈ flatProductBox Q ↔ x ∈ productRectangle Q := by
+  rw [mem_productRectangle]
   change (∀ j, flattenCoordinates d (fun i => (Q i).lower) j < flattenCoordinates d x j ∧
     flattenCoordinates d x j ≤ flattenCoordinates d (fun i => (Q i).upper) j) ↔ _
   constructor
@@ -31,22 +31,31 @@ theorem mem_flatProductBox (Q : ∀ i, Box (Fin (d i))) (x : ProductPoint d) :
     obtain ⟨⟨i, k⟩, rfl⟩ := (finSigmaFinEquiv (n := d)).surjective j
     simpa only [flattenCoordinates_apply, Set.mem_Ioc] using h i k
 
+/-- The scalar-coordinate rectangle is the box formed from its listed corners. -/
+theorem rectangle_eq_flatProductBox (Q : ∀ i, Box (Fin (d i))) :
+    MathlibOnly.rectangle Q = (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) := by
+  ext x
+  obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
+  apply Iff.trans _ (mem_flatProductBox Q y).symm
+  simp only [MathlibOnly.rectangle, Set.mem_ofPred_eq, mem_productRectangle,
+    flattenCoordinates_apply]
+  rfl
+
 theorem preimage_flatProductBox (Q : ∀ i, Box (Fin (d i))) :
     flattenCoordinates d ⁻¹' (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) =
-      productBox Q := by
+      productRectangle Q := by
   ext x
   exact mem_flatProductBox Q x
 
 theorem volume_flatProductBox (Q : ∀ i, Box (Fin (d i))) :
-    volume (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) = volume (productBox Q) := by
+    volume (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) = volume (productRectangle Q) := by
   rw [← (volume_preserving_flattenCoordinates d).map_eq,
     MeasurableEquiv.map_apply, preimage_flatProductBox]
 
-/-- Set integrals agree under the measure-preserving coordinates.
-This identity itself is total; analytic uses retain their input integrability. -/
+/-- Set integrals agree under the measure-preserving coordinate map. -/
 theorem integral_flatProductBox (Q : ∀ i, Box (Fin (d i)))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) :
-    (∫ x in productBox Q, f (flattenCoordinates d x)) =
+    (∫ x in productRectangle Q, f (flattenCoordinates d x)) =
       ∫ y in (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)), f y := by
   have h := (volume_preserving_flattenCoordinates d).restrict_preimage
     (flatProductBox Q).measurableSet_coe
@@ -55,7 +64,7 @@ theorem integral_flatProductBox (Q : ∀ i, Box (Fin (d i)))
 
 theorem average_flatProductBox (Q : ∀ i, Box (Fin (d i)))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) :
-    (∫ x in productBox Q, f (flattenCoordinates d x)) / volume.real (productBox Q) =
+    (∫ x in productRectangle Q, f (flattenCoordinates d x)) / volume.real (productRectangle Q) =
       (∫ y in (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)), f y) /
         volume.real (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) := by
   rw [integral_flatProductBox]

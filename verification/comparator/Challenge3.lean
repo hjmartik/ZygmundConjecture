@@ -1,3 +1,3 @@
 import ReyZygmund.MathlibOnly.Statements
 
-theorem ReyZygmund.MathlibOnly.continuous_endpoint : ReyZygmund.MathlibOnly.ContinuousEndpoint := by sorry
+theorem ReyZygmund.MathlibOnly.zygmund_conjecture : ReyZygmund.MathlibOnly.ZygmundConjecture := by sorry

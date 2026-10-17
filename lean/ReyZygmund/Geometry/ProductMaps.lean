@@ -19,7 +19,10 @@ namespace ReyZygmund.Geometry
 
 variable {m : ℕ} (d : Fin m → ℕ)
 
-/-- A concrete submodule of real-valued functions, used only to package closure. -/
+/-- Bounded measurable functions form a vector space preserved by the coordinate
+averages and differences. Bundling this space as a submodule makes these
+operators linear endomorphisms: their multiplication is composition, and
+commutation and cancellation can be expressed as identities of operators. -/
 def boundedMeasurableFunctions : Submodule ℝ (ProductPoint d → ℝ) where
   carrier := {f | Measurable f ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ x, |f x| ≤ C}
   zero_mem' := ⟨measurable_const, 0, le_rfl, by simp⟩
@@ -41,10 +44,21 @@ variable {d}
 noncomputable def finiteInput (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f) :
     boundedMeasurableFunctions d :=
-  ⟨(productBox I).indicator f, measurable_product_localization I N f hf,
+  ⟨(productRectangle I).indicator f, measurable_product_localization I N f hf,
     bounded_product_localization I N f hf⟩
 
-/-- The coordinate average as a linear map on its proved closed function class. -/
+/-- A supported finite input is unchanged by localization to its top rectangle. -/
+theorem finiteInput_eq (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
+    (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
+    (hs : ∀ x, x ∉ productRectangle I → f x = 0) :
+    (finiteInput I N f hf).1 = f := by
+  funext x
+  by_cases hx : x ∈ productRectangle I
+  · exact Set.indicator_of_mem hx f
+  · change (productRectangle I).indicator f x = f x
+    rw [Set.indicator_of_notMem hx, hs x hx]
+
+/-- The coordinate average as a linear map on bounded measurable functions. -/
 noncomputable def averageMap (i : Fin m) (Q : Box (Fin (d i))) :
     Module.End ℝ (boundedMeasurableFunctions d) where
   toFun f := ⟨coordinateAverage i Q f.1, coordinateAverage_measurable i Q f.1 f.2.1, by
@@ -62,13 +76,13 @@ noncomputable def averageMap (i : Fin m) (Q : Box (Fin (d i))) :
         coordinateAverage i Q f.1 x + coordinateAverage i Q g.1 x
       simp only [coordinateAverage_of_mem i Q _ x hx, Pi.add_apply]
       rw [integral_add hfi hgi, add_div]
-    · simp [coordinateAverage, boxAverage, hx]
+    · simp [coordinateAverage, cubeAverage, hx]
   map_smul' c f := by
     apply Subtype.ext
     funext x
     by_cases hx : x i ∈ Q
-    · simp [coordinateAverage, boxAverage, hx, integral_const_mul, mul_div_assoc]
-    · simp [coordinateAverage, boxAverage, hx]
+    · simp [coordinateAverage, cubeAverage, cubeMean, hx, integral_const_mul, mul_div_assoc]
+    · simp [coordinateAverage, cubeAverage, hx]
 
 @[simp] theorem averageMap_apply (i : Fin m) (Q : Box (Fin (d i)))
     (f : boundedMeasurableFunctions d) :
@@ -83,7 +97,7 @@ noncomputable def differenceMap (i : Fin m) (Q : Box (Fin (d i))) :
     (f : boundedMeasurableFunctions d) :
     (differenceMap i Q f).1 = coordinateDifference i Q f.1 := by
   funext x
-  simp [differenceMap, coordinateDifference, Finset.sum_apply]
+  simp [differenceMap, coordinateDifference_eq_sum, Finset.sum_apply]
 
 theorem averageMap_commute (i j : Fin m) (hij : i ≠ j)
     (Q : Box (Fin (d i))) (R : Box (Fin (d j))) :

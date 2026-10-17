@@ -5,60 +5,38 @@ import ReyZygmund.Projection.CrossProjection
 import ReyZygmund.Geometry.SlicedOverlap
 
 /-!
-# Main results and proof organization
+# Proof library entry point
 
-This is the main entry point. The six independent
-propositions are in `MathlibOnly.Statements`; their proofs are in
-`MathlibOnly.Solutions`. The specification imports only Mathlib and
-its independent definitions. Proof modules identify those definitions with the
-operators used in the proofs.
+Importing this module provides the proofs of the three main results and
+nineteen supporting results. Their independent statements are in
+`MathlibOnly.Statements` and `MathlibOnly.SupportingStatements`.
 
-## Proof route
+The arguments are organized as follows.
 
-1. `Maximal.Square`, `SquareDistribution`, and `GlobalSquare` prove the square estimate
-   by density grouping, the ordinary L² maximal estimate, and distribution sums.
-2. `Projection.CommonCutoff` identifies the common absolute cutoff with the
-   finite descendant model and identifies the full-grid projection with its
-   finitely supported sum. `Maximal.WeakIncomparability` proves preservation
-   of original averages, the arbitrary-family lower-coordinate formula, the
-   enlarged-family geometry, and the signed representation, in that order.
-   `Projection.CrossProjection` includes cubes at the smallest selected scale.
-3. `Maximal.WeaklyIncomparableFinite` turns that representation into a maximal-to-square
-   estimate. `Weighted.Scalar`, `OneCoordinate`, `Product`, and `ProjectedRow`
-   supply the weighted estimate. `Weighted.ProjectedConjugateEstimate` performs the
-   paper's final comparison with p′ before Hölder; `MaximalAbsorption`
-   retains the intermediate exponent `(m - 1) / p` before the final bound.
-4. `Maximal.WeakerBound` expresses the finite weakly incomparable estimate in the
-   equal-factor formulation. `WeakerInput`, `WeakerGrid`, and `WeakerGlobal`
-   extend it to general inputs and dyadic families using averages on the smallest
-   cubes, positive perturbation, disjoint top cubes, and countable exhaustion.
-   The maximal estimate is proved independently of the overlap bounds.
-5. `Overlap.FiniteMoments` and `Global` obtain overlap moments from the maximal
-   estimate. `Overlap.Exponential` uses `MomentTailExponential`: Chebyshev at a
-   real moment order, a trivial small-threshold bound, and layer cake. The
-   independent statement includes the constant term in the full exponential.
-6. `Geometry.PrescribedCover`, `RoundedSlices`, and `SlicedOverlap` provide the
-   continuous-to-rounded geometry and the unrestricted sliced-overlap identity.
-   `Selection.Variational`, `Shadow`, `Exponential`, and `Endpoint` carry out
-   the selection and exponential-pairing argument. `Continuous.RoundedEndpoint`
-   and `Continuous.Endpoint` pass to the full operators. `Continuous.DyadicEndpoint`
-   gives the paper's unlabelled dyadic consequence.
+1. `Maximal.Square`, `Maximal.SquareDistribution` and `Maximal.GlobalSquare`
+   bound the signed maximal function by the product square function, using
+   density grouping, the `L²` maximal estimate and distribution sums.
+2. `Projection.CommonCutoff`, `Projection.PartialAverages`,
+   `Projection.AveragingGeometry` and `Projection.CrossProjection` develop
+   the finite projection, its averages and its martingale differences.
+3. `Weighted.Scalar`, `Weighted.OneCoordinate` and `Weighted.Product` give
+   the scalar and weighted square-function estimates. `Weighted.ProjectedRow`
+   and `Weighted.ProjectedConjugateEstimate` apply them to the projection.
+   `Weighted.MaximalAbsorption` closes the estimate by Hölder and absorption.
+4. `Maximal.WeaklyIncomparableFinite` and `Maximal.WeakerBound` give the finite
+   maximal estimate. `Maximal.WeakerInput`, `Maximal.WeakerGrid` and
+   `Maximal.WeakerGlobal` pass to general inputs and dyadic families.
+5. `Overlap.FiniteMoments` and `Overlap.Global` obtain overlap moments from
+   the maximal estimate. `Overlap.Exponential` turns them into exponential
+   integrability by Chebyshev's inequality and layer cake.
+6. `Geometry.PrescribedCover`, `Geometry.RoundedSlices` and
+   `Geometry.SlicedOverlap` supply the covering and slicing geometry.
+   `Selection.Variational`, `Selection.Shadow`, `Selection.Exponential` and
+   `Selection.Endpoint` give the selection and exponential-pairing argument.
+   `Continuous.RoundedEndpoint`, `Continuous.Endpoint` and
+   `Continuous.DyadicEndpoint` establish the endpoint estimates.
 
-`Overlap.Phi` proves the sparse prescribed-scale overlap estimate.
-`Main.Sharpness` supplies the sequence of finite families in the quantified
-sharpness statement.
-
-## Representation conventions
-
-The finite code permits separate depths in each coordinate; `CommonCutoff`
-proves their exact relation to the paper's common cutoff. Rectangles use Mathlib's
-Ioc convention. The existing convention bridges give the corresponding Ico
-continuous result pointwise and the rounded result almost everywhere.
-`MathlibOnly.Proof.MeasureBridge` proves the equivalence of Lebesgue-measurable
-and Borel subsets establishing sparseness, applies the rounded boundary
-comparison, and identifies the real and nonnegative sharpness integrals.
-These connections are used in the six independent proofs.
-The scalar Hessian argument uses a convex supporting line to integrate its
-second-derivative bound. This is an explicit local reformulation of the paper's
-double integration.
+`Overlap.Phi` gives sparse Φ-Zygmund overlap, and `Main.Sharpness` gives the
+sharpness construction. The [definition guide](MathlibOnly/DEFINITIONS.md)
+explains the geometric and analytic representations.
 -/

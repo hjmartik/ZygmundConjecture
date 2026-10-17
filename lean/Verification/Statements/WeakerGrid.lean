@@ -3,13 +3,15 @@ import ReyZygmund.Maximal.WeakerGrid
 open BoxIntegral MeasureTheory
 open scoped Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry
 
 def weakerGridMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
   ↑G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -20,7 +22,7 @@ def weakerGridMaximalIntegralContract : Prop :=
 
 def weakerGridMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
   ↑G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -31,7 +33,7 @@ def weakerGridMaximalNormContract : Prop :=
 
 def weakerGridMaximalExtendedContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
   ↑G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →

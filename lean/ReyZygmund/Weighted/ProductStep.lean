@@ -46,12 +46,12 @@ private theorem mixed_membership_leaf (I : ∀ i, Box (Fin (d i))) (N : Fin m �
     (B : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i ∈ B, Q i ∈ descendants (I i) (N i))
     (P : ∀ i, Box (Fin (d i))) (hP : P ∈ productLeaves I N)
-    (x y : ProductPoint d) (hx : x ∈ productBox P) (hy : y ∈ productBox P) :
+    (x y : ProductPoint d) (hx : x ∈ productRectangle P) (hy : y ∈ productRectangle P) :
     (∀ i ∈ B, x i ∈ Q i) ↔ ∀ i ∈ B, y i ∈ Q i := by
   have heq (i : Fin m) (hi : i ∈ B) : x i ∈ Q i ↔ y i ∈ Q i :=
     descendant_membership_leaf (I i) (N i) (Q i) (P i) (hQ i hi)
       (Fintype.mem_piFinset.mp hP i) (x i) (y i)
-      ((mem_productBox P x).mp hx i) ((mem_productBox P y).mp hy i)
+      ((mem_productRectangle P x).mp hx i) ((mem_productRectangle P y).mp hy i)
   exact ⟨fun h i hi => (heq i hi).mp (h i hi),
     fun h i hi => (heq i hi).mpr (h i hi)⟩
 
@@ -89,7 +89,7 @@ private theorem coordinateDifference_zero_off_mixed (B : Finset (Fin m))
     funext y
     exact hu _ (fun h => hx ((mixed_update_iff B Q j hj x y).mp h))
   rw [coordinateDifference_slice, hzero]
-  simp [boxDifference, boxAverage]
+  simp [cubeDifference, cubeAverage, cubeMean]
 
 private theorem coordinateAverage_patch_eq (B : Finset (Fin m))
     (Q : ∀ i, Box (Fin (d i))) (j : Fin m) (hj : j ∉ B)
@@ -102,10 +102,10 @@ private theorem coordinateAverage_patch_eq (B : Finset (Fin m))
       (fun y => v (Function.update x j y)) := by
     funext y
     exact ite_eq_left ((mixed_update_iff B Q j hj x y).mpr hx)
-  change boxAverage R
+  change cubeAverage R
     (fun y => if ∀ i ∈ B, (Function.update x j y) i ∈ Q i
       then v (Function.update x j y) else 1) (x j) =
-    boxAverage R (fun y => v (Function.update x j y)) (x j)
+    cubeAverage R (fun y => v (Function.update x j y)) (x j)
   rw [heq]
 
 private theorem patched_energy_eq (B : Finset (Fin m))
@@ -133,50 +133,28 @@ private theorem coordinate_patched_energy_eq (B : Finset (Fin m))
   · rw [coordinateDifference_zero_off_mixed B Q j hj u hu R x hx]
     simp
 
-private theorem coordinate_energy_integral_mixed
-    (I : ∀ i, Box (Fin (d i))) (B : Finset (Fin m))
-    (Q : ∀ i, Box (Fin (d i))) (j : Fin m) (hj : j ∉ B)
-    (u v : ProductPoint d → ℝ) (p : ℝ)
-    (hu : ∀ x, (¬ ∀ i ∈ B, x i ∈ Q i) → u x = 0)
-    (R : Box (Fin (d j))) :
-    (∫ x in productBox I, (coordinateDifference j R u x) ^ 2 /
-      Real.rpow (coordinateAverage j R v x) (2 - p)) =
-    ∫ x in {x ∈ productBox I | (∀ i ∈ B, x i ∈ Q i) ∧ x j ∈ R},
-      (coordinateDifference j R u x) ^ 2 /
-        Real.rpow (coordinateAverage j R v x) (2 - p) := by
-  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (measurableSet_productBox I)
-    (fun _ hx => hx.1)
-  intro x hx
-  have hzero : coordinateDifference j R u x = 0 := by
-    by_cases hmem : ∀ i ∈ B, x i ∈ Q i
-    · have hxR : x j ∉ R := fun hxR => hx.2 ⟨hx.1, hmem, hxR⟩
-      rw [coordinateDifference_slice]
-      exact DifferenceAlgebra.boxDifference_eq_zero_of_notMem R _ hxR
-    · exact coordinateDifference_zero_off_mixed B Q j hj u hu R x hmem
-  simp only [hzero, zero_pow (by decide : 2 ≠ 0), zero_div]
-
 /-- The fixed-other-box recurrence in the product square estimate. Positivity
 of the product average is derived only on its mixed support. -/
 theorem weighted_product_step
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) (B : Finset (Fin m))
     (j : Fin m) (hj : j ∉ B) (hd : 0 < d j)
     (Q : ∀ i, Box (Fin (d i))) (hQ : ∀ i ∈ B, Q i ∈ interior (I i) (N i)) :
     let F := finiteInput I N f hf
     let u := (productDifferenceMap B Q F).1
     let v := (productAverageMap B Q F).1
-    (∑ R ∈ interior (I j) (N j), ∫ x in productBox I,
+    (∑ R ∈ interior (I j) (N j), ∫ x in productRectangle I,
       (coordinateDifference j R u x) ^ 2 / Real.rpow (coordinateAverage j R v x) (2 - p)) ≤
       Real.rpow 2 ((d j : ℝ) * (2 - p)) * ((3 - p) / (p - 1)) *
-        ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
+        ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
   let F := finiteInput I N f hf
   let u := (productDifferenceMap B Q F).1
   let v := (productAverageMap B Q F).1
   let w : ProductPoint d → ℝ := fun x => if ∀ i ∈ B, x i ∈ Q i then v x else 1
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
   have hQd : ∀ i ∈ B, Q i ∈ descendants (I i) (N i) :=
     fun i hi => interior_subset_descendants (I i) (N i) (hQ i hi)
@@ -185,12 +163,12 @@ theorem weighted_product_step
   have hv : ProductLeafConstant I N v :=
     (productAverageMap_productStep_closure I N F hF hFs B Q hQd).1
   have hw : ProductLeafConstant I N w := patched_weight_leaf I N B Q hQd v hv
-  have hFpos : ∀ x ∈ productBox I, 0 < F.1 x := by
+  have hFpos : ∀ x ∈ productRectangle I, 0 < F.1 x := by
     intro x hx
-    change 0 < (productBox I).indicator f x
+    change 0 < (productRectangle I).indicator f x
     rw [Set.indicator_of_mem hx]
     exact hfpos x hx
-  have hwpos : ∀ x ∈ productBox I, 0 < w x := by
+  have hwpos : ∀ x ∈ productRectangle I, 0 < w x := by
     intro x hx
     by_cases hxQ : ∀ i ∈ B, x i ∈ Q i
     · change 0 < if ∀ i ∈ B, x i ∈ Q i then v x else 1
@@ -202,18 +180,18 @@ theorem weighted_product_step
     productDifference_zero_off_mixed B Q F
   have h := coordinate_weighted_square I N j hd u w p hp hp2 hu hw hwpos
   have hleft :
-      (∑ R ∈ interior (I j) (N j), ∫ x in productBox I,
+      (∑ R ∈ interior (I j) (N j), ∫ x in productRectangle I,
         (coordinateDifference j R u x) ^ 2 / Real.rpow (coordinateAverage j R w x) (2 - p)) =
-      ∑ R ∈ interior (I j) (N j), ∫ x in productBox I,
+      ∑ R ∈ interior (I j) (N j), ∫ x in productRectangle I,
         (coordinateDifference j R u x) ^ 2 / Real.rpow (coordinateAverage j R v x) (2 - p) := by
     apply Finset.sum_congr rfl
     intro R _
-    apply setIntegral_congr_fun (measurableSet_productBox I)
+    apply setIntegral_congr_fun (measurableSet_productRectangle I)
     intro x _
     exact coordinate_patched_energy_eq B Q j hj u v p hus R x
-  have hright : (∫ x in productBox I, (u x) ^ 2 / Real.rpow (w x) (2 - p)) =
-      ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
-    apply setIntegral_congr_fun (measurableSet_productBox I)
+  have hright : (∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (w x) (2 - p)) =
+      ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
+    apply setIntegral_congr_fun (measurableSet_productRectangle I)
     intro x _
     exact patched_energy_eq B Q u v p hus x
   rw [hleft, hright] at h

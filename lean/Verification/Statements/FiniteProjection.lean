@@ -15,14 +15,14 @@ noncomputable def finiteAverageDifferenceContract : Prop :=
   ∀ (d : ℕ), 0 < d → ∀ (I : Box (Fin d)) (N : ℕ) (L Q : Box (Fin d)),
     L ∈ descendants I N → Q ∈ descendants I N → ∀ (f : (Fin d → ℝ) → ℝ),
     IntegrableOn f (I : Set (Fin d → ℝ)) volume →
-    boxAverage L (boxDifference Q f) =
-      if L < Q then (L : Set (Fin d → ℝ)).indicator (boxDifference Q f) else 0
+    cubeAverage L (cubeDifference Q f) =
+      if L < Q then (L : Set (Fin d → ℝ)).indicator (cubeDifference Q f) else 0
 
 noncomputable def finiteDifferenceDifferenceContract : Prop :=
   ∀ (d : ℕ), 0 < d → ∀ (I : Box (Fin d)) (N : ℕ) (L Q : Box (Fin d)),
     L ∈ descendants I N → Q ∈ descendants I N → ∀ (f : (Fin d → ℝ) → ℝ),
     IntegrableOn f (I : Set (Fin d → ℝ)) volume →
-    boxDifference L (boxDifference Q f) = if L = Q then boxDifference Q f else 0
+    cubeDifference L (cubeDifference Q f) = if L = Q then cubeDifference Q f else 0
 
 noncomputable def productDifferenceOrthogonalityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ),
@@ -43,11 +43,11 @@ noncomputable def productAverageDifferenceZeroContract : Prop :=
 noncomputable def productDifferenceClosureContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : boundedMeasurableFunctions d), ProductLeafConstant I N f.1 →
-    (∀ x, x ∉ productBox I → f.1 x = 0) →
+    (∀ x, x ∉ productRectangle I → f.1 x = 0) →
     ∀ (A : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i))),
     (∀ i ∈ A, Q i ∈ interior (I i) (N i)) →
     ProductLeafConstant I N (productDifferenceMap A Q f).1 ∧
-      ∀ x, x ∉ productBox I → (productDifferenceMap A Q f).1 x = 0
+      ∀ x, x ∉ productRectangle I → (productDifferenceMap A Q f).1 x = 0
 
 noncomputable def crossCoordinateDefinitionContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (i : Fin m) (I : Box (Fin (d i))) (N : ℕ)
@@ -73,21 +73,21 @@ noncomputable def crossCoordinateIntegralContract : Prop :=
 noncomputable def crossCoordinateClosureContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
-    (∀ x, x ∉ productBox I → f x = 0) →
+    (∀ x, x ∉ productRectangle I → f x = 0) →
     ∀ (i : Fin m) (eligible : Finset (Box (Fin (d i)))),
     eligible ⊆ descendants (I i) (N i) →
     ProductLeafConstant I N (coordinateCrossAverage i (I i) (N i) eligible f) ∧
-      ∀ x, x ∉ productBox I → coordinateCrossAverage i (I i) (N i) eligible f x = 0
+      ∀ x, x ∉ productRectangle I → coordinateCrossAverage i (I i) (N i) eligible f x = 0
 
 noncomputable def crossCoordinateComplementContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
     ∀ (i : Fin m), 0 < d i → ∀ (eligible : Finset (Box (Fin (d i)))),
     eligible ⊆ descendants (I i) (N i) →
-    (productBox I).indicator f -
-        coordinateCrossAverage i (I i) (N i) eligible ((productBox I).indicator f) =
+    (productRectangle I).indicator f -
+        coordinateCrossAverage i (I i) (N i) eligible ((productRectangle I).indicator f) =
       ∑ L ∈ (interior (I i) (N i)).filter (fun L => ∃ J ∈ eligible, L ≤ J),
-        coordinateDifference i L ((productBox I).indicator f)
+        coordinateDifference i L ((productRectangle I).indicator f)
 
 noncomputable def finiteProjectionFormulaContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
@@ -109,9 +109,9 @@ noncomputable def removedDifferenceProjectionContract : Prop :=
 noncomputable def projectionClosureContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d),
-    ProductLeafConstant I N f.1 → (∀ x, x ∉ productBox I → f.1 x = 0) →
+    ProductLeafConstant I N f.1 → (∀ x, x ∉ productRectangle I → f.1 x = 0) →
     ProductLeafConstant I N (finiteProjectionMap I N G f).1 ∧
-      ∀ x, x ∉ productBox I → (finiteProjectionMap I N G f).1 x = 0
+      ∀ x, x ∉ productRectangle I → (finiteProjectionMap I N G f).1 x = 0
 
 noncomputable def finiteCrossProjectionContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ),

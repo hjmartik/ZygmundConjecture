@@ -6,6 +6,7 @@ open scoped BigOperators ENNReal
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry
+open ReyZygmund.MathlibOnly (initialProjection)
 
 def splitLastPointContract : Prop :=
   ∀ {n : ℕ} (d : Fin (n + 1) → ℕ) (x : ProductPoint d),

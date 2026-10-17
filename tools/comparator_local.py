@@ -2,7 +2,7 @@
 """Local, unsandboxed comparisons for trusted project code. Apache-2.0.
 
 This is an optional alternative, not the sandboxed Linux verification procedure.
-It uses the same six specifications and requires all three proof checkers.
+It uses the same twenty-two specifications and requires all three proof checkers.
 """
 import argparse
 from datetime import datetime, timezone
@@ -18,7 +18,8 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import (ROOT, LEAN, require, digest, read_json, write_json, source_manifest,
                     check_dependencies, compiler_bin, fresh_run)
-from comparator import ADAPTERS, input_hashes, validate_cases, validate_import_separation
+from comparator import (ADAPTERS, input_hashes, validate_cases, validate_import_separation,
+                        case_selection, finish_cases)
 from comparator_runtime import external_config, comparison_outcome, require_comparison_success
 
 
@@ -102,10 +103,11 @@ def run(args):
     require(shutil.disk_usage(ROOT).free > 15 * 1024**3, 'Need at least 15 GiB free disk')
     parent = fresh_run('comparator-local')
     report = dict(status='RUNNING', sandboxed=False, trust_project_code=True,
-                  scope='Six main results and exported dependencies; unsandboxed local checking',
+                  scope='Twenty-two independent results and exported dependencies; unsandboxed local checking',
                   started_utc=datetime.now(timezone.utc).isoformat(),
                   platform=platform.system(), architecture=platform.machine(),
-                  cases=[], controls=controls, source_files=manifest['sha256'],
+                  cases=[], approved_cases=case_selection(cases), requested_cases=case_selection(cases),
+                  completed_cases=[], controls=controls, source_files=manifest['sha256'],
                   import_separation=boundary, dependency_sources=dependencies,
                   tool_sha256=hashes, required_kernels=['Lean default', 'nanoda', 'con-ron'])
     def save():
@@ -154,7 +156,7 @@ def run(args):
         require(check_dependencies(packages) == dependencies and
                 check_dependencies(project / '.lake/packages') == dependencies, 'Dependency sources changed')
         require({name: digest(path) for name, path in binaries.items()} == hashes, 'Checker binaries changed')
-        report['status'] = 'PASS_ALL_SIX_UNSANDBOXED'
+        report.update(finish_cases(cases, report['cases'], unsandboxed=True))
     except BaseException as error:
         report.update(status='FAIL', failure=repr(error))
         raise

@@ -26,7 +26,7 @@ theorem finite_overlap_exponential_nonneg
   apply sub_nonneg.mpr
   exact Real.one_le_exp (mul_nonneg hc (Real.rpow_nonneg (finiteOverlap_nonneg H x) beta))
 
-/-- The finite overlap bound is derived from the rectangle indicators. -/
+/-- The excess exponential of the finite overlap is integrable on the finite shadow. -/
 theorem integrableOn_finite_overlap_exponential
     (H : Finset (∀ i, Box (Fin (d i)))) (c beta : ℝ)
     (hc : 0 < c) (hbeta : 0 < beta) :
@@ -58,8 +58,8 @@ theorem integrableOn_overlap_finset_exponential
   simpa only [shadow_finset, toReal_overlap_finset] using
     integrableOn_finite_overlap_exponential H c beta hc hbeta
 
-/-- The challenge's ENNReal subtraction is exactly the nonnegative real
-exponential-minus-one integral, with no default divergent integral. -/
+/-- The `ENNReal` integral of the exponential minus one equals `ENNReal.ofReal`
+of the corresponding nonnegative real integral. -/
 theorem lintegral_overlap_finset_exponential_eq
     (H : Finset (∀ i, Box (Fin (d i)))) (c beta : ℝ)
     (hc : 0 < c) (hbeta : 0 < beta) :

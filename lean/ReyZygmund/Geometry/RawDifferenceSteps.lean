@@ -5,8 +5,7 @@ import ReyZygmund.Geometry.ProductClosure
 
 Every child or parent rectangle in the expansion lies inside the indexing
 rectangle. At scales fine enough to include those children, its indicator is
-constant on each smallest cube. These properties do not require a grid or
-integrability of the original input.
+constant on each smallest cube.
 -/
 
 open BoxIntegral MeasureTheory
@@ -21,19 +20,19 @@ variable {m : ℕ} {d : Fin m → ℕ}
 theorem productLeafConstant_descendant_indicator
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (P : ∀ i, Box (Fin (d i))) (hP : P ∈ productDescendants I N) (c : ℝ) :
-    ProductLeafConstant I N ((productBox P).indicator (fun _ => c)) := by
+    ProductLeafConstant I N ((productRectangle P).indicator (fun _ => c)) := by
   intro L hL x hx y hy
-  have hmem : ∀ z ∈ productBox L, ∀ t ∈ productBox L,
-      z ∈ productBox P → t ∈ productBox P := by
+  have hmem : ∀ z ∈ productRectangle L, ∀ t ∈ productRectangle L,
+      z ∈ productRectangle P → t ∈ productRectangle P := by
     intro z hz t ht hzp
-    apply (mem_productBox P t).mpr
+    apply (mem_productRectangle P t).mpr
     intro i
     obtain ⟨n, hn, hPn⟩ := mem_descendants.mp (Fintype.mem_piFinset.mp hP i)
     rcases level_le_or_disjoint hn (Fintype.mem_piFinset.mp hL i) hPn with hLP | hdis
-    · exact hLP ((mem_productBox L t).mp ht i)
-    · exact (Set.disjoint_left.mp hdis ((mem_productBox L z).mp hz i)
-        ((mem_productBox P z).mp hzp i)).elim
-  by_cases hxp : x ∈ productBox P
+    · exact hLP ((mem_productRectangle L t).mp ht i)
+    · exact (Set.disjoint_left.mp hdis ((mem_productRectangle L z).mp hz i)
+        ((mem_productRectangle P z).mp hzp i)).elim
+  by_cases hxp : x ∈ productRectangle P
   · rw [Set.indicator_of_mem hxp, Set.indicator_of_mem (hmem x hx y hy hxp)]
   · rw [Set.indicator_of_notMem hxp,
       Set.indicator_of_notMem (fun hyp => hxp (hmem y hy x hx hyp))]
@@ -81,19 +80,19 @@ theorem productLeafConstant_rawProductDifference
 
 theorem rawProductDifference_eq_zero_of_notMem
     (Q : ∀ i, Box (Fin (d i))) (g : ProductPoint d → ℝ)
-    (x : ProductPoint d) (hx : x ∉ productBox Q) : rawProductDifference Q g x = 0 := by
+    (x : ProductPoint d) (hx : x ∉ productRectangle Q) : rawProductDifference Q g x = 0 := by
   apply Finset.sum_eq_zero
   intro A _
   have hz : (∑ R ∈ differenceRectangles A Q,
-      (productBox R).indicator
-        (fun _ => (∫ y in productBox R, g y) / volume.real (productBox R)) x) = 0 := by
+      (productRectangle R).indicator
+        (fun _ => (∫ y in productRectangle R, g y) / volume.real (productRectangle R)) x) = 0 := by
     apply Finset.sum_eq_zero
     intro R hR
     apply Set.indicator_of_notMem
     intro hxr
     apply hx
-    exact (mem_productBox Q x).mpr (fun i =>
-      differenceRectangles_le A Q R hR i ((mem_productBox R x).mp hxr i))
+    exact (mem_productRectangle Q x).mpr (fun i =>
+      differenceRectangles_le A Q R hR i ((mem_productRectangle R x).mp hxr i))
   exact mul_eq_zero_of_right _ hz
 
 end ReyZygmund.Geometry

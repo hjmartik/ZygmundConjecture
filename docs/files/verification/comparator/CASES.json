@@ -3,43 +3,155 @@
     {
       "id": "main-1",
       "config": "comparison-1.json",
-      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_maximal",
+      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_maximal_estimate",
       "challenge_module": "Challenge1",
       "solution_module": "Solution"
     },
     {
       "id": "main-2",
       "config": "comparison-2.json",
-      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_overlap",
+      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_rey_conjecture",
       "challenge_module": "Challenge2",
       "solution_module": "Solution"
     },
     {
       "id": "main-3",
       "config": "comparison-3.json",
-      "production_target": "ReyZygmund.MathlibOnly.continuous_endpoint",
+      "production_target": "ReyZygmund.MathlibOnly.zygmund_conjecture",
       "challenge_module": "Challenge3",
       "solution_module": "Solution"
     },
     {
       "id": "main-4",
       "config": "comparison-4.json",
-      "production_target": "ReyZygmund.MathlibOnly.rounded_endpoint",
+      "production_target": "ReyZygmund.MathlibOnly.rounded_dyadic_endpoint_estimate",
       "challenge_module": "Challenge4",
       "solution_module": "Solution"
     },
     {
       "id": "main-5",
       "config": "comparison-5.json",
-      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_overlap",
+      "production_target": "ReyZygmund.MathlibOnly.sparse_phi_zygmund_overlap_estimate",
       "challenge_module": "Challenge5",
       "solution_module": "Solution"
     },
     {
       "id": "main-6",
       "config": "comparison-6.json",
-      "production_target": "ReyZygmund.MathlibOnly.phi_sparse_sharpness",
+      "production_target": "ReyZygmund.MathlibOnly.classical_dyadic_zygmund_sharpness",
       "challenge_module": "Challenge6",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-7",
+      "config": "comparison-7.json",
+      "production_target": "ReyZygmund.MathlibOnly.maximal_square_function_estimate",
+      "challenge_module": "Challenge7",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-8",
+      "config": "comparison-8.json",
+      "production_target": "ReyZygmund.MathlibOnly.weighted_square_function_estimate",
+      "challenge_module": "Challenge8",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-9",
+      "config": "comparison-9.json",
+      "production_target": "ReyZygmund.MathlibOnly.product_weighted_square_function_estimate",
+      "challenge_module": "Challenge9",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-10",
+      "config": "comparison-10.json",
+      "production_target": "ReyZygmund.MathlibOnly.projection_preserves_averages",
+      "challenge_module": "Challenge10",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-11",
+      "config": "comparison-11.json",
+      "production_target": "ReyZygmund.MathlibOnly.projection_partial_averages",
+      "challenge_module": "Challenge11",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-12",
+      "config": "comparison-12.json",
+      "production_target": "ReyZygmund.MathlibOnly.projection_differences",
+      "challenge_module": "Challenge12",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-13",
+      "config": "comparison-13.json",
+      "production_target": "ReyZygmund.MathlibOnly.averaging_family_geometry",
+      "challenge_module": "Challenge13",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-14",
+      "config": "comparison-14.json",
+      "production_target": "ReyZygmund.MathlibOnly.representation_of_averages",
+      "challenge_module": "Challenge14",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-15",
+      "config": "comparison-15.json",
+      "production_target": "ReyZygmund.MathlibOnly.maximal_square_function_reduction",
+      "challenge_module": "Challenge15",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-16",
+      "config": "comparison-16.json",
+      "production_target": "ReyZygmund.MathlibOnly.projected_square_function_estimate",
+      "challenge_module": "Challenge16",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-17",
+      "config": "comparison-17.json",
+      "production_target": "ReyZygmund.MathlibOnly.scalar_estimate",
+      "challenge_module": "Challenge17",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-18",
+      "config": "comparison-18.json",
+      "production_target": "ReyZygmund.MathlibOnly.prescribed_scale_covering",
+      "challenge_module": "Challenge18",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-19",
+      "config": "comparison-19.json",
+      "production_target": "ReyZygmund.MathlibOnly.cordoba_fefferman_selection",
+      "challenge_module": "Challenge19",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-20",
+      "config": "comparison-20.json",
+      "production_target": "ReyZygmund.MathlibOnly.weakly_incomparable_slices",
+      "challenge_module": "Challenge20",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-21",
+      "config": "comparison-21.json",
+      "production_target": "ReyZygmund.MathlibOnly.half_sparse_slices",
+      "challenge_module": "Challenge21",
+      "solution_module": "Solution"
+    },
+    {
+      "id": "main-22",
+      "config": "comparison-22.json",
+      "production_target": "ReyZygmund.MathlibOnly.dyadic_zygmund_conjecture",
+      "challenge_module": "Challenge22",
       "solution_module": "Solution"
     }
   ]

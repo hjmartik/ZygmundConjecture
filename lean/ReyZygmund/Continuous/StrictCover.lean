@@ -6,6 +6,8 @@ dimension is necessary: both volumes equal one in dimension zero. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (zygmundRectangles rounding)
+
 namespace ReyZygmund.Continuous
 
 open Geometry
@@ -27,12 +29,11 @@ private theorem box_volume_lt_of_width_lt {k : ℕ} (hk : 0 < k)
       rw [Finset.prod_mul_distrib]
       simp
 
-/-- Prescribed-shift cover with the paper's strict dimensional
-volume loss, not just the weak bound sufficient for maximal domination. -/
+/-- Prescribed-shift cover with a strict dimensional volume bound. -/
 theorem continuous_rectangle_strict_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     (hdim : 0 < ∑ i, d i)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
-    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ continuousPhiRectangles d phi) :
+    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ zygmundRectangles d phi) :
     ∃ (tau : ∀ i, Fin (d i) → Fin 3) (I : ∀ i, Box (Fin (d i))),
       I ∈ roundedGridRectangles (fun i => shiftedDyadicGrid (d i) (tau i)) phi ∧
       (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ⊆ flatProductBox I ∧
@@ -48,7 +49,7 @@ theorem continuous_rectangle_strict_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     prescribed_dyadic_cover (R i) (side i) (hside i) (hwidth i)
   choose tau I hgrid hsub hwidthI using hcover
   refine ⟨tau, I, ?_, ?_, ?_⟩
-  · refine ⟨fun i => roundedScale (side i), ?_, hgrid⟩
+  · refine ⟨fun i => rounding (side i), ?_, hgrid⟩
     refine ⟨s, ?_⟩
     funext i
     exact Fin.lastCases (by simp [side]) (fun j => by simp [side]) i
@@ -56,7 +57,7 @@ theorem continuous_rectangle_strict_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
     change flattenCoordinates d y ∈ flatProductBox R at hx
     change flattenCoordinates d y ∈ flatProductBox I
-    rw [mem_flatProductBox, mem_productBox] at hx ⊢
+    rw [mem_flatProductBox, mem_productRectangle] at hx ⊢
     exact fun i => hsub i (Box.coe_subset_Icc (hx i))
   · apply (div_lt_iff₀ (box_volume_pos (flatProductBox R))).mpr
     apply box_volume_lt_of_width_lt hdim (flatProductBox R) (flatProductBox I)
@@ -64,6 +65,6 @@ theorem continuous_rectangle_strict_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     obtain ⟨⟨i, a⟩, rfl⟩ := (finSigmaFinEquiv (n := d)).surjective j
     simp only [flatProductBox, flattenCoordinates_apply]
     rw [hwidthI i a, hwidth i a]
-    exact (roundedScale_bounds (hside i)).2
+    exact (rounding_bounds (hside i)).2
 
 end ReyZygmund.Continuous

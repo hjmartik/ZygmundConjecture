@@ -26,18 +26,18 @@ theorem coordinateAverage_difference_eq_zero
     coordinateAverage i K (coordinateDifference i L f) = 0 := by
   funext x
   have hs : (fun y => coordinateDifference i L f (Function.update x i y)) =
-      boxDifference L (fun y => f (Function.update x i y)) := by
+      cubeDifference L (fun y => f (Function.update x i y)) := by
     funext y
     simp [coordinateDifference_slice]
-  change boxAverage K (fun y => coordinateDifference i L f (Function.update x i y))
+  change cubeAverage K (fun y => coordinateDifference i L f (Function.update x i y))
     (x i) = 0
   rw [hs]
   have ht := congrFun (finite_average_difference (d i) hd I N K L hK hL
     (fun y => f (Function.update x i y)) (hf x)) (x i)
   simpa [hnot] using ht
 
-/-- The same-coordinate zero branch on the existing concrete function space.
-Equality of the cubes belongs to this branch, as do ancestors and disjoint cubes. -/
+/-- The average on `K` of the difference on `L` vanishes when `K` is not strictly
+contained in `L`. -/
 theorem averageMap_mul_differenceMap_eq_zero
     (i : Fin m) (hd : 0 < d i) (I : Box (Fin (d i))) (N : ℕ)
     (K L : Box (Fin (d i))) (hK : K ∈ descendants I N) (hL : L ∈ descendants I N)
@@ -51,7 +51,7 @@ theorem averageMap_mul_differenceMap_eq_zero
   simpa only [Module.End.mul_apply, averageMap_apply, differenceMap_apply,
     LinearMap.zero_apply, ZeroMemClass.coe_zero] using ht
 
-/-- Only the selected coordinate needs a dyadic relation for this vanishing. -/
+/-- Cancellation in one coordinate makes the average of a product difference vanish. -/
 theorem averageMap_mul_productDifferenceMap_eq_zero
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (B : Finset (Fin m)) (i : Fin m) (hi : i ∈ B) (hd : 0 < d i)
@@ -62,20 +62,16 @@ theorem averageMap_mul_productDifferenceMap_eq_zero
     averageMap_mul_differenceMap_eq_zero i hd (I i) (N i) K (L i) hK hL hnot,
     zero_mul]
 
-/-- Extract an average on the right using the proved average commutation. -/
+/-- Extract an average on the right using commutation of coordinate averages. -/
 theorem productAverageMap_eq_erase_mul (A : Finset (Fin m)) (i : Fin m)
     (hi : i ∈ A) (K : ∀ i, Box (Fin (d i))) :
     productAverageMap A K = productAverageMap (A.erase i) K * averageMap i (K i) := by
   exact (Finset.noncommProd_erase_mul A hi (fun j => averageMap j (K j))
     (fun j _ k _ hjk => averageMap_commute j k hjk (K j) (K k))).symm
 
-/-- The product cancellation used to preserve averages and obtain the representation:
-failure of strict containment in one coordinate suffices. Only that coordinate
-requires positive dimension. An empty average product remains the identity and
-cannot satisfy this failure condition. Differences at the smallest retained scale
-still use their children.
-
--/
+/-- A full product difference has zero partial average when strict containment fails
+in one averaged coordinate. Differences at the smallest retained scale still use
+their children. -/
 theorem productAverageMap_mul_full_difference_eq_zero
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (A : Finset (Fin m))
     (K L : ∀ i, Box (Fin (d i)))

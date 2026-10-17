@@ -18,17 +18,17 @@ noncomputable def productMeanContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (Q : ∀ i, Box (Fin (d i)))
     (F : boundedMeasurableFunctions d) (x : ProductPoint d),
     (productAverageMap Finset.univ Q F).1 x =
-      (productBox Q).indicator
-        (fun _ => (∫ y in productBox Q, F.1 y) / volume.real (productBox Q)) x
+      (productRectangle Q).indicator
+        (fun _ => (∫ y in productRectangle Q, F.1 y) / volume.real (productRectangle Q)) x
 
 noncomputable def productMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)), (∀ i ∈ A, 0 < d i) →
     ∀ (F : boundedMeasurableFunctions d), ProductLeafConstant I N F.1 →
-    (∀ x, x ∉ productBox I → F.1 x = 0) → ∀ (p : ℝ), 1 < p →
-    (∫ x in productBox I, Real.rpow (ReyZygmund.finiteProductMaximal I N A F x) p) ≤
+    (∀ x, x ∉ productRectangle I → F.1 x = 0) → ∀ (p : ℝ), 1 < p →
+    (∫ x in productRectangle I, Real.rpow (ReyZygmund.finiteProductMaximal I N A F x) p) ≤
       Real.rpow (p / (p - 1)) (p * (A.card : ℝ)) *
-        ∫ x in productBox I, Real.rpow |F.1 x| p
+        ∫ x in productRectangle I, Real.rpow |F.1 x| p
 
 noncomputable def familyMaximalMeasurableContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (G : Finset (∀ i, Box (Fin (d i))))
@@ -38,11 +38,11 @@ noncomputable def familyMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))), G ⊆ productDescendants I N →
     (∀ i, 0 < d i) → ∀ (F : boundedMeasurableFunctions d),
-    ProductLeafConstant I N F.1 → (∀ x, x ∉ productBox I → F.1 x = 0) →
+    ProductLeafConstant I N F.1 → (∀ x, x ∉ productRectangle I → F.1 x = 0) →
     ∀ (p : ℝ), 1 < p →
-    (∫ x in productBox I, Real.rpow (ReyZygmund.finiteFamilyMaximal G F x) p) ≤
+    (∫ x in productRectangle I, Real.rpow (ReyZygmund.finiteFamilyMaximal G F x) p) ≤
       Real.rpow (p / (p - 1)) (p * (m : ℝ)) *
-        ∫ x in productBox I, Real.rpow |F.1 x| p
+        ∫ x in productRectangle I, Real.rpow |F.1 x| p
 
 noncomputable def averagedDenominatorIdentityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
@@ -57,7 +57,7 @@ noncomputable def averagedDenominatorIdentityContract : Prop :=
 noncomputable def averagedDenominatorBoundContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))), G ⊆ productDescendants I N →
-    ∀ (F : boundedMeasurableFunctions d), (∀ y ∈ productBox I, 0 ≤ F.1 y) →
+    ∀ (F : boundedMeasurableFunctions d), (∀ y ∈ productRectangle I, 0 ≤ F.1 y) →
     ∀ (j : Fin m) (Q : ∀ i, Box (Fin (d i))),
     (∀ i, i ≠ j → Q i ∈ descendants (I i) (N i)) →
     ∀ (x : ProductPoint d), x j ∈ I j →
@@ -69,38 +69,38 @@ noncomputable def averagingFamilyMaximalPositiveContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 0 < m →
     ∀ (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))), G ⊆ productDescendants I N →
-    ∀ (F : boundedMeasurableFunctions d), (∀ y ∈ productBox I, 0 < F.1 y) →
-    ∀ (x : ProductPoint d), x ∈ productBox I →
+    ∀ (F : boundedMeasurableFunctions d), (∀ y ∈ productRectangle I, 0 < F.1 y) →
+    ∀ (x : ProductPoint d), x ∈ productRectangle I →
     0 < ReyZygmund.finiteFamilyMaximal (averagingRectangles I N G) F x
 
 noncomputable def weightedCrossProductContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f),
-    (∀ x ∈ productBox I, 0 < f x) → ∀ (p : ℝ), 1 < p → p ≤ 2 →
+    (∀ x ∈ productRectangle I, 0 < f x) → ∀ (p : ℝ), 1 < p → p ≤ 2 →
     ∀ (B : Finset (Fin m)) (j : Fin m), j ∉ B →
     ∀ (Q : ∀ i, Box (Fin (d i))), (∀ i ∈ B, Q i ∈ interior (I i) (N i)) →
     ∀ (eligible : Finset (Box (Fin (d j)))), eligible ⊆ descendants (I j) (N j) →
     let F := finiteInput I N f hf
     let u := (productDifferenceMap B Q F).1
     let v := (productAverageMap B Q F).1
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
         Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p)) ≤
-      ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p)
+      ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p)
 
 noncomputable def productDifferenceIntegralOrthogonalityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ),
     (∀ i, 0 < d i) → ∀ (F : boundedMeasurableFunctions d)
     (L Q : ∀ i, Box (Fin (d i))), L ∈ productInterior I N →
     Q ∈ productInterior I N → L ≠ Q →
-    (∫ x in productBox I, (productDifferenceMap Finset.univ L F).1 x *
+    (∫ x in productRectangle I, (productDifferenceMap Finset.univ L F).1 x *
       (productDifferenceMap Finset.univ Q F).1 x) = 0
 
 noncomputable def productDifferenceSquareIdentityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ),
     (∀ i, 0 < d i) → ∀ (F : boundedMeasurableFunctions d)
     (H : Finset (∀ i, Box (Fin (d i)))), H ⊆ productInterior I N →
-    (∫ x in productBox I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
-      ∑ Q ∈ H, ∫ x in productBox I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2
+    (∫ x in productRectangle I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
+      ∑ Q ∈ H, ∫ x in productRectangle I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2
 
 end ReyZygmundVerification

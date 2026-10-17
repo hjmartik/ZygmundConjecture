@@ -5,9 +5,7 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 
 Constancy on the smallest cubes gives membership in every finite positive Lp space
 on the top rectangle. The triangle, finite-sum, scalar and order inequalities then
-apply to the power integrals used in the finite maximal estimate. No sign or
-support restriction is imposed.
-
+apply to the power integrals used in the finite maximal estimate.
 -/
 
 open BoxIntegral MeasureTheory
@@ -17,13 +15,13 @@ namespace ReyZygmund.Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- Membership is derived from constancy on the smallest cubes, including for nonlinear
-finite energies. It is not an extra hypothesis of the subsequent norm bounds. -/
+/-- Constancy on the smallest cubes gives membership in every finite positive Lp
+space on the top rectangle. -/
 theorem memLp_productLeafConstant
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (p : ℝ) (hp : 0 < p) :
-    MemLp f (ENNReal.ofReal p) (volume.restrict (productBox I)) := by
+    MemLp f (ENNReal.ofReal p) (volume.restrict (productRectangle I)) := by
   apply (integrable_norm_rpow_iff
     (integrableOn_productLeafConstant I N f hf).aestronglyMeasurable
     (ENNReal.ofReal_ne_zero_iff.mpr hp) ENNReal.ofReal_ne_top).mp
@@ -32,13 +30,36 @@ theorem memLp_productLeafConstant
   dsimp only
   rw [hf Q hQ x hx y hy]
 
+/-- The finite power integral is the corresponding extended Lp norm to the same power.
+Integrability follows from constancy on the smallest product cubes. -/
+theorem ofReal_integral_abs_rpow_productLeafConstant_eq
+    (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
+    (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
+    (p : ℝ) (hp : 0 < p) :
+    ENNReal.ofReal (∫ x in productRectangle I, |f x| ^ p) =
+      eLpNorm f (ENNReal.ofReal p) (volume.restrict (productRectangle I)) ^ p := by
+  have hi : IntegrableOn (fun x => |f x| ^ p) (productRectangle I) volume := by
+    apply integrableOn_productLeafConstant I N
+    intro Q hQ x hx y hy
+    exact congrArg (fun a : ℝ => |a| ^ p) (hf Q hQ x hx y hy)
+  rw [ofReal_integral_eq_lintegral_ofReal hi
+    (Filter.Eventually.of_forall fun x => Real.rpow_nonneg (abs_nonneg (f x)) p)]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (ENNReal.ofReal_ne_zero_iff.mpr hp)
+    ENNReal.ofReal_ne_top (memLp_productLeafConstant I N f hf p hp).aestronglyMeasurable,
+    ENNReal.toReal_ofReal hp.le, ← ENNReal.rpow_mul, one_div,
+    inv_mul_cancel₀ hp.ne', ENNReal.rpow_one]
+  apply lintegral_congr
+  intro x
+  rw [← ENNReal.ofReal_rpow_of_nonneg (abs_nonneg (f x)) hp.le,
+    ← Real.norm_eq_abs, ofReal_norm]
+
 /-- Mathlib's real Lp norm is exactly the power-integral expression. -/
 theorem lpNorm_productLeafConstant_eq
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (p : ℝ) (hp : 0 < p) :
-    lpNorm f (ENNReal.ofReal p) (volume.restrict (productBox I)) =
-      Real.rpow (∫ x in productBox I, Real.rpow |f x| p) (1 / p) := by
+    lpNorm f (ENNReal.ofReal p) (volume.restrict (productRectangle I)) =
+      Real.rpow (∫ x in productRectangle I, Real.rpow |f x| p) (1 / p) := by
   simpa only [ENNReal.toReal_ofReal hp.le, Real.norm_eq_abs, one_div,
     Real.rpow_eq_pow] using
     lpNorm_eq_integral_norm_rpow_toReal (ENNReal.ofReal_ne_zero_iff.mpr hp)
@@ -50,9 +71,9 @@ theorem rootLp_add_le
     (f g : ProductPoint d → ℝ)
     (hf : ProductLeafConstant I N f) (hg : ProductLeafConstant I N g)
     (p : ℝ) (hp : 1 ≤ p) :
-    Real.rpow (∫ x in productBox I, Real.rpow |f x + g x| p) (1 / p) ≤
-      Real.rpow (∫ x in productBox I, Real.rpow |f x| p) (1 / p) +
-        Real.rpow (∫ x in productBox I, Real.rpow |g x| p) (1 / p) := by
+    Real.rpow (∫ x in productRectangle I, Real.rpow |f x + g x| p) (1 / p) ≤
+      Real.rpow (∫ x in productRectangle I, Real.rpow |f x| p) (1 / p) +
+        Real.rpow (∫ x in productRectangle I, Real.rpow |g x| p) (1 / p) := by
   have hp0 : 0 < p := zero_lt_one.trans_le hp
   have hfg : ProductLeafConstant I N (f + g) := by
     intro Q hQ x hx y hy
@@ -69,8 +90,8 @@ theorem rootLp_sum_le {α : Type*}
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (s : Finset α) (f : α → ProductPoint d → ℝ)
     (hf : ∀ a ∈ s, ProductLeafConstant I N (f a)) (p : ℝ) (hp : 1 ≤ p) :
-    Real.rpow (∫ x in productBox I, Real.rpow |∑ a ∈ s, f a x| p) (1 / p) ≤
-      ∑ a ∈ s, Real.rpow (∫ x in productBox I, Real.rpow |f a x| p) (1 / p) := by
+    Real.rpow (∫ x in productRectangle I, Real.rpow |∑ a ∈ s, f a x| p) (1 / p) ≤
+      ∑ a ∈ s, Real.rpow (∫ x in productRectangle I, Real.rpow |f a x| p) (1 / p) := by
   have hp0 : 0 < p := zero_lt_one.trans_le hp
   have hsum : ProductLeafConstant I N (∑ a ∈ s, f a) := by
     intro Q hQ x hx y hy
@@ -89,13 +110,13 @@ theorem rootLp_const_mul
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (c p : ℝ) (hp : 0 < p) :
-    Real.rpow (∫ x in productBox I, Real.rpow |c * f x| p) (1 / p) =
-      |c| * Real.rpow (∫ x in productBox I, Real.rpow |f x| p) (1 / p) := by
+    Real.rpow (∫ x in productRectangle I, Real.rpow |c * f x| p) (1 / p) =
+      |c| * Real.rpow (∫ x in productRectangle I, Real.rpow |f x| p) (1 / p) := by
   have hcf : ProductLeafConstant I N (c • f) := by
     intro Q hQ x hx y hy
     change c * f x = c * f y
     rw [hf Q hQ x hx y hy]
-  have h := lpNorm_const_smul c f (volume.restrict (productBox I)) (p := ENNReal.ofReal p)
+  have h := lpNorm_const_smul c f (volume.restrict (productRectangle I)) (p := ENNReal.ofReal p)
   simpa only [lpNorm_productLeafConstant_eq I N _ hcf p hp,
     lpNorm_productLeafConstant_eq I N _ hf p hp, Pi.smul_apply, smul_eq_mul,
     coe_nnnorm, Real.norm_eq_abs] using h
@@ -105,18 +126,18 @@ theorem rootLp_mono
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f g : ProductPoint d → ℝ)
     (hf : ProductLeafConstant I N f) (hg : ProductLeafConstant I N g)
-    (hfg : ∀ x ∈ productBox I, |f x| ≤ |g x|)
+    (hfg : ∀ x ∈ productRectangle I, |f x| ≤ |g x|)
     (p : ℝ) (hp : 0 < p) :
-    Real.rpow (∫ x in productBox I, Real.rpow |f x| p) (1 / p) ≤
-      Real.rpow (∫ x in productBox I, Real.rpow |g x| p) (1 / p) := by
+    Real.rpow (∫ x in productRectangle I, Real.rpow |f x| p) (1 / p) ≤
+      Real.rpow (∫ x in productRectangle I, Real.rpow |g x| p) (1 / p) := by
   have hi (u : ProductPoint d → ℝ) (hu : ProductLeafConstant I N u) :
-      IntegrableOn (fun x => Real.rpow |u x| p) (productBox I) volume := by
+      IntegrableOn (fun x => Real.rpow |u x| p) (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     exact congrArg (fun v => Real.rpow |v| p) (hu Q hQ x hx y hy)
   apply Real.rpow_le_rpow (integral_nonneg (fun x => Real.rpow_nonneg (abs_nonneg _) _))
     _ (by positivity)
-  apply setIntegral_mono_on (hi f hf) (hi g hg) (measurableSet_productBox I)
+  apply setIntegral_mono_on (hi f hf) (hi g hg) (measurableSet_productRectangle I)
   intro x hx
   exact Real.rpow_le_rpow (abs_nonneg _) (hfg x hx) hp.le
 

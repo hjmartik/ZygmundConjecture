@@ -8,9 +8,8 @@ import Mathlib.Tactic.Linarith
 
 Maximize twice the shadow's volume minus the sum of rectangle volumes. Deletion
 and insertion give the weak half-volume inequalities. Differences of measurable
-finite shadows give the disjoint subsets establishing sparseness. The construction
-needs neither grids nor positive coordinate dimensions; `Shadow.lean` proves the
-analytic shadow bound.
+finite shadows give the disjoint subsets establishing sparseness.
+`Shadow.lean` proves the analytic shadow bound.
 -/
 
 open BoxIntegral MeasureTheory
@@ -46,8 +45,7 @@ private theorem finiteShadow_insert_volume
     (flatProductBox Q).isBounded.measure_lt_top.ne (volume_finiteShadow_lt_top G).ne
 
 /-- A maximizing subfamily satisfies deletion half-overlap and insertion
-half-density for the Euclidean rectangles. The maximum is over all
-subfamilies, including the empty one. -/
+half-density for the Euclidean rectangles. The maximum is over all subfamilies. -/
 theorem finite_variational_selection
     (F : Finset (∀ i, Box (Fin (d i)))) :
     ∃ G : Finset (∀ i, Box (Fin (d i))), G ⊆ F ∧

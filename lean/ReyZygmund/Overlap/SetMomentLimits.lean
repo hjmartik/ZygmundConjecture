@@ -4,9 +4,9 @@ import ReyZygmund.Overlap.MomentTailExact
 
 /-! # All real moments and the exact exponential for countable set overlaps
 
-The overlap is the nonnegative series. Its second moment first proves
-almost-everywhere finiteness. Only then is its real representative used in the
-norm and exponential statements. The shadow may have measure zero.
+The overlap is a nonnegative series. Its second moment gives almost-everywhere
+finiteness, permitting the real representative in the norm and exponential
+statements.
 -/
 
 open MeasureTheory

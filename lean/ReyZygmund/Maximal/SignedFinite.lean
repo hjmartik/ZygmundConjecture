@@ -14,7 +14,7 @@ open Geometry
 noncomputable def finiteSignedGridMaximal {m : ℕ} {d : Fin m → ℕ}
     (H : Finset (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
     (x : ProductPoint d) : ℝ≥0∞ :=
-  H.sup (fun Q => ENNReal.ofReal ((productBox Q).indicator
-    (fun _ => |(∫ y in productBox Q, f y) / volume.real (productBox Q)|) x))
+  H.sup (fun Q => ENNReal.ofReal ((productRectangle Q).indicator
+    (fun _ => |(∫ y in productRectangle Q, f y) / volume.real (productRectangle Q)|) x))
 
 end ReyZygmund

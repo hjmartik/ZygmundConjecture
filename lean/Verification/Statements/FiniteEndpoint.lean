@@ -6,12 +6,14 @@ open BoxIntegral MeasureTheory
 open ReyZygmund.Geometry ReyZygmund.Overlap
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmundVerification
 
 def finiteRoundedEndpointContract : Prop :=
   ∀ (n : ℕ) (d : Fin (n + 1) → ℕ), 2 ≤ n → (∀ i, 0 < d i) →
     ∃ C : ℝ, 0 < C ∧
-      ∀ (D : ∀ i, DyadicGrid (d i))
+      ∀ (D : ∀ i, CubeGrid (d i))
         (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
       ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
       ∀ (lam : ℝ), 0 < lam → ∀ F : Finset (∀ i, Box (Fin (d i))),

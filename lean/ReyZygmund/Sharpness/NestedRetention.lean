@@ -11,19 +11,21 @@ finite refinement and the proved retained-partition step.
 open BoxIntegral MeasureTheory
 open scoped Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmund.Sharpness
 
 open Geometry
 
-private theorem exists_next_retention {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
+private theorem exists_next_retention {d : ℕ} (hd : 0 < d) (D : CubeGrid d)
     (s : ℕ) (b : ℕ → ℕ) (hb : ∀ k, b k + 1 ≤ b (k + 1)) (k : ℕ)
     (A : Finset (Box (Fin d)))
-    (hA : ∀ R ∈ A, R ∈ D.cubes ((s * b k : ℕ) : ℤ)) :
+    (hA : ∀ R ∈ A, R ∈ D.cubesAtGeneration ((s * b k : ℕ) : ℤ)) :
     ∃ F : Finset (Box (Fin d)),
-      (∀ R ∈ F, R ∈ D.cubes ((s * b (k + 1) : ℕ) : ℤ)) ∧
+      (∀ R ∈ F, R ∈ D.cubesAtGeneration ((s * b (k + 1) : ℕ) : ℤ)) ∧
       boxUnion F ⊆ boxUnion A ∧
       volume.real (boxUnion F) = (2 : ℝ) ^ (-(s : ℤ)) * volume.real (boxUnion A) ∧
-      ∀ (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubes n,
+      ∀ (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubesAtGeneration n,
         volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion F) =
           (2 : ℝ) ^ (-(s : ℤ)) * volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion A) := by
   have hbk : b k ≤ b (k + 1) - 1 := by have h := hb k; omega
@@ -42,7 +44,7 @@ private theorem exists_next_retention {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
       ((s * b (k + 1) : ℕ) : ℤ) := by exact_mod_cast hnext
   let R : Finset (Box (Fin d)) := A.biUnion (fun Q => (level Q t).boxes)
   have hR (Q : Box (Fin d)) (hQ : Q ∈ R) :
-      Q ∈ D.cubes ((s * (b (k + 1) - 1) : ℕ) : ℤ) := by
+      Q ∈ D.cubesAtGeneration ((s * (b (k + 1) - 1) : ℕ) : ℤ) := by
     obtain ⟨J, hJ, hQJ⟩ := Finset.mem_biUnion.mp hQ
     have h := D.mem_cubes_of_mem_level (hA J hJ) hQJ
     simpa only [hrefZ] using h
@@ -59,25 +61,25 @@ private theorem exists_next_retention {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
 
 /-- A nested sequence at the prescribed scales. The initial family may have positive
 offset b0, but its union is the top cube. -/
-theorem exists_nested_retention {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
-    (Q : Box (Fin d)) (hQ : Q ∈ D.cubes 0) (s : ℕ) (b : ℕ → ℕ)
+theorem exists_nested_retention {d : ℕ} (hd : 0 < d) (D : CubeGrid d)
+    (Q : Box (Fin d)) (hQ : Q ∈ D.cubesAtGeneration 0) (s : ℕ) (b : ℕ → ℕ)
     (hb : ∀ k, b k + 1 ≤ b (k + 1)) :
     ∃ P : ℕ → Finset (Box (Fin d)),
       P 0 = (level Q (s * b 0)).boxes ∧
       boxUnion (P 0) = (Q : Set (Fin d → ℝ)) ∧
-      (∀ k R, R ∈ P k → R ∈ D.cubes ((s * b k : ℕ) : ℤ)) ∧
+      (∀ k R, R ∈ P k → R ∈ D.cubesAtGeneration ((s * b k : ℕ) : ℤ)) ∧
       (∀ k, Set.PairwiseDisjoint (↑(P k) : Set (Box (Fin d)))
         (fun R => (R : Set (Fin d → ℝ)))) ∧
       (∀ k, boxUnion (P (k + 1)) ⊆ boxUnion (P k)) ∧
       (∀ k, MeasurableSet (boxUnion (P k)) ∧ volume (boxUnion (P k)) < ⊤) ∧
       (∀ k, volume.real (boxUnion (P k)) =
         ((2 : ℝ) ^ (-(s : ℤ))) ^ k * volume.real (Q : Set (Fin d → ℝ))) ∧
-      (∀ k (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubes n,
+      (∀ k (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubesAtGeneration n,
         volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion (P (k + 1))) =
           (2 : ℝ) ^ (-(s : ℤ)) *
             volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion (P k))) := by
   let Stage (k : ℕ) :=
-    {A : Finset (Box (Fin d)) // ∀ R ∈ A, R ∈ D.cubes ((s * b k : ℕ) : ℤ)}
+    {A : Finset (Box (Fin d)) // ∀ R ∈ A, R ∈ D.cubesAtGeneration ((s * b k : ℕ) : ℤ)}
   let initial : Stage 0 := ⟨(level Q (s * b 0)).boxes, by
     intro R hR
     simpa only [zero_add] using D.mem_cubes_of_mem_level hQ hR⟩
@@ -92,12 +94,12 @@ theorem exists_nested_retention {d : ℕ} (hd : 0 < d) (D : DyadicGrid d)
     change (level Q (s * b 0)).iUnion = _
     exact (level_isPartition Q (s * b 0)).iUnion_eq
   have hgen (k : ℕ) (R : Box (Fin d)) (hR : R ∈ P k) :
-      R ∈ D.cubes ((s * b k : ℕ) : ℤ) := (S k).2 R hR
+      R ∈ D.cubesAtGeneration ((s * b k : ℕ) : ℤ) := (S k).2 R hR
   have hstep (k : ℕ) :
       boxUnion (P (k + 1)) ⊆ boxUnion (P k) ∧
       volume.real (boxUnion (P (k + 1))) =
         (2 : ℝ) ^ (-(s : ℤ)) * volume.real (boxUnion (P k)) ∧
-      ∀ (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubes n,
+      ∀ (n : ℤ), n ≤ ((s * (b (k + 1) - 1) : ℕ) : ℤ) → ∀ I ∈ D.cubesAtGeneration n,
         volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion (P (k + 1))) =
           (2 : ℝ) ^ (-(s : ℤ)) *
             volume.real ((I : Set (Fin d → ℝ)) ∩ boxUnion (P k)) := by

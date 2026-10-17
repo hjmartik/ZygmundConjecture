@@ -1,7 +1,11 @@
-import ReyZygmund.Maximal.FiniteGrid
+import ReyZygmund.Maximal.Constants
+import ReyZygmund.Maximal.GeneralInput
+import ReyZygmund.Geometry.GridFamilies
 
 open BoxIntegral MeasureTheory
 open scoped Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmundVerification
 
@@ -9,7 +13,7 @@ open ReyZygmund ReyZygmund.Geometry
 
 def finiteGridMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
   ↑G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -20,7 +24,7 @@ def finiteGridMaximalIntegralContract : Prop :=
 
 def finiteGridMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
   ↑G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →

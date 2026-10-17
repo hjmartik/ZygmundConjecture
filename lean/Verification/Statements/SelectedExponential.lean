@@ -6,12 +6,14 @@ open BoxIntegral MeasureTheory
 open ReyZygmund.Geometry ReyZygmund.Overlap
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmundVerification
 
 def selectedRoundedExponentialContract : Prop :=
   ∀ (n : ℕ) (d : Fin (n + 1) → ℕ), 2 ≤ n → (∀ i, 0 < d i) →
     ∃ c B : ℝ, 0 < c ∧ 0 < B ∧
-      ∀ (D : ∀ i, DyadicGrid (d i))
+      ∀ (D : ∀ i, CubeGrid (d i))
         (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
       ∀ G : Finset (∀ i, Box (Fin (d i))),
       (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ roundedGridRectangles D phi →

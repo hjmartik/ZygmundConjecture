@@ -2,8 +2,7 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 
 /-! # Small real moments from the second moment
 
-This is the finite-measure Hölder step in the endpoint-to-overlap argument.
-There is no division by the total mass, so the zero-measure case is included.
+Finite-measure Hölder gives the smaller moments with the same coefficient.
 -/
 
 open MeasureTheory

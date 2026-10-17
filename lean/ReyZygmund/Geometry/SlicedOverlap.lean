@@ -1,44 +1,45 @@
 import ReyZygmund.Geometry.LastCoordinate
 import ReyZygmund.Overlap.Countable
-import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
+import ReyZygmund.MathlibOnly.Definitions
 
 /-!
 # Weak incomparability and overlap of slices
 
-The slicing lemma has three conclusions: weak incomparability,
-a unique original rectangle for every slice member, and the pointwise overlap
-identity. The geometric conclusions use the dyadic slice defined
-in `RoundedSlices`. The overlap identity below reindexes the extended nonnegative
-sum itself, so it needs no finiteness or finite-shadow-measure assumption.
+The slicing lemma gives weak incomparability, a unique original rectangle for
+every slice member, and the pointwise overlap identity. The latter follows by
+reindexing the extended nonnegative sum.
 -/
 
 open BoxIntegral
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
+
 namespace ReyZygmund.Geometry
 
 open Overlap
-open MathlibOnly.Proof.Estimates (WeaklyIncomparable)
+open MathlibOnly (WeaklyIncomparable)
 
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 
 /-- The sliced family has no strict containment in every coordinate factor. -/
 theorem sliceFamily_weaklyIncomparable
-    (hn : 0 < n) (D : ∀ i, DyadicGrid (d i))
+    (hn : 0 < n) (D : ∀ i, CubeGrid (d i))
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) (hphi : Monotone phi)
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ roundedGridRectangles D phi)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
     (t : Fin (d (Fin.last n)) → ℝ) :
     WeaklyIncomparable (sliceFamily G t) := by
   intro P hP Q hQ hstrict
+  change ∀ i, P i < Q i at hstrict
   obtain ⟨i, hi⟩ := sliceFamily_weaker_containment hn D phi hphi G hG hinc t
     P hP Q hQ (fun i => (hstrict i).le)
   exact (ne_of_lt (hstrict i)) hi
 
-/-- Uniqueness of the original rectangle within a rounded slice.
-Dyadicity and incomparability suffice; no rounded-scale hypothesis is needed. -/
+/-- Every slice member of an incomparable dyadic family comes from a unique
+original rectangle. -/
 theorem sliceFamily_existsUnique
-    (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
     (hG : G ⊆ gridRectangles D)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
     (t : Fin (d (Fin.last n)) → ℝ)
@@ -50,11 +51,10 @@ theorem sliceFamily_existsUnique
   exact initialProjection_injOn D G hG hinc t
     ⟨hS, htS⟩ ⟨hR, htR⟩ (hSP.trans hRP.symm)
 
-/-- The sliced-overlap identity for an arbitrary set family. This equality
-includes infinite overlap values and uses neither a finite-shadow assumption
-nor an almost-everywhere qualification. -/
+/-- The pointwise sliced-overlap identity for an arbitrary set family, including
+infinite overlap values. -/
 theorem overlap_splitLast_symm
-    (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
     (hG : G ⊆ gridRectangles D)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
     (y : Fin (∑ i : Fin n, d i.castSucc) → ℝ) (t : Fin (d (Fin.last n)) → ℝ) :

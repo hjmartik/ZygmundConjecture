@@ -7,6 +7,8 @@ import ReyZygmund.Maximal.WeakerGlobal
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund.Overlap
 
 open Geometry
@@ -66,9 +68,9 @@ private theorem integral_shadow_le_holder
     Real.rpow_eq_pow] using h
 
 private theorem finite_weaker_maximal_root
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : ↑G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf0 : ∀ x, 0 ≤ f x)
     (p : ℝ) (hp : 1 < p) (hf : MemLp f (ENNReal.ofReal p) volume) :
     MemLp (fun x => (euclideanFamilyMaximal (G : Set _) f x).toReal)
@@ -136,16 +138,15 @@ private theorem maximal_shadow_holder
       Real.rpow (volume.real (finiteShadow G)) (1 / q)
   exact integral_shadow_le_holder G p q hpq M hM0 hM
 
-/-- Finite sparse overlaps have the paper's exact real-q growth even under
-the weaker containment condition. Sparseness supplies measurable
-disjoint subsets; all input and output integrability is derived. -/
+/-- Real-order moment growth for finite sparse weakly incomparable families.
+Sparseness supplies measurable disjoint subsets. -/
 theorem finite_weaker_sparse_overlap_integral
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : ↑G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise (G : Set _) (fun R S => Disjoint (E R) (E S)))
     (hEmass : ∀ R ∈ G, ENNReal.ofReal eta *

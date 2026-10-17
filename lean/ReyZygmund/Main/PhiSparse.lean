@@ -1,12 +1,10 @@
 import ReyZygmund.Overlap.Phi
-import Verification.Challenges.PhiSparse
+import ReyZygmund.MathlibOnly.Proof.OverlapBridge
 
 /-! # Sparse overlap for monotone Zygmund scale relations
 
 The countable endpoint argument gives exponential integrability of the sparse
-overlap. The rectangles, shadow and overlap agree with their independently stated
-definitions in Euclidean coordinates. These identities are also used for
-sharpness.
+overlap, expressed here in Euclidean coordinates.
 -/
 
 open BoxIntegral MeasureTheory
@@ -14,51 +12,39 @@ open scoped BigOperators Classical ENNReal
 
 namespace ReyZygmund.Main
 
+open MathlibOnly.Proof.Estimates
+
 open Geometry Overlap ReyZygmund.Continuous
 
-theorem phiSparse_rectangle_eq {m : ℕ} {d : Fin m → ℕ}
-    (R : ∀ i, Box (Fin (d i))) :
-    ReyZygmundVerification.Challenges.rectangle R =
-      (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) := by
-  ext x
-  obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
-  apply Iff.trans _ (mem_flatProductBox R y).symm
-  simp only [ReyZygmundVerification.Challenges.rectangle, Set.mem_ofPred_eq,
-    mem_productBox, flattenCoordinates_apply]
-  rfl
-
-theorem phiSparse_shadow_eq {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) :
-    ReyZygmundVerification.Challenges.shadow G = shadow G := by
-  ext x
-  simp only [ReyZygmundVerification.Challenges.shadow, shadow,
-    phiSparse_rectangle_eq, Set.mem_iUnion, Subtype.exists]
-
-theorem phiSparse_overlap_eq {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) :
-    ReyZygmundVerification.Challenges.overlap G = overlap G := by
-  funext x
-  simp only [ReyZygmundVerification.Challenges.overlap, overlap, phiSparse_rectangle_eq]
-
-theorem phiSparse_grid_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
-    ReyZygmundVerification.Challenges.phiGridRectangles D Phi =
-      dyadicPhiRectangles D Phi := rfl
-
-/-- The full source sparse-Phi theorem: arbitrary supplied dyadic grids and
-positive block dimensions, countable sparse families, and uniform constants
-chosen before the side relation and the family. -/
+/-- Sparse overlap for a monotone Zygmund scale relation, with constants
+depending on the number of factors, total dimension and sparsity parameter. -/
 theorem phi_sparse_overlap_theorem :
-    ReyZygmundVerification.Challenges.phiSparseOverlapStatement := by
+    ∀ (n totalDim : ℕ), 2 ≤ n →
+    ∀ (eta : ℝ), 0 < eta → eta ≤ 1 →
+      ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
+        ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
+          ∀ (D : ∀ i, ReyZygmund.MathlibOnly.CubeGrid (d i))
+            (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+            ∀ (G : Set (∀ i, Box (Fin (d i)))),
+              G ⊆ ReyZygmund.MathlibOnly.dyadicZygmundRectangles D Phi → ReyZygmund.MathlibOnly.Sparse eta G → volume (ReyZygmund.MathlibOnly.shadow G) < ∞ →
+                (∀ᵐ x ∂volume, ReyZygmund.MathlibOnly.overlap G x < ∞) ∧
+                  (∫⁻ x in ReyZygmund.MathlibOnly.shadow G, ENNReal.ofReal
+                    (Real.exp (c * Real.rpow (ReyZygmund.MathlibOnly.overlap G x).toReal (1 / (n : ℝ)))) - 1
+                      ∂volume) ≤ ENNReal.ofReal C * volume (ReyZygmund.MathlibOnly.shadow G) := by
   intro n totalDim hn eta heta _heta1
   obtain ⟨c, C, hc, hC, hbound⟩ := phi_sparse_overlap_exponential n totalDim hn eta heta
   refine ⟨c, C, hc, hC, ?_⟩
   intro d hd hdim D Phi hPhi G hG hsparse hshadow
-  obtain ⟨E, hEm, hEs, hEd, hEv⟩ := hsparse
-  simp only [phiSparse_rectangle_eq] at hEs hEv
-  rw [phiSparse_grid_eq] at hG
-  rw [phiSparse_shadow_eq] at hshadow
-  rw [phiSparse_overlap_eq, phiSparse_shadow_eq]
+  obtain ⟨E, hE, hEd⟩ := hsparse
+  have hEm := fun R hR => (hE R hR).1
+  have hEs : ∀ R ∈ G, E R ⊆ ReyZygmund.MathlibOnly.rectangle R :=
+    fun R hR => (hE R hR).2.1
+  have hEv : ∀ R ∈ G,
+      ENNReal.ofReal eta * volume (ReyZygmund.MathlibOnly.rectangle R) ≤
+        volume (E R) := fun R hR => (hE R hR).2.2
+  simp only [Geometry.rectangle_eq_flatProductBox] at hEs hEv
+  rw [shadow_eq] at hshadow
+  rw [overlap_eq, shadow_eq]
   have h := hbound d hd hdim D Phi hPhi G hG E hEm hEs hEd hEv hshadow
   refine ⟨h.1, ?_⟩
   calc

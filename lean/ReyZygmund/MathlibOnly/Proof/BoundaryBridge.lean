@@ -18,16 +18,16 @@ namespace ReyZygmund.MathlibOnly.Proof
 theorem continuous_maximal_eq_ico {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
-    maximal (continuousRectangles d phi) f =
-      Continuous.icoEuclideanFamilyMaximal (continuousRectangles d phi) f := by
-  rw [continuousRectangles_eq, maximal_eq_endpoint _ f hf]
+    maximal (zygmundRectangles d phi) f =
+      Continuous.icoEuclideanFamilyMaximal (zygmundRectangles d phi) f := by
+  rw [maximal_eq_euclidean_of_locallyIntegrable _ f hf]
   exact (Continuous.continuous_maximal_convention_eq phi f hf).symm
 
 theorem measurable_continuous_maximal {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
-    Measurable (maximal (continuousRectangles d phi) f) := by
-  rw [continuousRectangles_eq, maximal_eq_endpoint _ f hf]
+    Measurable (maximal (zygmundRectangles d phi) f) := by
+  rw [maximal_eq_euclidean_of_locallyIntegrable _ f hf]
   exact Continuous.measurable_continuous_maximal phi f hf
 
 theorem rounded_maximal_ae_eq_ico {n : ℕ} {d : Fin (n + 1) → ℕ}
@@ -36,7 +36,7 @@ theorem rounded_maximal_ae_eq_ico {n : ℕ} {d : Fin (n + 1) → ℕ}
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
     maximal (roundedRectangles tau phi) f =ᵐ[volume]
       Continuous.icoEuclideanFamilyMaximal (roundedRectangles tau phi) f := by
-  rw [roundedRectangles_eq, maximal_eq_endpoint _ f hf]
+  rw [roundedRectangles_eq, maximal_eq_euclidean_of_locallyIntegrable _ f hf]
   exact (Continuous.icoEuclideanFamilyMaximal_ae_eq _
     ((Geometry.countable_gridRectangles _).mono
       (Geometry.roundedGridRectangles_subset _ phi)) f).symm

@@ -3,10 +3,9 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.Indicator
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
 
-/-! # Finite overlaps without rectangle assumptions
+/-! # Finite overlaps of measurable sets
 
-These elementary facts use only measurable sets of finite measure. In
-particular, none of the sets needs to be bounded or to be a rectangle.
+Elementary overlap facts for measurable sets of finite measure.
 -/
 
 open MeasureTheory

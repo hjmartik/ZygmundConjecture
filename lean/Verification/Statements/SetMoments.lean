@@ -32,7 +32,7 @@ def finiteSetSparsePairingContract : Prop :=
     (∀ I ∈ H, MeasurableSet I) → (∀ I ∈ H, 0 < volume I) →
     (∀ I ∈ H, volume I < ∞) → ∀ eta : ℝ, 0 < eta →
     ∀ E : Set (Fin d → ℝ) → Set (Fin d → ℝ),
-      (∀ I ∈ H, MeasurableSet (E I)) → (∀ I ∈ H, E I ⊆ I) →
+      (∀ I ∈ H, NullMeasurableSet (E I) volume) → (∀ I ∈ H, E I ⊆ I) →
       Set.Pairwise (H : Set (Set (Fin d → ℝ))) (fun I J => Disjoint (E I) (E J)) →
       (∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I)) →
       ∀ g : (Fin d → ℝ) → ℝ,
@@ -46,7 +46,7 @@ def finiteSetSparseMomentContract : Prop :=
     (∀ I ∈ H, MeasurableSet I) → (∀ I ∈ H, 0 < volume I) →
     (∀ I ∈ H, volume I < ∞) → ∀ eta : ℝ, 0 < eta →
     ∀ E : Set (Fin d → ℝ) → Set (Fin d → ℝ),
-      (∀ I ∈ H, MeasurableSet (E I)) → (∀ I ∈ H, E I ⊆ I) →
+      (∀ I ∈ H, NullMeasurableSet (E I) volume) → (∀ I ∈ H, E I ⊆ I) →
       Set.Pairwise (H : Set (Set (Fin d → ℝ))) (fun I J => Disjoint (E I) (E J)) →
       (∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I)) →
       ∀ (k : ℕ) (C : ℝ), 0 < C →
@@ -65,7 +65,7 @@ def finiteSetSparseMomentLIntegralContract : Prop :=
     (∀ I ∈ H, MeasurableSet I) → (∀ I ∈ H, 0 < volume I) →
     (∀ I ∈ H, volume I < ∞) → ∀ eta : ℝ, 0 < eta →
     ∀ E : Set (Fin d → ℝ) → Set (Fin d → ℝ),
-      (∀ I ∈ H, MeasurableSet (E I)) → (∀ I ∈ H, E I ⊆ I) →
+      (∀ I ∈ H, NullMeasurableSet (E I) volume) → (∀ I ∈ H, E I ⊆ I) →
       Set.Pairwise (H : Set (Set (Fin d → ℝ))) (fun I J => Disjoint (E I) (E J)) →
       (∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I)) →
       ∀ (k : ℕ) (C : ℝ), 0 < C →

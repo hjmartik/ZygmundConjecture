@@ -14,15 +14,16 @@ injective and the last boxes decrease by containment.
 open BoxIntegral
 open scoped Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
+
 namespace ReyZygmund.Geometry
 
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 
 /-- Enumerate exactly the rectangles through the fixed last-block point,
-without repetitions, in decreasing order of their last boxes. No
-incomparability, rounding, or positive-dimension hypothesis is needed. -/
+without repetitions, in decreasing order of their last boxes. -/
 theorem exists_ordered_slice_enumeration
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
     (hG : (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (t : Fin (d (Fin.last n)) → ℝ) :
     ∃ N : ℕ, ∃ R : Fin N → (∀ i, Box (Fin (d i))),
@@ -30,12 +31,15 @@ theorem exists_ordered_slice_enumeration
       (∀ S : ∀ i, Box (Fin (d i)),
         S ∈ G ∧ t ∈ S (Fin.last n) ↔ ∃ i, R i = S) ∧
       (∀ i j : Fin N, i < j → R j (Fin.last n) ≤ R i (Fin.last n)) := by
+  have hgen (R : ∀ i, Box (Fin (d i))) (hR : R ∈ G) :
+      ∃ a, R (Fin.last n) ∈ (D (Fin.last n)).cubesAtGeneration a :=
+    (mem_gridRectangles_iff D R).mp (hG hR) (Fin.last n)
   let generation : (∀ i, Box (Fin (d i))) → ℤ := fun R =>
-    if hR : R ∈ G then Classical.choose (hG hR (Fin.last n)) else 0
+    if hR : R ∈ G then Classical.choose (hgen R hR) else 0
   have hgeneration (R : ∀ i, Box (Fin (d i))) (hR : R ∈ G) :
-      R (Fin.last n) ∈ (D (Fin.last n)).cubes (generation R) := by
+      R (Fin.last n) ∈ (D (Fin.last n)).cubesAtGeneration (generation R) := by
     simpa only [generation, dite_eq_left hR] using
-      (Classical.choose_spec (hG hR (Fin.last n)))
+      (Classical.choose_spec (hgen R hR))
   let S := G.filter (fun R => t ∈ R (Fin.last n))
   let cmp : (∀ i, Box (Fin (d i))) → (∀ i, Box (Fin (d i))) → Bool :=
     fun R T => decide (generation R ≤ generation T)
@@ -65,9 +69,8 @@ theorem exists_ordered_slice_enumeration
       (hgeneration (L.get i) hi.1) (hgeneration (L.get j) hj.1)
       (hsorted.rel_get_of_lt hij) hi.2 hj.2
 
-/-- The first-coordinate projections of any exact slice enumeration have
-precisely the existing slice family as their range. This does not
-assert that the projection is injective. -/
+/-- The first-coordinate projections of an exact slice enumeration have
+precisely the slice family as their range. -/
 theorem sliceFamily_eq_range_of_enumeration
     (G : Finset (∀ i, Box (Fin (d i)))) (t : Fin (d (Fin.last n)) → ℝ)
     {N : ℕ} (R : Fin N → (∀ i, Box (Fin (d i))))

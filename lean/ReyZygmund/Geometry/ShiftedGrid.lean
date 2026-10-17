@@ -10,13 +10,13 @@ import Mathlib.Tactic.Ring
 
 The shift index has entries in `Fin 3`, representing the numerators of
 `0, 1/3, 2/3`. At generation `n` the side is `2 ^ (-n)` and the phase is
-`(-1) ^ n`. All grid fields are proved for the `(lower, upper]`
-boxes, including dimension zero. Prescribed covering is a separate result.
+`(-1) ^ n`. The cubes use the `(lower, upper]` boundary convention.
 -/
 
 noncomputable section
 
 open BoxIntegral
+open ReyZygmund.MathlibOnly (CubeGrid shiftedCubes)
 open scoped Classical
 
 namespace ReyZygmund.Geometry
@@ -131,25 +131,63 @@ theorem shiftedDyadicCube_splitCenterBox (a : Fin d → Fin 3) (n : ℤ)
 
 /-- The alternating shifted dyadic grid. Its cubes partition Euclidean space
 at each integer generation, with dyadic children at the next generation. -/
-def shiftedDyadicGrid (d : ℕ) (a : Fin d → Fin 3) : DyadicGrid d where
-  cubes n := Set.range (shiftedDyadicCube a n)
-  width n Q hQ i := by
-    obtain ⟨z, rfl⟩ := hQ
-    exact rootBox_width _ _ i
-  disjoint n := by
-    rintro _ ⟨z, rfl⟩ _ ⟨w, rfl⟩ hne
-    exact shiftedDyadicCube_disjoint a n
-      (fun h => hne (congrArg (shiftedDyadicCube a n) h))
-  cover n x := by
-    let z : Fin d → ℤ := fun i =>
-      ⌈x i / (2 : ℝ) ^ (-n) - (-1 : ℝ) ^ n * ((a i).val : ℝ) / 3⌉ - 1
-    refine ⟨shiftedDyadicCube a n z, ⟨z, rfl⟩, ?_⟩
-    apply (mem_shiftedDyadicCube_iff a n z x).mpr
-    intro i
-    exact (sub_add_cancel _ _).symm
-  children n Q hQ R hR := by
-    obtain ⟨z, rfl⟩ := hQ
-    obtain ⟨s, rfl⟩ := Prepartition.mem_splitCenter.mp hR
-    exact ⟨_, (shiftedDyadicCube_splitCenterBox a n z s).symm⟩
+def shiftedDyadicGrid (d : ℕ) (a : Fin d → Fin 3) : CubeGrid d :=
+  CubeGrid.ofGenerations
+    (fun n => Set.range (shiftedDyadicCube a n))
+    (hwidth := by
+      intro n Q hQ i
+      obtain ⟨z, rfl⟩ := hQ
+      exact rootBox_width _ _ i)
+    (hdisjoint := by
+      intro n
+      rintro _ ⟨z, rfl⟩ _ ⟨w, rfl⟩ hne
+      exact shiftedDyadicCube_disjoint a n
+        (fun h => hne (congrArg (shiftedDyadicCube a n) h)))
+    (hcover := by
+      intro n x
+      let z : Fin d → ℤ := fun i =>
+        ⌈x i / (2 : ℝ) ^ (-n) - (-1 : ℝ) ^ n * ((a i).val : ℝ) / 3⌉ - 1
+      refine ⟨shiftedDyadicCube a n z, ⟨z, rfl⟩, ?_⟩
+      apply (mem_shiftedDyadicCube_iff a n z x).mpr
+      intro i
+      exact (sub_add_cancel _ _).symm)
+    (hchildren := by
+      intro n Q hQ R hR
+      obtain ⟨z, rfl⟩ := hQ
+      obtain ⟨s, rfl⟩ := Prepartition.mem_splitCenter.mp hR
+      exact ⟨_, (shiftedDyadicCube_splitCenterBox a n z s).symm⟩)
+
+/-- The generation accessor recovers the explicit integer-indexed cubes. -/
+@[simp] theorem shiftedDyadicGrid_cubesAtGeneration (d : ℕ) (a : Fin d → Fin 3) (n : ℤ) :
+    (shiftedDyadicGrid d a).cubesAtGeneration n =
+      Set.range (shiftedDyadicCube a n) := by
+  change Set.range (shiftedDyadicCube a (- -n)) = _
+  rw [neg_neg]
+
+/-- The side-exponent accessor agrees with the public alternating-corner formula. -/
+theorem shiftedDyadicGrid_cubes (d : ℕ) (a : Fin d → Fin 3) (k : ℤ) :
+    (shiftedDyadicGrid d a).cubes k = shiftedCubes a k := by
+  change Set.range (shiftedDyadicCube a (-k)) = shiftedCubes a k
+  ext Q
+  change (∃ z : Fin d → ℤ, shiftedDyadicCube a (-k) z = Q) ↔
+    ∃ z : Fin d → ℤ, ∀ j, _ ∧ _
+  have hphase : (-1 : ℝ) ^ (-k) = (-1 : ℝ) ^ k := by
+    simp only [neg_one_zpow_eq_ite, even_neg]
+  constructor
+  · rintro ⟨z, rfl⟩
+    refine ⟨z, ?_⟩
+    intro j
+    simp [shiftedDyadicCube, rootBox, neg_neg, hphase]
+  · rintro ⟨z, hz⟩
+    refine ⟨z, ?_⟩
+    apply Box.ext
+    intro x
+    simp only [Box.mem_def]
+    apply forall_congr'
+    intro j
+    change (_ < x j ∧ x j ≤ _) ↔ _
+    simp only [shiftedDyadicCube, rootBox, neg_neg, hphase]
+    rw [← (hz j).1, ← (hz j).2]
+    rfl
 
 end ReyZygmund.Geometry

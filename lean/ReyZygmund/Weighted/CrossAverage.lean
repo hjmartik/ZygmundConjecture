@@ -27,8 +27,7 @@ private theorem leafConstant_on_descendant
   rw [leaves_localization hP hn] at hQ
   exact hg Q (Finset.mem_filter.mp hQ).1
 
-/-- The denominator is strictly positive at every point of the top cube. Values of the
-input outside that cube are unrestricted. -/
+/-- The denominator is strictly positive at every point of the top cube. -/
 theorem finiteCrossAverage_pos
     (I : Box (Fin d)) (N : ℕ) (eligible : Finset (Box (Fin d)))
     (he : eligible ⊆ descendants I N) (v : (Fin d → ℝ) → ℝ)

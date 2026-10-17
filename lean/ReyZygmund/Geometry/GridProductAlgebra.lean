@@ -5,23 +5,23 @@ import ReyZygmund.Geometry.RawDifferenceBridge
 /-! # Product difference algebra on the full grids
 
 The one-coordinate identities apply at arbitrary integer generations to integrable
-slices of bounded measurable functions. The rectangle-integral formula is proved
-on the same function class, so all its averages are defined by integrable
-functions. A common top rectangle or smallest scale is not required.
-
+slices of bounded measurable functions. Averaging in all coordinates gives the
+supported normalized rectangle integral.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid)
 
 namespace ReyZygmund.Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
 private theorem grid_coordinateDifference_same
-    (i : Fin m) (hd : 0 < d i) (D : DyadicGrid (d i))
+    (i : Fin m) (hd : 0 < d i) (D : CubeGrid (d i))
     {a b : ℤ} (L Q : Box (Fin (d i)))
-    (hL : L ∈ D.cubes a) (hQ : Q ∈ D.cubes b)
+    (hL : L ∈ D.cubesAtGeneration a) (hQ : Q ∈ D.cubesAtGeneration b)
     (f : ProductPoint d → ℝ)
     (hf : ∀ x, IntegrableOn (fun y => f (Function.update x i y))
       (Q : Set (Fin (d i) → ℝ)) volume) :
@@ -29,7 +29,7 @@ private theorem grid_coordinateDifference_same
       if L = Q then coordinateDifference i Q f else 0 := by
   funext x
   have hs : (fun y => coordinateDifference i Q f (Function.update x i y)) =
-      boxDifference Q (fun y => f (Function.update x i y)) := by
+      cubeDifference Q (fun y => f (Function.update x i y)) := by
     funext y
     simp [coordinateDifference_slice]
   rw [coordinateDifference_slice, hs]
@@ -39,9 +39,9 @@ private theorem grid_coordinateDifference_same
 
 /-- Same-coordinate orthogonality for arbitrary signed grid generations. -/
 theorem grid_differenceMap_mul_same
-    (i : Fin m) (hd : 0 < d i) (D : DyadicGrid (d i))
+    (i : Fin m) (hd : 0 < d i) (D : CubeGrid (d i))
     {a b : ℤ} (L Q : Box (Fin (d i)))
-    (hL : L ∈ D.cubes a) (hQ : Q ∈ D.cubes b) :
+    (hL : L ∈ D.cubesAtGeneration a) (hQ : Q ∈ D.cubesAtGeneration b) :
     differenceMap i L * differenceMap i Q =
       if L = Q then differenceMap i Q else 0 := by
   apply LinearMap.ext
@@ -56,23 +56,22 @@ theorem grid_differenceMap_mul_same
 
 private theorem grid_differenceMap_mul_productDifferenceMap
     (B : Finset (Fin m)) (i : Fin m) (hi : i ∈ B) (hd : 0 < d i)
-    (D : DyadicGrid (d i)) {a b : ℤ}
+    (D : CubeGrid (d i)) {a b : ℤ}
     (Q : Box (Fin (d i))) (L : ∀ i, Box (Fin (d i)))
-    (hQ : Q ∈ D.cubes a) (hL : L i ∈ D.cubes b) :
+    (hQ : Q ∈ D.cubesAtGeneration a) (hL : L i ∈ D.cubesAtGeneration b) :
     differenceMap i Q * productDifferenceMap B L =
       if Q = L i then productDifferenceMap B L else 0 := by
   rw [productDifferenceMap_eq_mul_erase B i hi L, ← mul_assoc,
     grid_differenceMap_mul_same i hd D Q (L i) hQ hL]
   by_cases h : Q = L i <;> simp [h]
 
-/-- A selected product retains exactly its matching indices in the full
-difference. The empty selected product is the identity. -/
+/-- A selected product retains exactly its matching indices in the full difference. -/
 theorem grid_productDifferenceMap_mul_full
-    (D : ∀ i, DyadicGrid (d i)) (a b : Fin m → ℤ)
+    (D : ∀ i, CubeGrid (d i)) (a b : Fin m → ℤ)
     (hd : ∀ i, 0 < d i) (A : Finset (Fin m))
     (K L : ∀ i, Box (Fin (d i)))
-    (hK : ∀ i ∈ A, K i ∈ (D i).cubes (a i))
-    (hL : ∀ i, L i ∈ (D i).cubes (b i)) :
+    (hK : ∀ i ∈ A, K i ∈ (D i).cubesAtGeneration (a i))
+    (hL : ∀ i, L i ∈ (D i).cubesAtGeneration (b i)) :
     productDifferenceMap A K * productDifferenceMap Finset.univ L =
       if ∀ i ∈ A, K i = L i then productDifferenceMap Finset.univ L else 0 := by
   induction A using Finset.induction_on with
@@ -99,19 +98,19 @@ theorem grid_productDifferenceMap_mul_full
       rw [ite_eq_right hn]
 
 private theorem grid_coordinateAverage_difference_eq_zero
-    (i : Fin m) (hd : 0 < d i) (D : DyadicGrid (d i))
+    (i : Fin m) (hd : 0 < d i) (D : CubeGrid (d i))
     {a b : ℤ} (K L : Box (Fin (d i)))
-    (hK : K ∈ D.cubes a) (hL : L ∈ D.cubes b)
+    (hK : K ∈ D.cubesAtGeneration a) (hL : L ∈ D.cubesAtGeneration b)
     (hnot : ¬ K < L) (f : ProductPoint d → ℝ)
     (hf : ∀ x, IntegrableOn (fun y => f (Function.update x i y))
       (L : Set (Fin (d i) → ℝ)) volume) :
     coordinateAverage i K (coordinateDifference i L f) = 0 := by
   funext x
   have hs : (fun y => coordinateDifference i L f (Function.update x i y)) =
-      boxDifference L (fun y => f (Function.update x i y)) := by
+      cubeDifference L (fun y => f (Function.update x i y)) := by
     funext y
     simp [coordinateDifference_slice]
-  change boxAverage K (fun y => coordinateDifference i L f (Function.update x i y))
+  change cubeAverage K (fun y => coordinateDifference i L f (Function.update x i y))
     (x i) = 0
   rw [hs]
   have ht := congrFun (grid_average_difference hd D K L hK hL
@@ -121,9 +120,9 @@ private theorem grid_coordinateAverage_difference_eq_zero
 /-- The zero branch of the grid average–difference identity.
 Equality, ancestors, and disjoint cubes all belong to this branch. -/
 theorem grid_averageMap_mul_differenceMap_eq_zero
-    (i : Fin m) (hd : 0 < d i) (D : DyadicGrid (d i))
+    (i : Fin m) (hd : 0 < d i) (D : CubeGrid (d i))
     {a b : ℤ} (K L : Box (Fin (d i)))
-    (hK : K ∈ D.cubes a) (hL : L ∈ D.cubes b)
+    (hK : K ∈ D.cubesAtGeneration a) (hL : L ∈ D.cubesAtGeneration b)
     (hnot : ¬ K < L) : averageMap i K * differenceMap i L = 0 := by
   apply LinearMap.ext
   intro F
@@ -134,24 +133,24 @@ theorem grid_averageMap_mul_differenceMap_eq_zero
   simpa only [Module.End.mul_apply, averageMap_apply, differenceMap_apply,
     LinearMap.zero_apply, ZeroMemClass.coe_zero] using ht
 
-/-- Only the extracted coordinate needs grid membership for this identity. -/
+/-- Extracting one coordinate reduces product cancellation to the
+average–difference identity. -/
 theorem grid_averageMap_mul_productDifferenceMap_eq_zero
     (B : Finset (Fin m)) (i : Fin m) (hi : i ∈ B) (hd : 0 < d i)
-    (D : DyadicGrid (d i)) {a b : ℤ}
+    (D : CubeGrid (d i)) {a b : ℤ}
     (K : Box (Fin (d i))) (L : ∀ i, Box (Fin (d i)))
-    (hK : K ∈ D.cubes a) (hL : L i ∈ D.cubes b)
+    (hK : K ∈ D.cubesAtGeneration a) (hL : L i ∈ D.cubesAtGeneration b)
     (hnot : ¬ K < L i) : averageMap i K * productDifferenceMap B L = 0 := by
   rw [productDifferenceMap_eq_mul_erase B i hi L, ← mul_assoc,
     grid_averageMap_mul_differenceMap_eq_zero i hd D K (L i) hK hL hnot, zero_mul]
 
 /-- If strict containment fails in a selected coordinate, the average product
-annihilates the full difference. This condition cannot occur for the empty set of
-selected coordinates. -/
+annihilates the full difference. -/
 theorem grid_productAverageMap_mul_full_difference_eq_zero
-    (D : ∀ i, DyadicGrid (d i)) (a b : Fin m → ℤ) (A : Finset (Fin m))
+    (D : ∀ i, CubeGrid (d i)) (a b : Fin m → ℤ) (A : Finset (Fin m))
     (K L : ∀ i, Box (Fin (d i)))
-    (hK : ∀ i ∈ A, K i ∈ (D i).cubes (a i))
-    (hL : ∀ i, L i ∈ (D i).cubes (b i))
+    (hK : ∀ i ∈ A, K i ∈ (D i).cubesAtGeneration (a i))
+    (hL : ∀ i, L i ∈ (D i).cubesAtGeneration (b i))
     (hbad : ∃ i ∈ A, 0 < d i ∧ ¬ K i < L i) :
     productAverageMap A K * productDifferenceMap Finset.univ L = 0 := by
   obtain ⟨i, hi, hd, hnot⟩ := hbad
@@ -159,14 +158,12 @@ theorem grid_productAverageMap_mul_full_difference_eq_zero
     grid_averageMap_mul_productDifferenceMap_eq_zero Finset.univ i (Finset.mem_univ i)
       hd (D i) (K i) L (hK i hi) (hL i) hnot, mul_zero]
 
-/-- Orthogonality for the rectangle-integral expansion on bounded
-measurable inputs. This does not assert cancellation for default integrals
-of arbitrary nonintegrable functions. -/
+/-- Orthogonality for the rectangle-integral expansion on bounded measurable inputs. -/
 theorem grid_rawProductDifference_same
-    (D : ∀ i, DyadicGrid (d i)) (a b : Fin m → ℤ)
+    (D : ∀ i, CubeGrid (d i)) (a b : Fin m → ℤ)
     (hd : ∀ i, 0 < d i) (L Q : ∀ i, Box (Fin (d i)))
-    (hL : ∀ i, L i ∈ (D i).cubes (a i))
-    (hQ : ∀ i, Q i ∈ (D i).cubes (b i))
+    (hL : ∀ i, L i ∈ (D i).cubesAtGeneration (a i))
+    (hQ : ∀ i, Q i ∈ (D i).cubesAtGeneration (b i))
     (F : boundedMeasurableFunctions d) :
     rawProductDifference L (rawProductDifference Q F.1) =
       if L = Q then rawProductDifference Q F.1 else 0 := by

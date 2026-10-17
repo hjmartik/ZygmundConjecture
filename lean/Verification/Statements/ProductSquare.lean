@@ -16,22 +16,22 @@ noncomputable def productEnergyCylinderContract : Prop :=
     (A : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i))),
     Q ∈ partialInterior I N A → ∀ (p : ℝ),
     let F := finiteInput I N f hf
-    (∫ x in productBox I, ((productDifferenceMap A Q F).1 x) ^ 2 /
+    (∫ x in productRectangle I, ((productDifferenceMap A Q F).1 x) ^ 2 /
       Real.rpow ((productAverageMap A Q F).1 x) (2 - p)) =
-    ∫ x in productBox Q, ((productDifferenceMap A Q F).1 x) ^ 2 /
+    ∫ x in productRectangle Q, ((productDifferenceMap A Q F).1 x) ^ 2 /
       Real.rpow ((productAverageMap A Q F).1 x) (2 - p)
 
 noncomputable def productWeightedSquareContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f),
-    (∀ x ∈ productBox I, 0 < f x) → ∀ (p : ℝ), 1 < p → p ≤ 2 →
+    (∀ x ∈ productRectangle I, 0 < f x) → ∀ (p : ℝ), 1 < p → p ≤ 2 →
     ∀ (A : Finset (Fin m)), (∀ i ∈ A, 0 < d i) →
     let F := finiteInput I N f hf
-    (∑ Q ∈ partialInterior I N A, ∫ x in productBox I,
+    (∑ Q ∈ partialInterior I N A, ∫ x in productRectangle I,
       ((productDifferenceMap A Q F).1 x) ^ 2 /
         Real.rpow ((productAverageMap A Q F).1 x) (2 - p)) ≤
       Real.rpow 2 ((2 - p) * (∑ i ∈ A, (d i : ℝ))) *
         ((3 - p) / (p - 1)) ^ A.card *
-          ∫ x in productBox I, Real.rpow (f x) p
+          ∫ x in productRectangle I, Real.rpow (f x) p
 
 end ReyZygmundVerification

@@ -28,11 +28,11 @@ theorem familyMaximal_coe_finset
       (positiveMean_le_finiteFunctionMaximal G f Q.1 Q.2 x)
   · by_cases h : G.Nonempty
     · obtain ⟨Q, hQ, hmax⟩ := Finset.exists_mem_eq_sup' h
-        (fun Q => (productBox Q).indicator
-          (fun _ => (∫ y in productBox Q, |f y|) / volume.real (productBox Q)) x)
+        (fun Q => (productRectangle Q).indicator
+          (fun _ => (∫ y in productRectangle Q, |f y|) / volume.real (productRectangle Q)) x)
       rw [finiteFunctionMaximal, dite_eq_left h, hmax]
-      exact le_iSup (fun Q : (G : Set _) => ENNReal.ofReal ((productBox Q.1).indicator
-        (fun _ => (∫ y in productBox Q.1, |f y|) / volume.real (productBox Q.1)) x)) ⟨Q, hQ⟩
+      exact le_iSup (fun Q : (G : Set _) => ENNReal.ofReal ((productRectangle Q.1).indicator
+        (fun _ => (∫ y in productRectangle Q.1, |f y|) / volume.real (productRectangle Q.1)) x)) ⟨Q, hQ⟩
     · rw [finiteFunctionMaximal, dite_eq_right h, ENNReal.ofReal_zero]
       exact zero_le
 

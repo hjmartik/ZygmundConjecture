@@ -13,6 +13,8 @@ uncountable family.
 open BoxIntegral MeasureTheory Filter
 open scoped BigOperators Classical ENNReal Topology
 
+open ReyZygmund.MathlibOnly (zygmundRectangles)
+
 namespace ReyZygmund.Continuous
 
 open Geometry
@@ -41,8 +43,8 @@ private theorem lt_ico_continuous_maximal_of_lt_ioc
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (x : Fin (∑ i, d i) → ℝ) (lam : ℝ≥0∞)
-    (hx : lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x) :
-    lam < icoEuclideanFamilyMaximal (continuousPhiRectangles d phi) f x := by
+    (hx : lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x) :
+    lam < icoEuclideanFamilyMaximal (zygmundRectangles d phi) f x := by
   unfold euclideanFamilyMaximal at hx
   obtain ⟨R, hR⟩ := lt_iSup_iff.mp hx
   have hxR : x ∈ (flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)) := by
@@ -61,8 +63,8 @@ private theorem lt_ico_continuous_maximal_of_lt_ioc
   obtain ⟨t, ⟨ht, hlow⟩, htpos⟩ :=
     (((hlarge.and hlower).filter_mono nhdsWithin_le_nhds).and hpos).exists
   let R' := fun i => shiftBox (R.1 i) t
-  have hR' : R' ∈ continuousPhiRectangles d phi :=
-    shiftBox_mem_continuousPhiRectangles phi R.1 R.2 t
+  have hR' : R' ∈ zygmundRectangles d phi :=
+    shiftBox_mem_continuousRectangles phi R.1 R.2 t
   have hxopen : x ∈ (flatProductBox R').Ioo := by
     rw [flatProductBox_shiftBox]
     intro j _
@@ -81,8 +83,8 @@ private theorem lt_ioc_continuous_maximal_of_lt_ico
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (x : Fin (∑ i, d i) → ℝ) (lam : ℝ≥0∞)
-    (hx : lam < icoEuclideanFamilyMaximal (continuousPhiRectangles d phi) f x) :
-    lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x := by
+    (hx : lam < icoEuclideanFamilyMaximal (zygmundRectangles d phi) f x) :
+    lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x := by
   unfold icoEuclideanFamilyMaximal at hx
   obtain ⟨R, hR⟩ := lt_iSup_iff.mp hx
   have hxR : x ∈ icoFlatProductBox R.1 := by
@@ -103,8 +105,8 @@ private theorem lt_ioc_continuous_maximal_of_lt_ico
   obtain ⟨t, ⟨ht, hupp⟩, htneg⟩ :=
     (((hlarge.and hupper).filter_mono nhdsWithin_le_nhds).and hneg).exists
   let R' := fun i => shiftBox (R.1 i) t
-  have hR' : R' ∈ continuousPhiRectangles d phi :=
-    shiftBox_mem_continuousPhiRectangles phi R.1 R.2 t
+  have hR' : R' ∈ zygmundRectangles d phi :=
+    shiftBox_mem_continuousRectangles phi R.1 R.2 t
   have hxopen : x ∈ (flatProductBox R').Ioo := by
     rw [flatProductBox_shiftBox]
     intro j _
@@ -116,13 +118,12 @@ private theorem lt_ioc_continuous_maximal_of_lt_ico
   rw [Set.indicator_of_mem hxR', flatProductBox_shiftBox, volumeReal_shiftBox]
   exact ht
 
-/-- The Ico and Ioc all-position maximal functions agree at every
-point. No countability or monotonicity of the positive side function is needed. -/
+/-- The `Ico` and `Ioc` all-position maximal functions agree pointwise. -/
 theorem continuous_maximal_convention_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
-    icoEuclideanFamilyMaximal (continuousPhiRectangles d phi) f =
-      euclideanFamilyMaximal (continuousPhiRectangles d phi) f := by
+    icoEuclideanFamilyMaximal (zygmundRectangles d phi) f =
+      euclideanFamilyMaximal (zygmundRectangles d phi) f := by
   funext x
   apply le_antisymm
   · by_contra h
@@ -132,11 +133,11 @@ theorem continuous_maximal_convention_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
     exact (lt_irrefl _) (lt_ico_continuous_maximal_of_lt_ioc phi f hf x _
       (lt_of_not_ge h))
 
-/-- Measurability belongs to the Ico supremum, not a representative. -/
+/-- The `Ico` all-position maximal function is measurable. -/
 theorem measurable_continuous_ico_maximal {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
-    Measurable (icoEuclideanFamilyMaximal (continuousPhiRectangles d phi) f) := by
+    Measurable (icoEuclideanFamilyMaximal (zygmundRectangles d phi) f) := by
   rw [continuous_maximal_convention_eq phi f hf]
   exact measurable_continuous_maximal phi f hf
 
@@ -146,8 +147,8 @@ theorem continuous_maximal_convention_levelset_measure
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (lam : ℝ≥0∞) :
-    volume {x | lam < icoEuclideanFamilyMaximal (continuousPhiRectangles d phi) f x} =
-      volume {x | lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} := by
+    volume {x | lam < icoEuclideanFamilyMaximal (zygmundRectangles d phi) f x} =
+      volume {x | lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x} := by
   rw [continuous_maximal_convention_eq phi f hf]
 
 end ReyZygmund.Continuous

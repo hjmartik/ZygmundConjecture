@@ -30,7 +30,7 @@ def setEndpointSparseOverlapBoundedTestsContract : Prop :=
     ∀ G : Set (Set (Fin d → ℝ)), G ⊆ E →
     ∀ eta : ℝ, 0 < eta → eta ≤ 1 →
     ∀ W : Set (Fin d → ℝ) → Set (Fin d → ℝ),
-      (∀ I ∈ G, MeasurableSet (W I)) → (∀ I ∈ G, W I ⊆ I) →
+      (∀ I ∈ G, NullMeasurableSet (W I) volume) → (∀ I ∈ G, W I ⊆ I) →
       Set.Pairwise G (fun I J => Disjoint (W I) (W J)) →
       (∀ I ∈ G, ENNReal.ofReal eta * volume I ≤ volume (W I)) →
       volume (setShadow G) < ∞ →
@@ -56,7 +56,7 @@ def setEndpointSparseOverlapContract : Prop :=
     ∀ G : Set (Set (Fin d → ℝ)), G ⊆ E →
     ∀ eta : ℝ, 0 < eta → eta ≤ 1 →
     ∀ W : Set (Fin d → ℝ) → Set (Fin d → ℝ),
-      (∀ I ∈ G, MeasurableSet (W I)) → (∀ I ∈ G, W I ⊆ I) →
+      (∀ I ∈ G, NullMeasurableSet (W I) volume) → (∀ I ∈ G, W I ⊆ I) →
       Set.Pairwise G (fun I J => Disjoint (W I) (W J)) →
       (∀ I ∈ G, ENNReal.ofReal eta * volume I ≤ volume (W I)) →
       volume (setShadow G) < ∞ →

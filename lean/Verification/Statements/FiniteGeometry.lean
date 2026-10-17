@@ -48,10 +48,10 @@ noncomputable def oneCoordinateTelescopeContract : Prop :=
     ∀ (I : Box (Fin d)) (N : ℕ) (P : Box (Fin d)), P ∈ descendants I N →
       ∀ (g : (Fin d → ℝ) → ℝ),
         (∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) →
-        (∑ L ∈ (interior I N).filter (fun L => L ≤ P), boxDifference L g) =
-          (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), boxAverage Q g) - boxAverage P g ∧
-        (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), boxAverage Q g) - boxAverage P g =
-          (P : Set (Fin d → ℝ)).indicator g - boxAverage P g
+        (∑ L ∈ (interior I N).filter (fun L => L ≤ P), cubeDifference L g) =
+          (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), cubeAverage Q g) - cubeAverage P g ∧
+        (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), cubeAverage Q g) - cubeAverage P g =
+          (P : Set (Fin d → ℝ)).indicator g - cubeAverage P g
 
 noncomputable def partitionIndicesContract : Prop :=
   ∀ (d : ℕ), 0 < d → ∀ (I : Box (Fin d)) (N : ℕ) (eligible : Finset (Box (Fin d))),

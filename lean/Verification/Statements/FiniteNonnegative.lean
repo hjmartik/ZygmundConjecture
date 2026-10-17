@@ -1,4 +1,5 @@
-import ReyZygmund.Maximal.Nonnegative
+import ReyZygmund.Maximal.Constants
+import ReyZygmund.Maximal.Family
 
 /-! Explicit proposition for the nonnegative finite-input reduction.
 Independent mathematical review is separate from the type comparison. -/
@@ -16,11 +17,11 @@ def finiteNonnegativeMaximalNormContract : Prop :=
   ∀ (G : Finset (∀ i, Box (Fin (d i)))), G ⊆ productDescendants I N →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f),
-  (∀ x ∈ productBox I, 0 ≤ f x) →
+  (∀ x ∈ productRectangle I, 0 ≤ f x) →
   ∀ (p : ℝ), 1 < p → p ≤ (3 : ℝ) / 2 →
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal G (finiteInput I N f hf) x) p) (1 / p) ≤
       maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1) *
-        Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p)
+        Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p)
 
 end ReyZygmundVerification

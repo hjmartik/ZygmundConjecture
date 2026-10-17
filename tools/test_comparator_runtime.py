@@ -23,9 +23,9 @@ def main(args):
     challenge='theorem answer (n : Nat) : n = n := by sorry\n'
     valid='theorem answer (n : Nat) : n = n := rfl\n'
     cases=[('valid',challenge,valid,None),
-           ('extra-assumption',challenge,'theorem answer (n : Nat) (h : n = n) : n = n := h\n','match'),
+           ('extra-assumption',challenge,'theorem answer (n : Nat) (h : n = n) : n = n := h\n',"Challenge and solution theorem statement do not match: 'answer'"),
            ('changed-definition','def number : Nat := 2\ntheorem answer : number = 2 := by sorry\n',
-            'def number : Nat := 3\ntheorem answer : number = 3 := rfl\n','match'),
+            'def number : Nat := 3\ntheorem answer : number = 3 := rfl\n',"Challenge and solution theorem statement do not match: 'answer'"),
            ('indirect-admission',challenge,'theorem helper (n : Nat) : n = n := by sorry\ntheorem answer (n : Nat) : n = n := helper n\n','sorryAx'),
            ('missing-nanoda',challenge,valid,'was not found'),
            ('failing-nanoda',challenge,valid,'nanoda kernel rejected'),
@@ -68,6 +68,16 @@ def main(args):
             if rejection is None:require(outcome['passed'],'Valid fixture did not pass')
             else:require(not outcome['passed'] and result.returncode!=0 and rejection in text and not outcome['comparator_accepted'],
                          'Fixture rejected for the wrong reason: '+name)
+            if name in ('extra-assumption', 'changed-definition'):
+                lines = text.splitlines()
+                diagnostic = 'error: ' + rejection
+                builds = [i for i, line in enumerate(lines)
+                          if line.startswith('Build completed successfully (')]
+                errors = [line for line in lines if line.startswith('error:')]
+                require(len(builds) == 2 and lines.count(diagnostic) == 1
+                        and builds[-1] < lines.index(diagnostic)
+                        and errors == [diagnostic] and outcome['exit_code'] == 1,
+                        'Statement-mismatch fixture did not reach the intended comparison: ' + name)
             if marker:
                 other='con_ron_accepted' if kernel=='nanoda' else 'nanoda_accepted'
                 require(marker in text and outcome['lean_accepted'] and outcome[other],

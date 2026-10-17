@@ -7,9 +7,8 @@ import ReyZygmund.Geometry.FiniteSquare
 
 Each full difference is a step function supported in its indexing rectangle. A
 finite sum of interior differences is therefore supported in the top rectangle and
-constant on sufficiently small cubes, even when the original bounded measurable
-input is not. Orthogonality gives the expansion and finite square identities.
-
+constant on sufficiently small cubes. Orthogonality gives the expansion and
+finite square identities.
 -/
 
 open BoxIntegral MeasureTheory
@@ -22,13 +21,13 @@ open Projection
 variable {m : ℕ} {d : Fin m → ℕ}
 
 /-- A finite sum of interior differences is a finite step function supported on the
-top rectangle, even without those properties for the input. -/
+top rectangle. -/
 theorem finite_difference_sum_productStep
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : H ⊆ productInterior I N)
     (F : boundedMeasurableFunctions d) :
     let S := ∑ Q ∈ H, productDifferenceMap Finset.univ Q F
-    ProductLeafConstant I N S.1 ∧ ∀ x, x ∉ productBox I → S.1 x = 0 := by
+    ProductLeafConstant I N S.1 ∧ ∀ x, x ∉ productRectangle I → S.1 x = 0 := by
   dsimp only
   have hsum : (∑ Q ∈ H, productDifferenceMap Finset.univ Q F).1 =
       ∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 := by
@@ -48,11 +47,11 @@ theorem finite_difference_sum_productStep
     apply rawProductDifference_eq_zero_of_notMem Q F.1 x
     intro hxQ
     apply hx
-    apply (mem_productBox I x).mpr
+    apply (mem_productRectangle I x).mpr
     intro i
     exact le_of_mem_descendants
       (interior_subset_descendants (I i) (N i) ((mem_productInterior.mp (hH hQ)) i))
-      ((mem_productBox Q x).mp hxQ i)
+      ((mem_productRectangle Q x).mp hxQ i)
 
 private theorem difference_sum_coefficient
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)

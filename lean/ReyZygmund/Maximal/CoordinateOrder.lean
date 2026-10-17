@@ -19,22 +19,22 @@ variable {m : ℕ} {d : Fin m → ℕ}
 variable {I : ∀ i, Box (Fin (d i))} {N : Fin m → ℕ}
 
 private theorem update_mem_product_root {x : ProductPoint d}
-    (hx : x ∈ productBox I) (i : Fin m) {y : Fin (d i) → ℝ} (hy : y ∈ I i) :
-    Function.update x i y ∈ productBox I := by
-  apply (mem_productBox I _).mpr
+    (hx : x ∈ productRectangle I) (i : Fin m) {y : Fin (d i) → ℝ} (hy : y ∈ I i) :
+    Function.update x i y ∈ productRectangle I := by
+  apply (mem_productRectangle I _).mpr
   intro j
   by_cases hji : j = i
   · subst j
     simpa using hy
-  · simpa [hji] using (mem_productBox I x).mp hx j
+  · simpa [hji] using (mem_productRectangle I x).mp hx j
 
 private theorem root_slice_integrable {f : ProductPoint d → ℝ}
     (hf : ProductLeafConstant I N f) (i : Fin m) (Q : Box (Fin (d i)))
-    (hQI : Q ≤ I i) (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hQI : Q ≤ I i) (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     IntegrableOn (fun y => f (Function.update x i y))
       (Q : Set (Fin (d i) → ℝ)) volume := by
   obtain ⟨C, _, hC⟩ := bounded_product_localization I N f hf
-  have hloc := integrable_coordinateSlice ((productBox I).indicator f)
+  have hloc := integrable_coordinateSlice ((productRectangle I).indicator f)
     (measurable_product_localization I N f hf) C hC i Q x
   exact hloc.congr_fun
     (fun y hy => Set.indicator_of_mem (update_mem_product_root hx i (hQI hy)) f)
@@ -54,7 +54,7 @@ the top rectangle, also for signed inputs. -/
 theorem abs_coordinateAverage_le_coordinateDyadicMaximal
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ descendants (I i) (N i))
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     |coordinateAverage i Q f x| ≤ coordinateDyadicMaximal i (I i) (N i) f x := by
   have hmean : |coordinateAverage i Q f x| ≤
       coordinateAverage i Q (fun y => |f y|) x := by
@@ -86,8 +86,8 @@ coordinate maximal functions there. -/
 theorem coordinateDyadicMaximal_mono_abs
     (f g : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (hg : ProductLeafConstant I N g)
-    (hfg : ∀ y ∈ productBox I, |f y| ≤ |g y|)
-    (i : Fin m) (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hfg : ∀ y ∈ productRectangle I, |f y| ≤ |g y|)
+    (i : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     coordinateDyadicMaximal i (I i) (N i) f x ≤
       coordinateDyadicMaximal i (I i) (N i) g x := by
   rw [coordinateDyadicMaximal_eq_level_sup, coordinateDyadicMaximal_eq_level_sup]

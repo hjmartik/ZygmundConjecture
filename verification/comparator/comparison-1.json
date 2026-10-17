@@ -2,7 +2,7 @@
   "challenge_module": "Challenge1",
   "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.weakly_incomparable_maximal"
+    "ReyZygmund.MathlibOnly.weakly_incomparable_maximal_estimate"
   ],
   "permitted_axioms": [
     "propext",

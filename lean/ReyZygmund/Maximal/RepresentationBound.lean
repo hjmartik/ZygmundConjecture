@@ -18,15 +18,14 @@ open Geometry Projection
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The pointwise maximal bound for the finite averaging family and common projection,
-without incomparability or strict positivity. -/
+/-- The pointwise maximal bound for the finite averaging family and common projection. -/
 theorem finite_representation_maximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     finiteFamilyMaximal (averagingRectangles I N G) f x ≤
       (2 : ℝ) ^ m * ∑ j,
         finiteSignedPartialMaximal I N (Finset.univ.erase j)
@@ -74,12 +73,12 @@ theorem finite_representation_maximal
   · rw [finiteFamilyMaximal, dite_eq_left hB]
     apply Finset.sup'_le
     intro R hR
-    by_cases hxR : x ∈ productBox R
+    by_cases hxR : x ∈ productRectangle R
     · have hRI := averagingRectangles_subset_productDescendants I N G hR
-      have hav : (∫ y in productBox R, |f.1 y|) = ∫ y in productBox R, f.1 y := by
-        apply setIntegral_congr_fun (measurableSet_productBox R)
+      have hav : (∫ y in productRectangle R, |f.1 y|) = ∫ y in productRectangle R, f.1 y := by
+        apply setIntegral_congr_fun (measurableSet_productRectangle R)
         intro y hy
-        exact abs_of_nonneg (hpos y (productBox_subset_root_of_mem_productDescendants hRI hy))
+        exact abs_of_nonneg (hpos y (productRectangle_subset_root_of_mem_productDescendants hRI hy))
       rw [hav]
       rw [← productAverageMap_univ_eq_integral R f x]
       rw [finite_representation I N hd G R hR f hf hs x hxR]

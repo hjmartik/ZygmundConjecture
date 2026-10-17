@@ -6,7 +6,7 @@ import Mathlib.Tactic.FieldSimp
 
 A rectangle with average above a level still has average above half that level
 after removing input values below half the level. Local integrability justifies
-the averages. The full maximal function need not be bounded.
+the averages.
 -/
 
 open BoxIntegral MeasureTheory
@@ -55,7 +55,7 @@ private theorem average_le_half_add_tail {k : ℕ} (Q : Box (Fin k))
   simpa only [abs_of_nonneg (hn _), abs_of_nonneg (hg0 _), g] using hd
 
 /-- A point above level lambda remains above level lambda/2 after retaining input
-values above lambda/2. The family need not be finite or incomparable. -/
+values above lambda/2. -/
 theorem euclidean_maximal_truncation_levelset
     {m : ℕ} {d : Fin m → ℕ} (G : Set (∀ i, Box (Fin (d i))))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)

@@ -6,7 +6,6 @@ import Mathlib.Tactic.FieldSimp
 
 Assume the maximal estimate for the finite rectangle family. The pairwise disjoint
 measurable subsets establishing sparseness then give the moment bound by duality.
-A grid or incomparability assumption is not needed for this step.
 -/
 
 open BoxIntegral MeasureTheory
@@ -181,7 +180,7 @@ conditional strong estimate for their own finite maximal function. -/
 theorem finite_endpoint_sparse_overlap_integral
     (G : Finset (∀ i, Box (Fin (d i)))) (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise (G : Set (∀ i, Box (Fin (d i))))
       (fun R S => Disjoint (E R) (E S)))
@@ -272,12 +271,12 @@ theorem finite_endpoint_sparse_overlap_integral
   change Real.rpow J (1 / q) ≤ _
   exact h.trans_eq (by ring)
 
-/-- The same conditional sparse moment bound in the extended-integral form
-used for finite-family limits. All real-integral conversions use integrability. -/
+/-- The conditional sparse moment bound in the extended-integral form
+used for finite-family limits. -/
 theorem finite_endpoint_sparse_overlap_lintegral
     (G : Finset (∀ i, Box (Fin (d i)))) (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise (G : Set (∀ i, Box (Fin (d i))))
       (fun R S => Disjoint (E R) (E S)))

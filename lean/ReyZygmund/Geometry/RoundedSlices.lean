@@ -5,28 +5,21 @@ import ReyZygmund.Geometry.RoundedScales
 
 For an incomparable family, projection onto the first coordinates is injective on
 rectangles through a fixed last-coordinate point. If this family is rounded from a
-monotone side function, its projection satisfies the weaker containment property.
+monotone side function, its projection is weakly incomparable.
 -/
 
 open BoxIntegral
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
 
 namespace ReyZygmund.Geometry
 
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 
-/-- Delete the last coordinate cube from a rectangle. -/
-def initialProjection (R : ∀ i, Box (Fin (d i))) :
-    ∀ i : Fin n, Box (Fin (d i.castSucc)) := fun i => R i.castSucc
-
-/-- The projected family above a fixed point of the last block. -/
-def sliceFamily (G : Set (∀ i, Box (Fin (d i)))) (t : Fin (d (Fin.last n)) → ℝ) :
-    Set (∀ i : Fin n, Box (Fin (d i.castSucc))) :=
-  initialProjection '' {R | R ∈ G ∧ t ∈ R (Fin.last n)}
-
 /-- No multiplicity is lost when passing to the slice of an incomparable
 family in dyadic grids. -/
 theorem initialProjection_injOn
-    (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
     (hG : G ⊆ gridRectangles D)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
     (t : Fin (d (Fin.last n)) → ℝ) :
@@ -34,8 +27,8 @@ theorem initialProjection_injOn
   rintro R ⟨hR, htR⟩ S ⟨hS, htS⟩ heq
   have hfirst (i : Fin n) : R i.castSucc = S i.castSucc :=
     congrArg (fun P => P i) heq
-  obtain ⟨k, hk⟩ := hG hR (Fin.last n)
-  obtain ⟨l, hl⟩ := hG hS (Fin.last n)
+  obtain ⟨k, hk⟩ := (mem_gridRectangles_iff D R).mp (hG hR) (Fin.last n)
+  obtain ⟨l, hl⟩ := (mem_gridRectangles_iff D S).mp (hG hS) (Fin.last n)
   rcases (D (Fin.last n)).nested_of_common_point hk hl htR htS with hlast | hlast
   · apply hinc R hR S hS
     intro i
@@ -46,7 +39,7 @@ theorem initialProjection_injOn
     exact Fin.lastCases hlast (fun j => (hfirst j).symm.le) i
 
 theorem sliceFamily_subset_grid
-    (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i))))
     (hG : G ⊆ gridRectangles D) (t : Fin (d (Fin.last n)) → ℝ) :
     sliceFamily G t ⊆ gridRectangles (fun i : Fin n => D i.castSucc) := by
   rintro P ⟨R, ⟨hR, _⟩, rfl⟩ i
@@ -55,7 +48,7 @@ theorem sliceFamily_subset_grid
 /-- Rounded order rules out strict containment in every first coordinate of
 two rectangles through the same last-coordinate point. -/
 theorem rounded_slice_containment
-    (hn : 0 < n) (D : ∀ i, DyadicGrid (d i))
+    (hn : 0 < n) (D : ∀ i, CubeGrid (d i))
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) (hphi : Monotone phi)
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ roundedGridRectangles D phi)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
@@ -84,7 +77,7 @@ theorem rounded_slice_containment
 
 /-- The paper's weaker-containment hypothesis on the slice family. -/
 theorem sliceFamily_weaker_containment
-    (hn : 0 < n) (D : ∀ i, DyadicGrid (d i))
+    (hn : 0 < n) (D : ∀ i, CubeGrid (d i))
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) (hphi : Monotone phi)
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ roundedGridRectangles D phi)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)

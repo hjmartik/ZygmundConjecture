@@ -1,11 +1,11 @@
 # Linux checker setup
 
-This guide gives the sandboxed Linux procedure for checking all six main
-results with Comparator, Lean, Nanoda and con-ron. It assumes you can create
-a Linux virtual machine or use an existing Linux computer and install system
-software. The [verification guide](../VERIFYING.md) explains the tools and
-offers [local macOS checking](../VERIFYING.md#local-checking-on-macos) as an
-alternative.
+This guide gives the sandboxed Linux procedure for checking the three main
+and nineteen selected supporting results with Comparator, Lean, Nanoda and con-ron,
+under the same checking standard. It assumes you can create a Linux virtual
+machine or use an existing Linux computer and install system software. The
+[verification guide](../VERIFYING.md) explains the tools and offers
+[local macOS checking](../VERIFYING.md#local-checking-on-macos) as an alternative.
 
 **Follow steps 1–4 in order, using a terminal inside Linux throughout.** First
 prepare the system and tools; then obtain the repository, prepare its libraries
@@ -73,7 +73,7 @@ an administrator can raise it:
 sudo sysctl -w vm.max_map_count=262144
 ```
 
-For a VM, we recommend four virtual CPU cores and 8 GiB of memory. The six
+For a VM, we recommend four virtual CPU cores and 8 GiB of memory. The twenty-two
 cases run one at a time, each limited to 6 GiB without swap, leaving memory
 for Linux itself. Allow at least 15 GiB of free disk space for working copies
 after installing the tools and libraries.
@@ -100,10 +100,11 @@ working copies created by the checking programs.
 
 Before running repository scripts, inspect the checking scripts, Lake
 configuration, dependency manifest, and challenge files with their imports.
-These are trusted inputs to the procedure. The six challenges import the
-independent `Definitions.lean` and `Statements.lean`, whose other imports
-come from Mathlib. The configurations select the six targets and the three
-permitted foundational axioms.
+These are trusted inputs to the procedure. The twenty-two challenges import the
+independent `Statements.lean` or `SupportingStatements.lean`, together with
+their definition modules. These five specification modules use Mathlib without
+importing the proof library. The configurations select the twenty-two targets and
+the three permitted foundational axioms.
 [SOURCE-MANIFEST.json](SOURCE-MANIFEST.json) and
 [AUDIT-MANIFEST.json](AUDIT-MANIFEST.json) identify the source and adapter
 files; the runner checks them against these inventories.
@@ -176,7 +177,7 @@ resolve setup failures before proceeding.
 
 <a id="check-the-main-results"></a>
 
-## 4. Run Comparator on all six results
+## 4. Run Comparator on all twenty-two results
 
 The tools and libraries are now installed and the setup tests have passed.
 The project proofs have not yet been compiled. From the same repository
@@ -187,13 +188,13 @@ python3 -I -B tools/comparator.py
 ```
 
 This command prepares its own source-only working copy, compiles the project
-inside the sandbox, and compares all six results with their independent
+inside the sandbox, and compares all twenty-two results with their independent
 specifications. No separate preparation command or ordinary build is needed.
 
-Success requires the command to exit successfully and **`PASS_ALL_SIX`** in
+Success requires the command to exit successfully and **`PASS_ALL_TWENTY_TWO`** in
 the report whose path it prints. For each result, that requires successful
 Comparator comparison and explicit acceptance by Lean, Nanoda and con-ron.
-A partial or failed run does not verify all six results.
+A partial or failed run does not verify all twenty-two results.
 
 Each case has a two-core CPU quota and a one-hour limit. A timeout fails the
 run; it is not a mathematical rejection. Before reporting success, the runner

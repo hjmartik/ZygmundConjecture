@@ -5,13 +5,15 @@ import ReyZygmund.Maximal.OrdinaryGlobal
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry
 
 def ordinaryFiniteGridIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
     ↑G ⊆ gridRectangles D →
     ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -20,7 +22,7 @@ def ordinaryFiniteGridIntegralContract : Prop :=
 
 def ordinaryFiniteGridLIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
     ↑G ⊆ gridRectangles D →
     ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -30,7 +32,7 @@ def ordinaryFiniteGridLIntegralContract : Prop :=
 
 def ordinaryGlobalLIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
     ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -40,7 +42,7 @@ def ordinaryGlobalLIntegralContract : Prop :=
 
 def ordinaryGlobalFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
     ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -48,7 +50,7 @@ def ordinaryGlobalFiniteAEContract : Prop :=
 
 def ordinaryGlobalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
     ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -57,7 +59,7 @@ def ordinaryGlobalNormContract : Prop :=
 
 def ordinaryEuclideanFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
@@ -65,7 +67,7 @@ def ordinaryEuclideanFiniteAEContract : Prop :=
 
 def ordinaryEuclideanNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →

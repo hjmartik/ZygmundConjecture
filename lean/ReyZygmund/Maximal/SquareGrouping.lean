@@ -4,9 +4,8 @@ import ReyZygmund.Maximal.Signed
 /-!
 # Grouping the nonzero product differences
 
-The density index is selected from the proved unique last level. Zero
-differences are omitted, not assigned a fictitious density level. The upper
-part of the grouping has no signed averages outside the corresponding halo.
+Each nonzero difference is assigned its unique last density level. The upper
+part of the grouping has zero signed averages outside the corresponding halo.
 -/
 
 open BoxIntegral MeasureTheory
@@ -36,10 +35,10 @@ theorem squareDensityIndex_spec
     (F : boundedMeasurableFunctions d) (Q : ∀ i, Box (Fin (d i)))
     (hQ : Q ∈ nonzeroSquareIndices I N F) :
     let δ := 1 / (2 : ℝ) ^ ((∑ i, d i) + 1)
-    δ * volume.real (productBox Q) <
-        volume.real (productBox Q ∩ finiteSquareLevelSet I N F (squareDensityIndex I N F Q)) ∧
-      volume.real (productBox Q ∩ finiteSquareLevelSet I N F (squareDensityIndex I N F Q + 1)) ≤
-        δ * volume.real (productBox Q) := by
+    δ * volume.real (productRectangle Q) <
+        volume.real (productRectangle Q ∩ finiteSquareLevelSet I N F (squareDensityIndex I N F Q)) ∧
+      volume.real (productRectangle Q ∩ finiteSquareLevelSet I N F (squareDensityIndex I N F Q + 1)) ≤
+        δ * volume.real (productRectangle Q) := by
   rw [squareDensityIndex, dite_eq_left hQ]
   exact (existsUnique_square_density_level I N F Q (Finset.mem_filter.mp hQ).1
     (Finset.mem_filter.mp hQ).2).exists.choose_spec
@@ -53,12 +52,12 @@ private theorem nonzero_index_descendant
   exact interior_subset_descendants (I i) (N i)
     (mem_productInterior.mp (Finset.mem_filter.mp hQ).1 i)
 
-theorem productBox_subset_squareDensityHalo
+theorem productRectangle_subset_squareDensityHalo
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (Q : ∀ i, Box (Fin (d i)))
     (hQ : Q ∈ nonzeroSquareIndices I N F) :
-    productBox Q ⊆ finiteSquareHalo I N F (squareDensityIndex I N F Q) :=
-  productBox_subset_finite_root_halo I N _
+    productRectangle Q ⊆ finiteSquareHalo I N F (squareDensityIndex I N F Q) :=
+  productRectangle_subset_finite_root_halo I N _
     (measurableSet_finiteSquareLevelSet I N F _) Q
     (nonzero_index_descendant I N F Q hQ) _ (squareDensityIndex_spec I N F Q hQ).1
 
@@ -103,9 +102,9 @@ theorem squareUpper_parent_subset_halo
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (n : ℤ)
     (Q : ∀ i, Box (Fin (d i))) (hQ : Q ∈ squareUpperIndices I N F n) :
-    productBox Q ⊆ finiteSquareHalo I N F n := by
+    productRectangle Q ⊆ finiteSquareHalo I N F n := by
   obtain ⟨hQ0, hlev⟩ := Finset.mem_filter.mp hQ
-  exact (productBox_subset_squareDensityHalo I N F Q hQ0).trans
+  exact (productRectangle_subset_squareDensityHalo I N F Q hQ0).trans
     (finiteSquareHalo_antitone I N F (le_of_not_gt hlev))
 
 theorem squareUpper_signedMaximal_zero_off_halo

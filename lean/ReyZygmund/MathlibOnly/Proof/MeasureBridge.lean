@@ -1,11 +1,11 @@
-import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
+import ReyZygmund.MathlibOnly.Proof.Definitions
+import ReyZygmund.MathlibOnly.Proof.OverlapBridge
 import ReyZygmund.MathlibOnly.Proof.BoundaryBridge
 import ReyZygmund.Sharpness.FiniteIntegral
 
 /-!
-# Measurable sets, boundary conventions and real integrals
+# Boundary conventions and real integrals
 
-Lebesgue-measurable sparse witnesses have Borel subsets of the same measure.
 The rounded maximal operator uses the paper's lower-inclusive convention.
 For finite families, the full overlap exponential is integrable, so its real
 integral agrees with the nonnegative integral used in the sharpness proof.
@@ -17,25 +17,6 @@ open scoped BigOperators ENNReal Classical Topology
 namespace ReyZygmund.MathlibOnly.Proof.Estimates
 
 variable {m : ℕ} {d : Fin m → ℕ}
-
-/-- Shrinking each witness to a Borel subset preserves the exact sparsity parameter. -/
-theorem sparse_iff_borel (eta : ℝ) (G : Set (∀ i, Box (Fin (d i)))) :
-    Sparse eta G ↔ MathlibOnly.Proof.Sparse eta G := by
-  constructor
-  · rintro ⟨E, hE, hdis⟩
-    let B := fun R => (toMeasurable volume (E R)ᶜ)ᶜ
-    have hsub (R) : B R ⊆ E R :=
-      Set.compl_subset_comm.mp (subset_toMeasurable volume (E R)ᶜ)
-    refine ⟨B, ?_, ?_⟩
-    · intro R hR
-      refine ⟨(measurableSet_toMeasurable _ _).compl, (hsub R).trans (hE R hR).2.1, ?_⟩
-      rw [show volume (B R) = volume (E R) from
-        measure_congr (hE R hR).1.compl_toMeasurable_compl_ae_eq]
-      exact (hE R hR).2.2
-    · intro R hR S hS hne
-      exact (hdis hR hS hne).mono (hsub R) (hsub S)
-  · rintro ⟨E, hE, hdis⟩
-    exact ⟨E, fun R hR => ⟨(hE R hR).1.nullMeasurableSet, (hE R hR).2⟩, hdis⟩
 
 theorem rectangleIco_eq (R : ∀ i, Box (Fin (d i))) :
     rectangleIco R = Continuous.icoFlatProductBox R := by
@@ -54,8 +35,9 @@ theorem rectangleIco_eq (R : ∀ i, Box (Fin (d i))) :
 theorem maximalIco_eq (G : Set (∀ i, Box (Fin (d i))))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
     maximalIco G f = Continuous.icoEuclideanFamilyMaximal G f := by
+  rw [maximalIco_eq_iSup_indicator]
   funext x
-  unfold maximalIco Continuous.icoEuclideanFamilyMaximal
+  unfold Continuous.icoEuclideanFamilyMaximal
   congr 1
   funext R
   rw [rectangleIco_eq]
@@ -80,14 +62,6 @@ theorem rounded_levelset_measure_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
   apply eventuallyEqSet_iff.mpr
   filter_upwards [rounded_maximal_ae_eq_ico tau phi f hf] with x hx
   rw [hx]
-
-theorem shadow_eq (G : Set (∀ i, Box (Fin (d i)))) : shadow G = Overlap.shadow G := by
-  ext x
-  simp only [shadow, Overlap.shadow, rectangle_eq_flat, Set.mem_iUnion, Subtype.exists]
-
-theorem overlap_eq (G : Set (∀ i, Box (Fin (d i)))) : overlap G = Overlap.overlap G := by
-  funext x
-  simp only [overlap, Overlap.overlap, rectangle_eq_flat]
 
 /-- A finite family has bounded overlap and finite shadow, hence an integrable exponential. -/
 theorem integrableOn_overlap_exponential (H : Finset (∀ i, Box (Fin (d i))))

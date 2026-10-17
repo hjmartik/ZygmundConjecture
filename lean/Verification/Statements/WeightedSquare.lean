@@ -18,7 +18,7 @@ noncomputable def weightedSquareContract : Prop :=
     (∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, v x = v y) →
     (∀ x ∈ I, 0 < v x) →
     (∑ Q ∈ interior I N,
-      ∫ x in (Q : Set (Fin d → ℝ)), (boxDifference Q u x) ^ 2 /
+      ∫ x in (Q : Set (Fin d → ℝ)), (cubeDifference Q u x) ^ 2 /
         Real.rpow ((∫ y in (Q : Set (Fin d → ℝ)), v y) /
           volume.real (Q : Set (Fin d → ℝ))) (2 - p)) ≤
       Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1)) *

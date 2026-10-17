@@ -12,6 +12,8 @@ Orthogonality identifies it with the square function indexed by the entire grid.
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund.Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
@@ -29,7 +31,7 @@ theorem measurable_finiteDifferenceSquare
 
 theorem finiteDifferenceSquare_eq_zero_off
     (H : Finset (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
-    (x : ProductPoint d) (hx : ∀ Q ∈ H, x ∉ productBox Q) :
+    (x : ProductPoint d) (hx : ∀ Q ∈ H, x ∉ productRectangle Q) :
     finiteDifferenceSquare H f x = 0 := by
   have hz : ∑ Q ∈ H, (rawProductDifference Q f x) ^ 2 = 0 := by
     apply Finset.sum_eq_zero
@@ -53,11 +55,11 @@ theorem integrable_rpow_finiteDifferenceSquare
     (H : Finset (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
     (p : ℝ) (hp : 0 < p) :
     Integrable (fun x => Real.rpow (finiteDifferenceSquare H f x) p) volume := by
-  let U : Set (ProductPoint d) := ⋃ Q ∈ H, productBox Q
+  let U : Set (ProductPoint d) := ⋃ Q ∈ H, productRectangle Q
   have hmU : MeasurableSet U := MeasurableSet.biUnion H.countable_toSet
-    (fun Q _ => measurableSet_productBox Q)
+    (fun Q _ => measurableSet_productRectangle Q)
   have hU : volume U < ∞ := measure_biUnion_lt_top H.finite_toSet
-    (fun Q _ => productBox_volume_lt_top Q)
+    (fun Q _ => productRectangle_volume_lt_top Q)
   obtain ⟨C, hC0, hC⟩ := bounded_finiteDifferenceSquare H f
   have hi : IntegrableOn (fun x => Real.rpow (finiteDifferenceSquare H f x) p) U volume := by
     apply IntegrableOn.of_bound hU
@@ -83,7 +85,7 @@ theorem integrable_rpow_finiteDifferenceSquare
   exact heq ▸ hi.integrable_indicator hmU
 
 theorem fullGridSquare_eq_ofReal_finiteDifferenceSquare
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : (↑H : Set _) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
     (hex : F.1 = fun x => ∑ Q ∈ H, rawProductDifference Q F.1 x)

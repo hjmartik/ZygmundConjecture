@@ -20,22 +20,22 @@ open Geometry Projection
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The sharper finite estimate, retaining the exact product constant in
-each complement of a coordinate. -/
+/-- The finite estimate retaining the exact product constant in each
+complement of a coordinate. -/
 theorem projected_weighted_square_exact
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
     let F := finiteInput I N f hf
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       (finiteComplementSquareFunction I N (finiteProjectionMap I N G F) x) ^ 2 /
         Real.rpow (finiteFamilyMaximal (averagingRectangles I N G) F x) (2 - p)) ≤
       (∑ j : Fin m,
         Real.rpow 2 ((2 - p) * ∑ i ∈ Finset.univ.erase j, (d i : ℝ)) *
           ((3 - p) / (p - 1)) ^ (Finset.univ.erase j).card) *
-        ∫ x in productBox I, Real.rpow (f x) p := by
+        ∫ x in productRectangle I, Real.rpow (f x) p := by
   let F := finiteInput I N f hf
   let P := finiteProjectionMap I N G F
   let M := finiteFamilyMaximal (averagingRectangles I N G) F
@@ -43,14 +43,14 @@ theorem projected_weighted_square_exact
     ((productDifferenceMap (Finset.univ.erase j) Q P).1 x) ^ 2 /
       Real.rpow (M x) (2 - p)
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
   have hP := finiteProjectionMap_productStep_closure I N G F hF hFs
   have hM := productLeafConstant_finiteFamilyMaximal I N (averagingRectangles I N G)
     (averagingRectangles_subset_productDescendants I N G) F
   change ProductLeafConstant I N M at hM
   have hei : ∀ j : Fin m, ∀ Q ∈ partialInterior I N (Finset.univ.erase j),
-      IntegrableOn (e j Q) (productBox I) volume := by
+      IntegrableOn (e j Q) (productRectangle I) volume := by
     intro j Q hQ
     have hdif := (productDifferenceMap_productStep_closure I N P hP.1 hP.2
       (Finset.univ.erase j) Q (fun i hi => partialInterior_mem_selected hQ hi)).1
@@ -64,7 +64,7 @@ theorem projected_weighted_square_exact
       fun x => ∑ j : Fin m, ∑ Q ∈ partialInterior I N (Finset.univ.erase j), e j Q x := by
     funext x
     simp only [finiteComplementSquareFunction_sq, Finset.sum_div, e]
-  change (∫ x in productBox I,
+  change (∫ x in productRectangle I,
       (finiteComplementSquareFunction I N P x) ^ 2 / Real.rpow (M x) (2 - p)) ≤ _
   rw [heq]
   rw [integral_finsetSum Finset.univ (fun j _ =>
@@ -75,8 +75,8 @@ theorem projected_weighted_square_exact
   intro j _
   calc
     (∑ Q ∈ partialInterior I N (Finset.univ.erase j),
-        ∫ x in productBox I, e j Q x) ≤
-      ∑ Q ∈ partialInterior I N (Finset.univ.erase j), ∫ x in productBox I,
+        ∫ x in productRectangle I, e j Q x) ≤
+      ∑ Q ∈ partialInterior I N (Finset.univ.erase j), ∫ x in productRectangle I,
         ((productDifferenceMap (Finset.univ.erase j) Q F).1 x) ^ 2 /
           Real.rpow ((productAverageMap (Finset.univ.erase j) Q F).1 x) (2 - p) := by
       apply Finset.sum_le_sum
@@ -117,20 +117,19 @@ private theorem complement_product_constant_le (j : Fin m)
         (pow_nonneg hratio0 _) (by positivity)
     _ = _ := by rw [div_pow, ← mul_div_assoc, ← pow_add]
 
-/-- The paper's constant, with every dimension and `p - 1` factor explicit.
-No incomparability assumption is needed for this weighted estimate. -/
+/-- The paper's constant, with every dimension and `p - 1` factor explicit. -/
 theorem projected_weighted_square
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
     let F := finiteInput I N f hf
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       (finiteComplementSquareFunction I N (finiteProjectionMap I N G F) x) ^ 2 /
         Real.rpow (finiteFamilyMaximal (averagingRectangles I N G) F x) (2 - p)) ≤
       ((m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1)) *
-        ∫ x in productBox I, Real.rpow (f x) p := by
+        ∫ x in productRectangle I, Real.rpow (f x) p := by
   refine (projected_weighted_square_exact I N hd G hG f hf hfpos p hp hp2).trans ?_
   apply mul_le_mul_of_nonneg_right
   · calc
@@ -138,7 +137,7 @@ theorem projected_weighted_square
           (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1) :=
         Finset.sum_le_sum (fun j _ => complement_product_constant_le j p hp hp2)
       _ = _ := by simp [mul_div_assoc]
-  · exact integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productBox I)
+  · exact integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productRectangle I)
       (fun x hx => Real.rpow_nonneg (hfpos x hx).le p))
 
 end ReyZygmund

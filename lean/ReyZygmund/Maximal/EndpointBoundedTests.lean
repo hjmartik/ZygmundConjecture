@@ -6,9 +6,9 @@ import Mathlib.Topology.MetricSpace.Bounded
 
 /-! # Extending the finite endpoint inequality from bounded tests
 
-Height and spatial truncations recover each rectangle average. The
-extended logarithmic integral need not be finite. A measurable representative
-then gives the signed locally integrable formulation needed by interpolation.
+Height and spatial truncations recover each rectangle average. The logarithmic
+integral is extended-valued. A measurable representative then gives the signed
+locally integrable formulation needed by interpolation.
 -/
 
 open BoxIntegral Filter MeasureTheory

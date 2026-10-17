@@ -1,7 +1,8 @@
 import Mathlib
 
-/-!
-Installation smoke test: import Mathlib and check an elementary real-number theorem.
+/-! # Basic Mathlib import check
+
+An elementary real-number theorem checks the Mathlib import.
 -/
 
 namespace ReyZygmund.EnvironmentSmoke

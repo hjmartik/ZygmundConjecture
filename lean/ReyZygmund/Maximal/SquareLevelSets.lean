@@ -21,7 +21,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 def finiteSquareLevelSet
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (n : ℤ) : Set (ProductPoint d) :=
-  {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < finiteSquareFunction I N Finset.univ F x}
+  {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < finiteSquareFunction I N Finset.univ F x}
 
 theorem measurableSet_finiteSquareLevelSet
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
@@ -31,7 +31,7 @@ theorem measurableSet_finiteSquareLevelSet
     Real.continuous_sqrt.measurable.comp
     (Finset.measurable_sum _ (fun Q _ =>
       (productDifferenceMap Finset.univ Q F).2.1.pow_const (2 : ℕ)))
-  exact (measurableSet_productBox I).inter (measurableSet_lt measurable_const hS)
+  exact (measurableSet_productRectangle I).inter (measurableSet_lt measurable_const hS)
 
 theorem finiteSquareLevelSet_antitone
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
@@ -44,7 +44,7 @@ theorem finiteSquareLevelSet_antitone
 theorem productLeafConstant_squareLevel_indicator
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (n : ℤ) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (n : ℤ) :
     ProductLeafConstant I N
       ((finiteSquareLevelSet I N F n).indicator (fun _ => (1 : ℝ))) := by
   intro Q hQ x hx y hy
@@ -61,7 +61,7 @@ theorem productLeafConstant_squareLevel_indicator
 def finiteSquareHalo
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (n : ℤ) : Set (ProductPoint d) :=
-  {x | x ∈ productBox I ∧ 1 / (2 : ℝ) ^ ((∑ i, d i) + 1) <
+  {x | x ∈ productRectangle I ∧ 1 / (2 : ℝ) ^ ((∑ i, d i) + 1) <
     finiteFamilyMaximal (productDescendants I N)
       (boundedIndicator (finiteSquareLevelSet I N F n)
         (measurableSet_finiteSquareLevelSet I N F n)) x}
@@ -70,14 +70,14 @@ theorem measurableSet_finiteSquareHalo
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (n : ℤ) :
     MeasurableSet (finiteSquareHalo I N F n) :=
-  (measurableSet_productBox I).inter
+  (measurableSet_productRectangle I).inter
     (measurableSet_lt measurable_const (measurable_finiteFamilyMaximal _ _))
 
 /-- The exact dimension/cube-count cost before the paper's coarse simplification. -/
 theorem finiteSquareHalo_measure_le
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (n : ℤ) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (n : ℤ) :
     volume.real (finiteSquareHalo I N F n) ≤
       (2 : ℝ) ^ (2 * m) / (1 / (2 : ℝ) ^ ((∑ i, d i) + 1)) ^ 2 *
         volume.real (finiteSquareLevelSet I N F n) :=
@@ -87,8 +87,8 @@ theorem finiteSquareHalo_measure_le
 
 private theorem indicator_mean
     (Q : ∀ i, Box (Fin (d i))) (E : Set (ProductPoint d)) (hE : MeasurableSet E) :
-    (∫ y in productBox Q, |(boundedIndicator E hE).1 y|) =
-      volume.real (productBox Q ∩ E) := by
+    (∫ y in productRectangle Q, |(boundedIndicator E hE).1 y|) =
+      volume.real (productRectangle Q ∩ E) := by
   have heq : (fun y => |(boundedIndicator E hE).1 y|) =
       E.indicator (fun _ => (1 : ℝ)) := by
     funext y
@@ -106,15 +106,12 @@ private theorem finite_family_indicator_mono
   apply Finset.sup'_le
   intro Q hQ
   apply le_trans _ (positiveMean_le_finiteFamilyMaximal _ (boundedIndicator B hB) Q hQ x)
-  by_cases hxQ : x ∈ productBox Q
+  by_cases hxQ : x ∈ productRectangle Q
   · rw [Set.indicator_of_mem hxQ, Set.indicator_of_mem hxQ,
       indicator_mean Q E hE, indicator_mean Q B hB]
     apply div_le_div_of_nonneg_right _ measureReal_nonneg
-    have hvol : volume (productBox Q) < ∞ := by
-      change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-        (Set.pi Set.univ (fun i => (Q i : Set (Fin (d i) → ℝ)))) < ∞
-      rw [Measure.pi_pi]
-      exact ENNReal.prod_lt_top (fun i _ => (Q i).measure_coe_lt_top volume)
+    have hvol : volume (productRectangle Q) < ∞ :=
+      productRectangle_volume_lt_top Q
     exact measureReal_mono (Set.inter_subset_inter_right _ hEB)
       ((measure_mono Set.inter_subset_left).trans_lt hvol).ne
   · rw [Set.indicator_of_notMem hxQ, Set.indicator_of_notMem hxQ]

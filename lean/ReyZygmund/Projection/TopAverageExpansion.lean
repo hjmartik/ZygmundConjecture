@@ -60,12 +60,12 @@ private theorem partialDifferenceSum_insert
 private theorem partialDifferenceSum_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (A : Finset (Fin m))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (partialDifferenceSum I N A F).1 ∧
-      ∀ x, x ∉ productBox I → (partialDifferenceSum I N A F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (partialDifferenceSum I N A F).1 x = 0 := by
   have hterm : ∀ L ∈ partialInterior I N A,
       ProductLeafConstant I N (productDifferenceMap A L F).1 ∧
-        ∀ x, x ∉ productBox I → (productDifferenceMap A L F).1 x = 0 := by
+        ∀ x, x ∉ productRectangle I → (productDifferenceMap A L F).1 x = 0 := by
     intro L hL
     exact productDifferenceMap_productStep_closure I N F hf hs A L
       (fun i hi => partialInterior_mem_selected hL hi)
@@ -79,13 +79,13 @@ private theorem coordinate_root_telescope
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (j : Fin m) (hd : 0 < d j) (F : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (x : ProductPoint d) (hx : x j ∈ I j) :
     ((∑ Q ∈ interior (I j) (N j), differenceMap j Q) F).1 x =
       F.1 x - (averageMap j (I j) F).1 x := by
-  have hind : (productBox I).indicator F.1 = F.1 := by
+  have hind : (productRectangle I).indicator F.1 = F.1 := by
     funext y
-    by_cases hy : y ∈ productBox I
+    by_cases hy : y ∈ productRectangle I
     · exact Set.indicator_of_mem hy F.1
     · simp [hy, hs y hy]
   have hleaf := productStep_coordinate_leafConstant I N F.1 hf j x
@@ -135,27 +135,27 @@ private theorem rootSignedAverageSum_insert
 
 private theorem root_average_congr
     (I : ∀ i, Box (Fin (d i))) (F G : boundedMeasurableFunctions d)
-    (hFG : ∀ y ∈ productBox I, F.1 y = G.1 y)
-    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hFG : ∀ y ∈ productRectangle I, F.1 y = G.1 y)
+    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     (averageMap j (I j) F).1 x = (averageMap j (I j) G).1 x := by
   simp only [averageMap_apply, coordinateAverage_of_mem j (I j) _ x
-    ((mem_productBox I x).mp hx j)]
+    ((mem_productRectangle I x).mp hx j)]
   congr 1
   apply setIntegral_congr_fun (I j).measurableSet_coe
   intro y hy
   apply hFG
-  apply (mem_productBox I _).mpr
+  apply (mem_productRectangle I _).mpr
   intro i
   by_cases hij : i = j
   · subst i
     simpa using hy
-  · simpa [hij] using (mem_productBox I x).mp hx i
+  · simpa [hij] using (mem_productRectangle I x).mp hx i
 
 private theorem partialDifferenceSum_eq_rootSignedAverageSum
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (A : Finset (Fin m)) :
-    ∀ x ∈ productBox I,
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (A : Finset (Fin m)) :
+    ∀ x ∈ productRectangle I,
       (partialDifferenceSum I N A F).1 x = (rootSignedAverageSum I A F).1 x := by
   induction A using Finset.induction_on with
   | empty =>
@@ -165,7 +165,7 @@ private theorem partialDifferenceSum_eq_rootSignedAverageSum
     intro x hx
     have hc := partialDifferenceSum_closure I N A F hf hs
     have ht := coordinate_root_telescope I N j (hd j)
-      (partialDifferenceSum I N A F) hc.1 hc.2 x ((mem_productBox I x).mp hx j)
+      (partialDifferenceSum I N A F) hc.1 hc.2 x ((mem_productRectangle I x).mp hx j)
     rw [partialDifferenceSum_insert I N A j hj, Module.End.mul_apply, ht]
     rw [rootSignedAverageSum_insert I A j hj]
     change _ = (rootSignedAverageSum I A F).1 x -
@@ -173,12 +173,12 @@ private theorem partialDifferenceSum_eq_rootSignedAverageSum
     rw [ih x hx, root_average_congr I _ _ ih j x hx]
 
 /-- The partial interior sum telescopes to signed top-cube averages on the top
-rectangle, including an empty selected set and zero coordinate depths. -/
+rectangle. -/
 theorem partial_telescope_eq_top_averages
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (A : Finset (Fin m))
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (A : Finset (Fin m))
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     (∑ L ∈ partialInterior I N A, (productDifferenceMap A L F).1 x) =
       ∑ B ∈ A.powerset, (-1 : ℝ) ^ B.card * (productAverageMap B I F).1 x := by
   have h := partialDifferenceSum_eq_rootSignedAverageSum I N hd F hf hs A x hx
@@ -198,8 +198,8 @@ theorem finiteProjection_top_average_decomposition
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0) (A : Finset (Fin m))
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0) (A : Finset (Fin m))
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     (∑ L ∈ partialInterior I N A,
       (productDifferenceMap A L (finiteProjectionMap I N G f)).1 x) =
       (finiteProjectionMap I N G f).1 x +

@@ -4,11 +4,10 @@ import ReyZygmund.Overlap.SetMomentLimits
 
 /-! # From the endpoint estimate to sparse overlap
 
-This proves the implication used for sparse Phi-Zygmund families. Sets may be
-unbounded and the overlap countable. The constants are `D = 8 * exp 2 * A * k!`
-and exponential factor three. Bounded tests suffice for the weak hypothesis; the
-last formulation assumes the endpoint bound for every measurable input.
-
+This implication applies to countable sparse Phi-Zygmund families. The constants
+are `D = 8 * exp 2 * A * k!` and exponential factor three. Bounded tests suffice
+for the weak hypothesis; the last formulation assumes the endpoint bound for
+every measurable input.
 -/
 
 open MeasureTheory
@@ -60,9 +59,9 @@ private theorem finite_set_endpoint_uniform
   simpa only [ENNReal.ofReal_rpow_of_nonneg (zero_le_one.trans hratio)
     (zero_lt_one.trans hp).le] using ENNReal.ofReal_le_ofReal hpow
 
-/-- The complete implication from bounded measurable endpoint tests. It
-includes all real moment orders, the exact exponential constant and a proof
-that the real overlap representative agrees with the series a.e. -/
+/-- Bounded measurable endpoint tests give moment bounds for all real `q ≥ 1` and the
+exponential estimate, together with almost-everywhere agreement of the real
+overlap representative and the series. -/
 theorem set_endpoint_sparse_overlap_from_bounded_tests
     (E : Set (Set (Fin d → ℝ))) (hE : E.Countable)
     (hm : ∀ I ∈ E, MeasurableSet I) (hpos : ∀ I ∈ E, 0 < volume I)
@@ -76,7 +75,7 @@ theorem set_endpoint_sparse_overlap_from_bounded_tests
     (G : Set (Set (Fin d → ℝ))) (hGE : G ⊆ E)
     (eta : ℝ) (heta : 0 < eta) (_heta1 : eta ≤ 1)
     (W : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hWm : ∀ I ∈ G, MeasurableSet (W I)) (hWs : ∀ I ∈ G, W I ⊆ I)
+    (hWm : ∀ I ∈ G, NullMeasurableSet (W I) volume) (hWs : ∀ I ∈ G, W I ⊆ I)
     (hWd : Set.Pairwise G (fun I J => Disjoint (W I) (W J)))
     (hWv : ∀ I ∈ G, ENNReal.ofReal eta * volume I ≤ volume (W I))
     (hshadow : volume (setShadow G) < ∞) :
@@ -148,7 +147,7 @@ theorem set_endpoint_sparse_overlap_from_bounded_tests
     simpa only [heq] using hexp.2
 
 /-- The endpoint-to-overlap implication with the endpoint hypothesis for every
-measurable input. Neither the sets nor the inputs need be bounded. -/
+measurable input. -/
 theorem set_endpoint_sparse_overlap
     (E : Set (Set (Fin d → ℝ))) (hE : E.Countable)
     (hm : ∀ I ∈ E, MeasurableSet I) (hpos : ∀ I ∈ E, 0 < volume I)
@@ -160,7 +159,7 @@ theorem set_endpoint_sparse_overlap
     (G : Set (Set (Fin d → ℝ))) (hGE : G ⊆ E)
     (eta : ℝ) (heta : 0 < eta) (heta1 : eta ≤ 1)
     (W : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hWm : ∀ I ∈ G, MeasurableSet (W I)) (hWs : ∀ I ∈ G, W I ⊆ I)
+    (hWm : ∀ I ∈ G, NullMeasurableSet (W I) volume) (hWs : ∀ I ∈ G, W I ⊆ I)
     (hWd : Set.Pairwise G (fun I J => Disjoint (W I) (W J)))
     (hWv : ∀ I ∈ G, ENNReal.ofReal eta * volume I ≤ volume (W I))
     (hshadow : volume (setShadow G) < ∞) :

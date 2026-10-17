@@ -8,12 +8,14 @@ The finite square on the first right-hand side is expanded inline. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry
 
 def signedGridSquareIntegralContract : Prop :=
-  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, DyadicGrid (d i)),
+  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, CubeGrid (d i)),
     (∀ i, 0 < d i) →
     ∀ (H : Finset (∀ i, Box (Fin (d i)))),
       (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D →
@@ -26,7 +28,7 @@ def signedGridSquareIntegralContract : Prop :=
                 (Real.sqrt (∑ Q ∈ H, (rawProductDifference Q F.1 x) ^ 2)) p)
 
 def fullGridSquareEstimateContract : Prop :=
-  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, DyadicGrid (d i)),
+  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, CubeGrid (d i)),
     (∀ i, 0 < d i) →
     ∀ (H : Finset (∀ i, Box (Fin (d i)))),
       (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D →

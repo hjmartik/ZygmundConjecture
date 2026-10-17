@@ -22,8 +22,7 @@ open Projection
 
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 
-/-- Slicing preserves the bound and measurability of a bounded measurable function,
-with no support or step-function hypothesis. -/
+/-- Slicing preserves the bound and measurability of a bounded measurable function. -/
 noncomputable def coordinateFibreMap
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) :
     boundedMeasurableFunctions d →ₗ[ℝ]
@@ -66,8 +65,7 @@ theorem coordinateFibreMap_differenceMap
     coordinateDifference i Q (fun z => F.1 (j.insertNth t z)) y
   exact (coordinateDifference_insertNth j t i Q F.1 y).symm
 
-/-- Products over corresponding selected coordinates have exactly the same
-fibre values. The empty product is included. -/
+/-- Products over corresponding selected coordinates have the same fibre values. -/
 theorem coordinateFibreMap_productAverageMap_image
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) (A : Finset (Fin n))
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d) :
@@ -118,8 +116,7 @@ theorem coordinateFibreMap_productDifferenceMap_erase
   simpa only [Fin.image_succAbove_univ, Finset.compl_singleton] using
     coordinateFibreMap_productDifferenceMap_image j t Finset.univ Q F
 
-/-- Inserting the omitted top cube gives a bijection of indices. The unused coordinate
-introduces neither a depth factor nor an empty index set. -/
+/-- Inserting the omitted top cube gives a bijection of indices. -/
 theorem partialInterior_erase_eq_image_insertNth
     (I : ∀ i, Box (Fin (d i))) (N : Fin (n + 1) → ℕ) (j : Fin (n + 1)) :
     partialInterior I N (Finset.univ.erase j) =
@@ -161,7 +158,7 @@ theorem sum_partialInterior_erase_insertNth {V : Type*} [AddCommMonoid V]
   exact (Fin.insertNth_inj.mp h).2
 
 /-- Slicing turns the partial difference sum into the full difference sum in the
-remaining coordinates, without a finite step-function hypothesis. -/
+remaining coordinates. -/
 theorem coordinateFibreMap_difference_sum
     (I : ∀ i, Box (Fin (d i))) (N : Fin (n + 1) → ℕ)
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) (F : boundedMeasurableFunctions d) :

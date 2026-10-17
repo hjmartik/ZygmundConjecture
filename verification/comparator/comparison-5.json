@@ -2,7 +2,7 @@
   "challenge_module": "Challenge5",
   "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.phi_sparse_overlap"
+    "ReyZygmund.MathlibOnly.sparse_phi_zygmund_overlap_estimate"
   ],
   "permitted_axioms": [
     "propext",

@@ -1,5 +1,6 @@
 import ReyZygmund.Geometry.SourceCutoff
 import ReyZygmund.Maximal.GeneralInput
+import ReyZygmund.Maximal.Incomparable
 import ReyZygmund.Geometry.ProductLp
 
 /-! # The finite estimate with a common smallest side length
@@ -11,27 +12,29 @@ follows directly. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund
 
 open Geometry Projection
 
 theorem source_finite_incomparable_maximal_norm
     {m : ℕ} {d : Fin m → ℕ} (hm : 2 ≤ m) (hd : ∀ i, 0 < d i)
-    (D : ∀ i, DyadicGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
-    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubes (n i))
+    (D : ∀ i, CubeGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
+    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubesAtGeneration (n i))
     (G : Finset (∀ i, Box (Fin (d i))))
-    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (2 : ℝ) ^ (-k) ≤ (R i).upper u - (R i).lower u)
-    (hinc : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S)
-    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productBox I → f x = 0)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
-    (hf : ∀ R, (R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hinc : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S)
+    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productRectangle I → f x = 0)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
+    (hf : ∀ R, (R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (R i).upper u - (R i).lower u = (2 : ℝ) ^ (-k)) →
-      ∀ x ∈ productBox R, ∀ y ∈ productBox R, f x = f y)
+      ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R, f x = f y)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    Real.rpow (∫ x in productBox I, Real.rpow (finiteFunctionMaximal G f x) p) (1 / p) ≤
+    Real.rpow (∫ x in productRectangle I, Real.rpow (finiteFunctionMaximal G f x) p) (1 / p) ≤
       maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1) *
-        Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p) := by
   have hp0 : 0 < p := zero_lt_one.trans hp
   obtain hnk | he := source_cutoff_or_empty hd D n k I hI G hG
   · let N := fun i => (k - n i).toNat
@@ -42,12 +45,12 @@ theorem source_finite_incomparable_maximal_norm
       exact (source_productDescendants_iff hd D n k I hI hnk R).mpr (hG R hR)
     have hinput : (finiteInput I N f hfN).1 = f := by
       funext x
-      by_cases hx : x ∈ productBox I
+      by_cases hx : x ∈ productRectangle I
       · exact Set.indicator_of_mem hx f
-      · change (productBox I).indicator f x = f x
+      · change (productRectangle I).indicator f x = f x
         rw [Set.indicator_of_notMem hx, hs x hx]
     have h := finite_incomparable_maximal_norm hm I N hd G hGN
-      (fun R hR S hS hRS => hinc R hR S hS ((productBox_subset_iff R S).mpr hRS))
+      (fun R hR S hS hRS => hinc R hR S hS ((productRectangle_subset_iff R S).mpr hRS))
       f hfN hfpos p hp hp3
     rw [← finiteFunctionMaximal_of_bounded G (finiteInput I N f hfN), hinput] at h
     exact h
@@ -64,7 +67,7 @@ theorem source_finite_incomparable_maximal_norm
         positivity
       · exact pow_nonneg (div_nonneg hp0.le (sub_pos.mpr hp).le) _
     · apply Real.rpow_nonneg
-      exact integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productBox I)
+      exact integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productRectangle I)
         (fun x hx => Real.rpow_nonneg (hfpos x hx).le p))
 
 /-- The norm estimate includes the empty-family case forced by an incompatible
@@ -72,22 +75,22 @@ smallest scale. In the other case, constancy on the smallest cubes justifies
 conversion from real power integrals. -/
 theorem source_finite_incomparable_maximal_eLpNorm
     {m : ℕ} {d : Fin m → ℕ} (hm : 2 ≤ m) (hd : ∀ i, 0 < d i)
-    (D : ∀ i, DyadicGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
-    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubes (n i))
+    (D : ∀ i, CubeGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
+    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubesAtGeneration (n i))
     (G : Finset (∀ i, Box (Fin (d i))))
-    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (2 : ℝ) ^ (-k) ≤ (R i).upper u - (R i).lower u)
-    (hinc : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S)
-    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productBox I → f x = 0)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
-    (hf : ∀ R, (R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hinc : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S)
+    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productRectangle I → f x = 0)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
+    (hf : ∀ R, (R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (R i).upper u - (R i).lower u = (2 : ℝ) ^ (-k)) →
-      ∀ x ∈ productBox R, ∀ y ∈ productBox R, f x = f y)
+      ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R, f x = f y)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
     eLpNorm (finiteFunctionMaximal G f) (ENNReal.ofReal p)
-        (volume.restrict (productBox I)) ≤
+        (volume.restrict (productRectangle I)) ≤
       ENNReal.ofReal (maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1)) *
-        eLpNorm f (ENNReal.ofReal p) (volume.restrict (productBox I)) := by
+        eLpNorm f (ENNReal.ofReal p) (volume.restrict (productRectangle I)) := by
   have hp0 : 0 < p := zero_lt_one.trans hp
   obtain hnk | he := source_cutoff_or_empty hd D n k I hI G hG
   · let N := fun i => (k - n i).toNat
@@ -98,9 +101,9 @@ theorem source_finite_incomparable_maximal_eLpNorm
       exact (source_productDescendants_iff hd D n k I hI hnk R).mpr (hG R hR)
     have hinput : (finiteInput I N f hfN).1 = f := by
       funext x
-      by_cases hx : x ∈ productBox I
+      by_cases hx : x ∈ productRectangle I
       · exact Set.indicator_of_mem hx f
-      · change (productBox I).indicator f x = f x
+      · change (productRectangle I).indicator f x = f x
         rw [Set.indicator_of_notMem hx, hs x hx]
     have hmax : finiteFunctionMaximal G f =
         finiteFamilyMaximal G (finiteInput I N f hfN) := by
@@ -112,13 +115,13 @@ theorem source_finite_incomparable_maximal_eLpNorm
       rw [hmax]
       exact finiteFamilyMaximal_nonneg G _ x
     have hf0 (x) : 0 ≤ f x := by
-      by_cases hx : x ∈ productBox I
+      by_cases hx : x ∈ productRectangle I
       · exact (hfpos x hx).le
       · rw [hs x hx]
     have hreal : lpNorm (finiteFunctionMaximal G f) (ENNReal.ofReal p)
-          (volume.restrict (productBox I)) ≤
+          (volume.restrict (productRectangle I)) ≤
         (maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1)) *
-          lpNorm f (ENNReal.ofReal p) (volume.restrict (productBox I)) := by
+          lpNorm f (ENNReal.ofReal p) (volume.restrict (productRectangle I)) := by
       rw [lpNorm_productLeafConstant_eq I N _ hMN p hp0,
         lpNorm_productLeafConstant_eq I N f hfN p hp0]
       simpa only [abs_of_nonneg (hMpos _), abs_of_nonneg (hf0 _)] using

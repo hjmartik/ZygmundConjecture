@@ -8,7 +8,6 @@ import Mathlib.Tactic.Ring
 
 The two terms are separated before any cancellation. The remaining real-power
 inequality is resolved with an explicit constant uniform for `1 < p ≤ 3/2`.
-No norm, maximal operator, or integrability hypothesis is encoded here.
 -/
 
 namespace ReyZygmund.Weighted

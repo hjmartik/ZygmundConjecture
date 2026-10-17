@@ -1,17 +1,13 @@
-import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
+import ReyZygmund.MathlibOnly.Proof.Definitions
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
-# Supporting forms of the six main estimates
+# Real-valued forms of the maximal and overlap estimates
 
-The public proofs use these estimates to establish the independent statements
-in `ReyZygmund.MathlibOnly.Statements`, including the sharpness result.
-
-The `L^p` maximal estimate is stated for `1 < p ≤ 2`. This estimate and the sparse
-overlap statements include almost-everywhere finiteness, so their real-valued
-versions agree with the extended quantities outside a set of measure zero.
-
+These estimates express norms and integrals through real representatives,
+together with almost-everywhere finiteness of the extended quantities.
+`MathlibOnly.Representation` relates them to the independent statements.
 -/
 
 open BoxIntegral MeasureTheory Filter
@@ -21,7 +17,7 @@ namespace ReyZygmund.MathlibOnly.Proof.Estimates
 
 noncomputable section
 
-/-- Weakly incomparable maximal estimate: no sparsity or finite-shadow assumption. -/
+/-- The weakly incomparable maximal estimate. -/
 def WeaklyIncomparableMaximal : Prop :=
   ∃ C : ℕ → ℕ → ℝ, (∀ m D, 0 < C m D) ∧
     ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
@@ -59,7 +55,7 @@ def ContinuousEndpoint : Prop :=
       ∀ (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
         ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
           ∀ (lam : ℝ), 0 < lam →
-            volume {x | ENNReal.ofReal lam < maximal (continuousRectangles d phi) f x} ≤
+            volume {x | ENNReal.ofReal lam < maximal (zygmundRectangles d phi) f x} ≤
               ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
                 (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2))
                   ∂volume
@@ -78,14 +74,14 @@ def RoundedEndpoint : Prop :=
                   (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2))
                     ∂volume
 
-/-- Sparse prescribed-scale overlap, without an incomparability hypothesis. -/
+/-- Exponential overlap for sparse Φ-Zygmund families. -/
 def PhiSparseOverlap : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n → ∀ (eta : ℝ), 0 < eta → eta ≤ 1 →
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
       ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
         ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
           ∀ (G : Set (∀ i, Box (Fin (d i)))),
-            G ⊆ phiRectangles D Phi → Sparse eta G → volume (shadow G) < ∞ →
+            G ⊆ dyadicZygmundRectangles D Phi → Sparse eta G → volume (shadow G) < ∞ →
               (∀ᵐ x ∂volume, overlap G x < ∞) ∧
                 (∫⁻ x in shadow G, ENNReal.ofReal
                   (Real.exp (c * Real.rpow (overlap G x).toReal (1 / (n : ℝ))))
@@ -99,7 +95,7 @@ def PhiSparseSharpness : Prop :=
       ∃ G : ℕ → Finset (∀ i, Box (Fin (d i))),
         (∀ N : ℕ, 2 ≤ N →
           (G N : Set (∀ i, Box (Fin (d i)))) ⊆
-              phiRectangles D (fun k : Fin n → ℤ => ∑ i, k i) ∧
+              dyadicZygmundRectangles D (fun k : Fin n → ℤ => ∑ i, k i) ∧
             Incomparable (G N : Set (∀ i, Box (Fin (d i)))) ∧
             Sparse eta (G N : Set (∀ i, Box (Fin (d i)))) ∧
             volume (shadow (G N : Set (∀ i, Box (Fin (d i))))) = 1) ∧

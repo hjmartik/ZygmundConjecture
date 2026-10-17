@@ -1,12 +1,13 @@
 import ReyZygmund.MathlibOnly.Proof.BoundaryBridge
-import ReyZygmund.MathlibOnly.Proof.GridBridge
+import ReyZygmund.Geometry.Grids
+import Verification.Statements.Endpoints
 
 /-!
-# Routine contracts for the new representation bridges
+# Contracts for grid, average and boundary identifications
 
-These helper contracts deliberately name both representations. They are not
-the seven independent mathematical specifications, which import only Mathlib
-and their own Definitions file. This module is never imported by a solution.
+These helper contracts state the supporting identifications explicitly.
+The public mathematical specifications are in `MathlibOnly.Statements`
+and `MathlibOnly.SupportingStatements`.
 -/
 
 open BoxIntegral MeasureTheory
@@ -17,44 +18,44 @@ namespace ReyZygmundVerification.MathlibOnlyBridges
 open ReyZygmund
 
 def midpointChildren : Prop :=
-  ∀ {d : ℕ} (D : MathlibOnly.Proof.CubeGrid d) {k : ℤ} {Q R : Box (Fin d)},
+  ∀ {d : ℕ} (D : MathlibOnly.CubeGrid d) {k : ℤ} {Q R : Box (Fin d)},
     Q ∈ D.cubes k → R ∈ Prepartition.splitCenter Q → R ∈ D.cubes (k - 1)
 
-def independentGridRoundTrip : Prop :=
-  ∀ {d : ℕ} (D : MathlibOnly.Proof.CubeGrid d),
-    MathlibOnly.Proof.ofDyadicGrid D.toDyadicGrid = D
+def generationIndex : Prop :=
+  ∀ {d : ℕ} (D : MathlibOnly.CubeGrid d) (k : ℤ),
+    D.cubesAtGeneration (-k) = D.cubes k
 
-def implementationGridRoundTrip : Prop :=
-  ∀ {d : ℕ} (D : Geometry.DyadicGrid d),
-    (MathlibOnly.Proof.ofDyadicGrid D).toDyadicGrid = D
+def allGenerations : Prop :=
+  ∀ {d : ℕ} (D : MathlibOnly.CubeGrid d) {Q : Box (Fin d)},
+    (∃ n : ℤ, Q ∈ D.cubesAtGeneration n) ↔ ∃ k : ℤ, Q ∈ D.cubes k
 
 def extendedAverage : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (G : Set (∀ i, Box (Fin (d i))))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
-    MathlibOnly.Proof.maximal G f = ReyZygmundVerification.Challenges.endpointMaximal G f
+    MathlibOnly.maximal G f = ReyZygmundVerification.endpointMaximal G f
 
 def shiftedCubeFormula : Prop :=
   ∀ {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ),
-    MathlibOnly.Proof.shiftedCubes tau k = (Geometry.shiftedDyadicGrid d tau).cubes (-k)
+    MathlibOnly.shiftedCubes tau k = (Geometry.shiftedDyadicGrid d tau).cubesAtGeneration (-k)
 
 def continuousConvention : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
-    MathlibOnly.Proof.maximal (MathlibOnly.Proof.continuousRectangles d phi) f =
-      Continuous.icoEuclideanFamilyMaximal (MathlibOnly.Proof.continuousRectangles d phi) f
+    MathlibOnly.maximal (MathlibOnly.zygmundRectangles d phi) f =
+      Continuous.icoEuclideanFamilyMaximal (MathlibOnly.zygmundRectangles d phi) f
 
 def continuousMeasurability : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
-    Measurable (MathlibOnly.Proof.maximal (MathlibOnly.Proof.continuousRectangles d phi) f)
+    Measurable (MathlibOnly.maximal (MathlibOnly.zygmundRectangles d phi) f)
 
 def roundedConvention : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ} (tau : ∀ i, Fin (d i) → Fin 3)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
-    MathlibOnly.Proof.maximal (MathlibOnly.Proof.roundedRectangles tau phi) f =ᵐ[volume]
-      Continuous.icoEuclideanFamilyMaximal (MathlibOnly.Proof.roundedRectangles tau phi) f
+    MathlibOnly.maximal (MathlibOnly.roundedRectangles tau phi) f =ᵐ[volume]
+      Continuous.icoEuclideanFamilyMaximal (MathlibOnly.roundedRectangles tau phi) f
 
 end ReyZygmundVerification.MathlibOnlyBridges

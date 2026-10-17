@@ -5,32 +5,32 @@ import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
 
 Orthogonality makes differences outside the finite expansion vanish, reducing the
 square series to a finite sum. Average cancellation uses the same bounded
-measurable representative. The grid itself need not have a common top rectangle or
-a smallest scale.
+measurable representative.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmund.Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
 private theorem grid_rawProductDifference_same_of_mem
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (L Q : ∀ i, Box (Fin (d i)))
     (hL : L ∈ gridRectangles D) (hQ : Q ∈ gridRectangles D)
     (F : boundedMeasurableFunctions d) :
     rawProductDifference L (rawProductDifference Q F.1) =
       if L = Q then rawProductDifference Q F.1 else 0 := by
-  choose a ha using hL
-  choose b hb using hQ
+  choose a ha using (mem_gridRectangles_iff D L).mp hL
+  choose b hb using (mem_gridRectangles_iff D Q).mp hQ
   exact grid_rawProductDifference_same D a b hd L Q ha hb F
 
-/-- A full difference selects its matching term from the finite
-expansion, including the matching and empty-family branches. -/
+/-- A full difference selects its matching term from the finite expansion. -/
 theorem grid_rawProductDifference_sum
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i))))
     (hH : (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d) (L : ∀ i, Box (Fin (d i)))
@@ -56,10 +56,9 @@ theorem grid_rawProductDifference_sum
   rw [hc]
   by_cases hmem : L ∈ H <;> simp [hmem]
 
-/-- The finite expansion itself forces all other grid differences to
-vanish; finite support is a conclusion, not an input field. -/
+/-- All grid differences outside the finite expansion vanish. -/
 theorem grid_rawProductDifference_eq_zero_of_not_mem
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i))))
     (hH : (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
@@ -72,10 +71,10 @@ theorem grid_rawProductDifference_eq_zero_of_not_mem
       congrArg (rawProductDifference L) hex
     _ = 0 := by rw [grid_rawProductDifference_sum D hd H hH F L hL, ite_eq_right hnot]
 
-/-- The full-grid extended square series reduces to the proved finite
-support. The identity is pointwise and retains the real square-root exponent. -/
+/-- The full-grid square function equals the square root of the finite sum of
+squared differences, pointwise. -/
 theorem fullGridSquare_eq_finite_expansion
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i))))
     (hH : (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
@@ -107,7 +106,7 @@ theorem fullGridSquare_eq_finite_expansion
 /-- An average of the represented function vanishes when every
 expansion rectangle has a coordinate failing strict containment. -/
 theorem grid_productAverage_finite_expansion_eq_zero
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i))))
     (hH : (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
@@ -119,11 +118,11 @@ theorem grid_productAverage_finite_expansion_eq_zero
     apply Subtype.ext
     funext x
     simpa [rawProductDifference_eq_productDifferenceMap, Finset.sum_apply] using congrFun hex x
-  choose a ha using hR
+  choose a ha using (mem_gridRectangles_iff D R).mp hR
   rw [hF, map_sum]
   apply Finset.sum_eq_zero
   intro Q hQ
-  choose b hb using hH hQ
+  choose b hb using (mem_gridRectangles_iff D Q).mp (hH hQ)
   obtain ⟨i, hnot⟩ := hbad Q hQ
   have hz := grid_productAverageMap_mul_full_difference_eq_zero D a b Finset.univ R Q
     (fun j _ => ha j) hb ⟨i, Finset.mem_univ i, hd i, hnot⟩
@@ -132,16 +131,16 @@ theorem grid_productAverage_finite_expansion_eq_zero
 
 /-- Normalized signed rectangle means inherit the map cancellation. -/
 theorem grid_mean_finite_expansion_eq_zero
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i))))
     (hH : (↑H : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
     (hex : F.1 = fun x => ∑ Q ∈ H, rawProductDifference Q F.1 x)
     (R : ∀ i, Box (Fin (d i))) (hR : R ∈ gridRectangles D)
     (hbad : ∀ Q ∈ H, ∃ i, ¬ R i < Q i) :
-    (∫ x in productBox R, F.1 x) / volume.real (productBox R) = 0 := by
+    (∫ x in productRectangle R, F.1 x) / volume.real (productRectangle R) = 0 := by
   let x : ProductPoint d := fun i => (R i).upper
-  have hx : x ∈ productBox R := (mem_productBox R x).mpr (fun i => (R i).upper_mem)
+  have hx : x ∈ productRectangle R := (mem_productRectangle R x).mpr (fun i => (R i).upper_mem)
   have hz := congrArg (fun G : boundedMeasurableFunctions d => G.1 x)
     (grid_productAverage_finite_expansion_eq_zero D hd H hH F hex R hR hbad)
   simpa only [productAverageMap_univ_eq_integral, Set.indicator_of_mem hx,

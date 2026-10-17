@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge16",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.projected_square_function_estimate"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

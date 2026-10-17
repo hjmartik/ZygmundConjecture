@@ -1,5 +1,6 @@
 import ReyZygmund.Geometry.GlobalDifferences
 import ReyZygmund.Geometry.ProductMean
+import ReyZygmund.Geometry.PartialOperatorMaps
 import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 
 /-! # Rectangle integrals and coordinate differences
@@ -172,5 +173,12 @@ theorem rawProductDifference_eq_productDifferenceMap
     (productDifferenceMap_expansion Finset.univ Q)
   simpa [differenceExpansion, rectangleAverageSum, rawProductDifference,
     Finset.sum_apply, productAverageMap_univ_eq_integral] using h.symm
+
+/-- The composed full difference equals its signed rectangle-integral expansion
+on bounded measurable inputs. -/
+theorem fullDifference_eq_rawProductDifference
+    (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d) :
+    MathlibOnly.fullDifference Q F.1 = rawProductDifference Q F.1 := by
+  rw [fullDifference_eq_productDifferenceMap, rawProductDifference_eq_productDifferenceMap]
 
 end ReyZygmund.Geometry

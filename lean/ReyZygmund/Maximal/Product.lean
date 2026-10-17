@@ -2,6 +2,7 @@ import ReyZygmund.Maximal.CoordinateOrder
 import ReyZygmund.Maximal.IteratedCoordinate
 import ReyZygmund.Geometry.ProductAverageProperties
 import ReyZygmund.Geometry.ProductMean
+import ReyZygmund.Geometry.ProductIntegrability
 import ReyZygmund.Projection.AveragingRectangles
 
 /-! # The finite maximal function over coordinate products
@@ -57,8 +58,8 @@ theorem finiteProductMaximal_univ_eq_integral
     (F : boundedMeasurableFunctions d) (x : ProductPoint d) :
     finiteProductMaximal I N Finset.univ F x =
       (productDescendants I N).sup' ⟨I, root_mem_productDescendants I N⟩
-        (fun Q => (productBox Q).indicator
-          (fun _ => (∫ y in productBox Q, |F.1 y|) / volume.real (productBox Q)) x) := by
+        (fun Q => (productRectangle Q).indicator
+          (fun _ => (∫ y in productRectangle Q, |F.1 y|) / volume.real (productRectangle Q)) x) := by
   apply Finset.sup'_congr _ rfl
   intro Q _
   exact productAverageMap_univ_eq_integral Q (absoluteInput F) x
@@ -84,11 +85,11 @@ coordinate maximal function. The outer absolute value includes the empty list. -
 theorem productAverageMap_abs_le_iteratedMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (order : List (Fin m)) (horder : order.Nodup)
     (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i ∈ order, Q i ∈ descendants (I i) (N i))
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     |(productAverageMap order.toFinset Q F).1 x| ≤
       |(order.foldr (fun i g => coordinateDyadicMaximal i (I i) (N i) g) F.1) x| := by
   revert horder hQ x
@@ -108,7 +109,7 @@ theorem productAverageMap_abs_le_iteratedMaximal
         (fun i hi => htQ i (List.mem_toFinset.mp hi))).1
     have hv : ProductLeafConstant I N v :=
       productLeafConstant_foldr_coordinateDyadicMaximal I N order F.1 hf
-    have huv : ∀ y ∈ productBox I, |u y| ≤ |v y| :=
+    have huv : ∀ y ∈ productRectangle I, |u y| ≤ |v y| :=
       fun y hy => ih (List.nodup_cons.mp horder).2 htQ y hy
     rw [List.toFinset_cons, productAverageMap_insert order.toFinset j hj Q,
       Module.End.mul_apply, averageMap_apply]
@@ -135,12 +136,12 @@ theorem productLeafConstant_finiteProductMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)) (F : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteProductMaximal I N A F) := by
   have hfabs : ProductLeafConstant I N (absoluteInput F).1 := by
     intro Q hQ x hx y hy
     exact congrArg abs (hf Q hQ x hx y hy)
-  have hsabs : ∀ x, x ∉ productBox I → (absoluteInput F).1 x = 0 := by
+  have hsabs : ∀ x, x ∉ productRectangle I → (absoluteInput F).1 x = 0 := by
     intro x hx
     change |F.1 x| = 0
     rw [hs x hx, abs_zero]
@@ -150,21 +151,21 @@ theorem productLeafConstant_finiteProductMaximal
   exact (productAverageMap_productStep_closure I N (absoluteInput F) hfabs hsabs A Q
     (fun i _ => mem_productDescendants.mp hQ i)).1 P hP x hx y hy
 
-/-- The maximum itself, rather than a supplied upper bound, is dominated by
-the iteration with each selected coordinate occurring exactly once. -/
+/-- The product maximum is dominated by the iteration with each selected
+coordinate occurring exactly once. -/
 theorem finiteProductMaximal_le_iterated
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)) (F : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     finiteProductMaximal I N A F x ≤
       |(A.toList.foldr (fun i g => coordinateDyadicMaximal i (I i) (N i) g)
         (fun y => |F.1 y|)) x| := by
   have hfabs : ProductLeafConstant I N (absoluteInput F).1 := by
     intro Q hQ y hy z hz
     exact congrArg abs (hf Q hQ y hy z hz)
-  have hsabs : ∀ y, y ∉ productBox I → (absoluteInput F).1 y = 0 := by
+  have hsabs : ∀ y, y ∉ productRectangle I → (absoluteInput F).1 y = 0 := by
     intro y hy
     change |F.1 y| = 0
     rw [hs y hy, abs_zero]
@@ -177,37 +178,17 @@ theorem finiteProductMaximal_le_iterated
       (fun y => abs_nonneg (F.1 y)) A Q x)] at h
   exact h
 
-private theorem integrableOn_product_leaf
-    (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
-    (g : ProductPoint d → ℝ) (hg : ProductLeafConstant I N g) :
-    IntegrableOn g (productBox I) volume := by
-  have hvol : volume (productBox I) < ∞ := by
-    change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ∞
-    rw [Measure.pi_pi]
-    exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
-    isFiniteMeasure_restrict.mpr hvol.ne
-  obtain ⟨C, _, hC⟩ := bounded_product_localization I N g hg
-  have hloc : IntegrableOn ((productBox I).indicator g) (productBox I) volume :=
-    (integrable_const C).mono'
-      (measurable_product_localization I N g hg).aestronglyMeasurable
-      (Filter.Eventually.of_forall (fun x => by
-        simpa only [Real.norm_eq_abs] using hC x))
-  exact hloc.congr_fun (fun x hx => Set.indicator_of_mem hx g)
-    (measurableSet_productBox I)
-
 /-- The finite product maximal estimate has exactly one ordinary maximal
 factor for each selected coordinate, for every real exponent `p > 1`. -/
 theorem finite_product_maximal_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)) (hd : ∀ i ∈ A, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (p : ℝ) (hp : 1 < p) :
-    (∫ x in productBox I, Real.rpow (finiteProductMaximal I N A F x) p) ≤
+    (∫ x in productRectangle I, Real.rpow (finiteProductMaximal I N A F x) p) ≤
       Real.rpow (p / (p - 1)) (p * (A.card : ℝ)) *
-        ∫ x in productBox I, Real.rpow |F.1 x| p := by
+        ∫ x in productRectangle I, Real.rpow |F.1 x| p := by
   let g := A.toList.foldr (fun i h => coordinateDyadicMaximal i (I i) (N i) h)
     (fun x => |F.1 x|)
   have habs : ProductLeafConstant I N (fun x => |F.1 x|) := by
@@ -217,19 +198,19 @@ theorem finite_product_maximal_integral
     productLeafConstant_foldr_coordinateDyadicMaximal I N A.toList _ habs
   have hM := productLeafConstant_finiteProductMaximal I N A F hf hs
   have hMI : IntegrableOn (fun x => Real.rpow (finiteProductMaximal I N A F x) p)
-      (productBox I) volume := by
-    apply integrableOn_product_leaf I N
+      (productRectangle I) volume := by
+    apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     dsimp only
     rw [hM Q hQ x hx y hy]
-  have hgI : IntegrableOn (fun x => Real.rpow |g x| p) (productBox I) volume := by
-    apply integrableOn_product_leaf I N
+  have hgI : IntegrableOn (fun x => Real.rpow |g x| p) (productRectangle I) volume := by
+    apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     dsimp only
     rw [hg Q hQ x hx y hy]
   calc
-    _ ≤ ∫ x in productBox I, Real.rpow |g x| p := by
-      apply setIntegral_mono_on hMI hgI (measurableSet_productBox I)
+    _ ≤ ∫ x in productRectangle I, Real.rpow |g x| p := by
+      apply setIntegral_mono_on hMI hgI (measurableSet_productRectangle I)
       intro x hx
       exact Real.rpow_le_rpow (finiteProductMaximal_nonneg I N A F x)
         (finiteProductMaximal_le_iterated I N A F hf hs x hx) (by linarith)

@@ -5,9 +5,8 @@ import ReyZygmund.Maximal.ChildEnergy
 /-! # Energy of a finite density group
 
 Orthogonality on the top rectangle, the childwise energy estimate and support of
-full differences reduce the selected sum's energy to the square function on `B \
-E`. The bounded measurable input need not be supported on the top rectangle or
-constant on the smallest cubes.
+full differences reduce the selected sum's energy to the square function on
+`B \ E`.
 -/
 
 open BoxIntegral MeasureTheory
@@ -19,18 +18,11 @@ open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-private theorem piece_productBox_volume_lt_top (I : ∀ i, Box (Fin (d i))) :
-    volume (productBox I) < ∞ := by
-  change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ∞
-  rw [Measure.pi_pi]
-  exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-
 private theorem piece_integrableOn_bounded_sq
     (I : ∀ i, Box (Fin (d i))) (U : boundedMeasurableFunctions d) :
-    IntegrableOn (fun x => (U.1 x) ^ 2) (productBox I) volume := by
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
-    isFiniteMeasure_restrict.mpr (piece_productBox_volume_lt_top I).ne
+    IntegrableOn (fun x => (U.1 x) ^ 2) (productRectangle I) volume := by
+  let : IsFiniteMeasure (volume.restrict (productRectangle I)) :=
+    isFiniteMeasure_restrict.mpr (productRectangle_volume_lt_top I).ne
   obtain ⟨C, hC, hU⟩ := U.2.2
   refine (integrable_const (C ^ 2)).mono' (U.2.1.pow_const (2 : ℕ)).aestronglyMeasurable ?_
   apply Filter.Eventually.of_forall
@@ -40,9 +32,9 @@ private theorem piece_integrableOn_bounded_sq
 
 private theorem piece_full_difference_zero_off_parent
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
-    (x : ProductPoint d) (hx : x ∉ productBox Q) :
+    (x : ProductPoint d) (hx : x ∉ productRectangle Q) :
     (productDifferenceMap Finset.univ Q F).1 x = 0 := by
-  have hnot : ¬ ∀ i, x i ∈ Q i := fun h => hx ((mem_productBox Q x).mpr h)
+  have hnot : ¬ ∀ i, x i ∈ Q i := fun h => hx ((mem_productRectangle Q x).mpr h)
   push Not at hnot
   obtain ⟨i, hi⟩ := hnot
   rw [productDifferenceMap_eq_mul_erase Finset.univ i (Finset.mem_univ i) Q]
@@ -51,9 +43,9 @@ private theorem piece_full_difference_zero_off_parent
 
 private theorem piece_difference_integral_parent
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
-    (S : Set (ProductPoint d)) (hS : MeasurableSet S) (hQS : productBox Q ⊆ S) :
+    (S : Set (ProductPoint d)) (hS : MeasurableSet S) (hQS : productRectangle Q ⊆ S) :
     (∫ x in S, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
-      ∫ x in productBox Q, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
+      ∫ x in productRectangle Q, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
   apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS hQS
   intro x hx
   rw [piece_full_difference_zero_off_parent Q F x hx.2]
@@ -62,14 +54,14 @@ private theorem piece_difference_integral_parent
 private theorem piece_difference_integral_sdiff
     (Q : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
     (E B : Set (ProductPoint d)) (hE : MeasurableSet E) (hB : MeasurableSet B)
-    (hQB : productBox Q ⊆ B) :
-    (∫ x in (productBox Q \ E), ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
+    (hQB : productRectangle Q ⊆ B) :
+    (∫ x in (productRectangle Q \ E), ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
       ∫ x in (B \ E), ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
   symm
   apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hB.diff hE)
     (fun _ hx => ⟨hQB hx.1, hx.2⟩)
   intro x hx
-  have hxQ : x ∉ productBox Q := fun h => hx.2 ⟨h, hx.1.2⟩
+  have hxQ : x ∉ productRectangle Q := fun h => hx.2 ⟨h, hx.1.2⟩
   rw [piece_full_difference_zero_off_parent Q F x hxQ]
   norm_num
 
@@ -84,23 +76,22 @@ private theorem piece_sum_sq_le_square
   rw [finiteSquareFunction_sq, hindices]
   exact Finset.sum_le_sum_of_subset_of_nonneg hH (fun _ _ _ => sq_nonneg _)
 
-/-- The energy estimate for a finite density group uses a square-function bound only
-on `B \ E`. The signed bounded measurable input need not have prescribed support
-or constancy on the smallest cubes. -/
+/-- The energy estimate for a finite density group uses a square-function bound
+on `B \ E`. -/
 theorem finite_piece_energy
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (H : Finset (∀ i, Box (Fin (d i))))
     (hH : H ⊆ Projection.productInterior I N)
     (E B : Set (ProductPoint d)) (hE : MeasurableSet E) (hB : MeasurableSet B)
-    (hBI : B ⊆ productBox I) (hcover : ∀ Q ∈ H, productBox Q ⊆ B)
-    (hden : ∀ Q ∈ H, volume.real (productBox Q ∩ E) ≤
-      (1 / (2 : ℝ) ^ ((∑ i, d i) + 1)) * volume.real (productBox Q))
+    (hBI : B ⊆ productRectangle I) (hcover : ∀ Q ∈ H, productRectangle Q ⊆ B)
+    (hden : ∀ Q ∈ H, volume.real (productRectangle Q ∩ E) ≤
+      (1 / (2 : ℝ) ^ ((∑ i, d i) + 1)) * volume.real (productRectangle Q))
     (T : ℝ) (hT : 0 ≤ T)
     (hbound : ∀ x ∈ B \ E, finiteSquareFunction I N Finset.univ F x ≤ T) :
-    (∫ x in productBox I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) ≤
+    (∫ x in productRectangle I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) ≤
       2 * T ^ 2 * volume.real B := by
   have hBfin : volume B ≠ ∞ :=
-    measure_ne_top_of_subset hBI (piece_productBox_volume_lt_top I).ne
+    measure_ne_top_of_subset hBI (productRectangle_volume_lt_top I).ne
   have hBEfin : volume (B \ E) ≠ ∞ :=
     measure_ne_top_of_subset Set.sdiff_subset hBfin
   have hQI (Q : ∀ i, Box (Fin (d i))) :
@@ -125,14 +116,14 @@ theorem finite_piece_energy
         mul_le_mul_of_nonneg_right (measureReal_mono Set.sdiff_subset hBfin) (sq_nonneg T)
       _ = _ := mul_comm _ _
   calc
-    _ = ∑ Q ∈ H, ∫ x in productBox I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 :=
+    _ = ∑ Q ∈ H, ∫ x in productRectangle I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 :=
       productDifference_integral_sum_sq I N hd F H hH
-    _ = ∑ Q ∈ H, ∫ x in productBox Q, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
+    _ = ∑ Q ∈ H, ∫ x in productRectangle Q, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
       apply Finset.sum_congr rfl
       intro Q hQ
-      exact piece_difference_integral_parent Q F (productBox I) (measurableSet_productBox I)
+      exact piece_difference_integral_parent Q F (productRectangle I) (measurableSet_productRectangle I)
         ((hcover Q hQ).trans hBI)
-    _ ≤ ∑ Q ∈ H, 2 * (∫ x in (productBox Q \ E),
+    _ ≤ ∑ Q ∈ H, 2 * (∫ x in (productRectangle Q \ E),
         ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) := by
       apply Finset.sum_le_sum
       intro Q hQ

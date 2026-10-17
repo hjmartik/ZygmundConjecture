@@ -10,12 +10,12 @@ import Mathlib.Tactic.Ring
 At generation `n`, the cube indexed by `k : Fin d → ℤ` has side `2 ^ (-n)`
 and lower corner `2 ^ (-n) * k`. The `(lower, upper]` convention assigns a
 point to the index `ceil (x / side) - 1`, including at integer boundaries.
-All geometric fields are proved; no countability or analytic estimate is assumed.
 -/
 
 noncomputable section
 
 open BoxIntegral
+open ReyZygmund.MathlibOnly (CubeGrid)
 open scoped Classical
 
 namespace ReyZygmund.Geometry
@@ -37,8 +37,7 @@ theorem mem_standardDyadicCube_iff (n : ℤ) (k : Fin d → ℤ) (x : Fin d → 
   simp only [Int.ceil_eq_iff, Int.cast_add, Int.cast_one, add_sub_cancel_right,
     lt_div_iff₀' hs, div_le_iff₀' hs, mul_add, mul_one]
 
-/-- Distinct integer indices produce distinct boxes, also when the
-coordinate type is empty. -/
+/-- Distinct integer indices produce distinct boxes. -/
 theorem standardDyadicCube_injective (n : ℤ) :
     Function.Injective (standardDyadicCube (d := d) n) := by
   intro k l h
@@ -89,24 +88,36 @@ theorem standardDyadicCube_splitCenterBox (n : ℤ) (k : Fin d → ℤ)
 
 /-- The concrete standard dyadic grid. Its levels partition all of `ℝ^d`,
 and its dyadic children belong to the next generation. -/
-def standardDyadicGrid (d : ℕ) : DyadicGrid d where
-  cubes n := Set.range (standardDyadicCube (d := d) n)
-  width n Q hQ i := by
-    obtain ⟨k, rfl⟩ := hQ
-    exact rootBox_width _ _ i
-  disjoint n := by
-    rintro _ ⟨k, rfl⟩ _ ⟨l, rfl⟩ hne
-    exact standardDyadicCube_disjoint n
-      (fun h => hne (congrArg (standardDyadicCube n) h))
-  cover n x := by
-    let k : Fin d → ℤ := fun i => ⌈x i / (2 : ℝ) ^ (-n)⌉ - 1
-    refine ⟨standardDyadicCube n k, ⟨k, rfl⟩, ?_⟩
-    apply (mem_standardDyadicCube_iff n k x).mpr
-    intro i
-    exact (sub_add_cancel _ _).symm
-  children n Q hQ R hR := by
-    obtain ⟨k, rfl⟩ := hQ
-    obtain ⟨s, rfl⟩ := Prepartition.mem_splitCenter.mp hR
-    exact ⟨_, (standardDyadicCube_splitCenterBox n k s).symm⟩
+def standardDyadicGrid (d : ℕ) : CubeGrid d :=
+  CubeGrid.ofGenerations
+    (fun n => Set.range (standardDyadicCube (d := d) n))
+    (hwidth := by
+      intro n Q hQ i
+      obtain ⟨k, rfl⟩ := hQ
+      exact rootBox_width _ _ i)
+    (hdisjoint := by
+      intro n
+      rintro _ ⟨k, rfl⟩ _ ⟨l, rfl⟩ hne
+      exact standardDyadicCube_disjoint n
+        (fun h => hne (congrArg (standardDyadicCube n) h)))
+    (hcover := by
+      intro n x
+      let k : Fin d → ℤ := fun i => ⌈x i / (2 : ℝ) ^ (-n)⌉ - 1
+      refine ⟨standardDyadicCube n k, ⟨k, rfl⟩, ?_⟩
+      apply (mem_standardDyadicCube_iff n k x).mpr
+      intro i
+      exact (sub_add_cancel _ _).symm)
+    (hchildren := by
+      intro n Q hQ R hR
+      obtain ⟨k, rfl⟩ := hQ
+      obtain ⟨s, rfl⟩ := Prepartition.mem_splitCenter.mp hR
+      exact ⟨_, (standardDyadicCube_splitCenterBox n k s).symm⟩)
+
+/-- The generation accessor recovers the explicit integer-indexed cubes. -/
+@[simp] theorem standardDyadicGrid_cubesAtGeneration (d : ℕ) (n : ℤ) :
+    (standardDyadicGrid d).cubesAtGeneration n =
+      Set.range (standardDyadicCube (d := d) n) := by
+  change Set.range (standardDyadicCube (d := d) (- -n)) = _
+  rw [neg_neg]
 
 end ReyZygmund.Geometry

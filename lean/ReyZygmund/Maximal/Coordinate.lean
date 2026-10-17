@@ -36,7 +36,7 @@ theorem coordinateDyadicMaximal_nonneg (i : Fin m) (I : Box (Fin (d i)))
     0 ≤ coordinateDyadicMaximal i I N f x :=
   finiteDyadicMaximal_nonneg I N (fun y => f (Function.update x i y)) (x i)
 
-/-- Measurability is joint in all coordinates and needs no integrability premise. -/
+/-- The coordinate maximal function is jointly measurable in all coordinates. -/
 theorem measurable_coordinateDyadicMaximal (i : Fin m) (I : Box (Fin (d i)))
     (N : ℕ) (f : ProductPoint d → ℝ) (hf : Measurable f) :
     Measurable (coordinateDyadicMaximal i I N f) := by
@@ -50,7 +50,7 @@ theorem measurable_coordinateDyadicMaximal (i : Fin m) (I : Box (Fin (d i)))
     (fun Q _ => coordinateAverage_measurable i Q (fun y => |f y|)
       (by simpa only [Real.norm_eq_abs] using hf.norm))
 
-/-- The coordinate maximal function preserves constancy on the smallest product cubes, with no restrictions outside the top rectangle. -/
+/-- The coordinate maximal function preserves constancy on the smallest product cubes. -/
 theorem productLeafConstant_coordinateDyadicMaximal
     {I : ∀ i, Box (Fin (d i))} {N : Fin m → ℕ} {f : ProductPoint d → ℝ}
     (hf : ProductLeafConstant I N f) (i : Fin m) :
@@ -68,18 +68,18 @@ theorem productLeafConstant_coordinateDyadicMaximal
     (mem_descendants.mpr
       ⟨n, Nat.lt_succ_iff.mp (Finset.mem_range.mp hn), hQ⟩) P hP x hx y hy
 
-/-- Support in the top rectangle is preserved pointwise, independently of constancy on small cubes. -/
-theorem coordinateDyadicMaximal_eq_zero_of_notMem_productBox
+/-- Support in the top rectangle is preserved pointwise. -/
+theorem coordinateDyadicMaximal_eq_zero_of_notMem_productRectangle
     {I : ∀ i, Box (Fin (d i))} {N : Fin m → ℕ} {f : ProductPoint d → ℝ}
-    (hs : ∀ x, x ∉ productBox I → f x = 0) (i : Fin m)
-    {x : ProductPoint d} (hx : x ∉ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → f x = 0) (i : Fin m)
+    {x : ProductPoint d} (hx : x ∉ productRectangle I) :
     coordinateDyadicMaximal i (I i) (N i) f x = 0 := by
   rw [coordinateDyadicMaximal_eq_level_sup]
   apply Finset.sup'_eq_of_forall
   intro n _
   apply Finset.sum_eq_zero
   intro Q hQ
-  exact coordinateAverage_eq_zero_of_notMem_productBox
+  exact coordinateAverage_eq_zero_of_notMem_productRectangle
     (fun y hy => by rw [hs y hy, abs_zero]) i Q ((level (I i) n).le_of_mem hQ) hx
 
 /-- Updating the averaged coordinate leaves precisely the same slice. -/

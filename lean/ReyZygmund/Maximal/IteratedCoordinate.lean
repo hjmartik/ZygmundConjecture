@@ -3,9 +3,8 @@ import ReyZygmund.Maximal.CoordinateEstimate
 /-!
 # A finite list of coordinate maximal functions
 
-List composition preserves the finite product input class and incurs
-one ordinary maximal factor per list entry. The list may be empty or repeat a
-coordinate. This does not assert domination of a rectangular maximal function.
+List composition preserves the finite product input class and incurs one ordinary
+maximal factor per list entry. The list may be empty or repeat a coordinate.
 -/
 
 open BoxIntegral MeasureTheory
@@ -17,8 +16,8 @@ open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- Every finite list of coordinate maximal functions preserves the
-same constancy on the smallest product cubes, without a dimension or support premise. -/
+/-- Every finite list of coordinate maximal functions preserves
+constancy on the smallest product cubes. -/
 theorem productLeafConstant_foldr_coordinateDyadicMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (order : List (Fin m))
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f) :
@@ -35,10 +34,10 @@ theorem finite_iterated_coordinate_maximal_integral
     (hd : ∀ i ∈ order, 0 < d i)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (p : ℝ) (hp : 1 < p) :
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       Real.rpow |(order.foldr (fun i g => coordinateDyadicMaximal i (I i) (N i) g) f) x| p) ≤
       Real.rpow (p / (p - 1)) (p * (order.length : ℝ)) *
-        (∫ x in productBox I, Real.rpow |f x| p) := by
+        (∫ x in productRectangle I, Real.rpow |f x| p) := by
   have hc : 0 < p / (p - 1) := div_pos (lt_trans zero_lt_one hp) (sub_pos.mpr hp)
   revert hd
   induction order with
@@ -66,17 +65,17 @@ theorem finite_iterated_coordinate_maximal_integral
       congr 1
       simp only [List.length_cons, Nat.cast_add, Nat.cast_one]
       ring
-    change (∫ x in productBox I,
+    change (∫ x in productRectangle I,
       Real.rpow |coordinateDyadicMaximal i (I i) (N i) g x| p) ≤
         Real.rpow (p / (p - 1)) (p * ((i :: order).length : ℝ)) *
-          (∫ x in productBox I, Real.rpow |f x| p)
+          (∫ x in productRectangle I, Real.rpow |f x| p)
     simp_rw [habs]
     calc
       _ ≤ Real.rpow (p / (p - 1)) p *
-          (∫ x in productBox I, Real.rpow |g x| p) := hstep
+          (∫ x in productRectangle I, Real.rpow |g x| p) := hstep
       _ ≤ Real.rpow (p / (p - 1)) p *
           (Real.rpow (p / (p - 1)) (p * (order.length : ℝ)) *
-            (∫ x in productBox I, Real.rpow |f x| p)) :=
+            (∫ x in productRectangle I, Real.rpow |f x| p)) :=
         mul_le_mul_of_nonneg_left htail (Real.rpow_nonneg hc.le p)
       _ = _ := by rw [← mul_assoc, hcoeff]
 

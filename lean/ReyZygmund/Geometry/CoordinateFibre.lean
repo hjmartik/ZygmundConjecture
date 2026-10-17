@@ -20,7 +20,7 @@ namespace ReyZygmund.Geometry
 variable {n : ℕ} {d : Fin (n + 1) → ℕ}
 
 /-- Inserting a fixed coordinate is a measurable map between the
-Euclidean product spaces, including the empty remaining product. -/
+Euclidean product spaces. -/
 theorem measurable_coordinateFibre_insertNth
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) :
     Measurable (fun y : ProductPoint (fun i => d (j.succAbove i)) =>
@@ -28,8 +28,7 @@ theorem measurable_coordinateFibre_insertNth
   exact (MeasurableEquiv.piFinSuccAbove (fun i => Fin (d i) → ℝ) j).symm.measurable.comp
     (measurable_const.prodMk measurable_id)
 
-/-- The two averages have exactly the same supported integral and volume.
-No integrability assumption is needed for this identity by congruence. -/
+/-- The two averages have the same supported integral and volume. -/
 theorem coordinateAverage_insertNth
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) (i : Fin n)
     (Q : Box (Fin (d (j.succAbove i)))) (f : ProductPoint d → ℝ)
@@ -39,17 +38,17 @@ theorem coordinateAverage_insertNth
   simp only [coordinateAverage, Fin.insertNth_apply_succAbove, Fin.insertNth_update]
 
 /-- Child averages minus the parent average commute with
-inserting an unselected coordinate. No cutoff convention is changed. -/
+inserting an unselected coordinate. -/
 theorem coordinateDifference_insertNth
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ) (i : Fin n)
     (Q : Box (Fin (d (j.succAbove i)))) (f : ProductPoint d → ℝ)
     (y : ProductPoint (fun k => d (j.succAbove k))) :
     coordinateDifference i Q (fun z => f (j.insertNth t z)) y =
       coordinateDifference (j.succAbove i) Q f (j.insertNth t y) := by
-  simp only [coordinateDifference, Pi.sub_apply, Finset.sum_apply, coordinateAverage_insertNth]
+  simp only [coordinateDifference_eq_sum, Pi.sub_apply, Finset.sum_apply, coordinateAverage_insertNth]
 
-/-- A slice through a point of the top rectangle is constant on the remaining smallest
-product cubes. Support and positivity are not required. -/
+/-- A slice through a point of the top rectangle is constant on the remaining
+smallest product cubes. -/
 theorem productLeafConstant_coordinateFibre
     (I : ∀ i, Box (Fin (d i))) (N : Fin (n + 1) → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
@@ -65,30 +64,30 @@ theorem productLeafConstant_coordinateFibre
     · simpa only [Fin.insertNth_apply_same, leaves, Prepartition.mem_boxes] using hR
     · intro i
       simpa only [Fin.insertNth_apply_succAbove] using Fintype.mem_piFinset.mp hP i
-  have hmem (z : ProductPoint (fun i => d (j.succAbove i))) (hz : z ∈ productBox P) :
-      j.insertNth t z ∈ productBox (j.insertNth R P) := by
-    apply (mem_productBox _ _).mpr
+  have hmem (z : ProductPoint (fun i => d (j.succAbove i))) (hz : z ∈ productRectangle P) :
+      j.insertNth t z ∈ productRectangle (j.insertNth R P) := by
+    apply (mem_productRectangle _ _).mpr
     refine j.forall_iff_succAbove.mpr ⟨?_, ?_⟩
     · simpa only [Fin.insertNth_apply_same] using htR
     · intro i
-      simpa only [Fin.insertNth_apply_succAbove] using (mem_productBox P z).mp hz i
+      simpa only [Fin.insertNth_apply_succAbove] using (mem_productRectangle P z).mp hz i
   exact hf _ hP' _ (hmem x hx) _ (hmem y hy)
 
-/-- Support restricts to each slice, also when the fixed coordinate is outside the top
-cube. Constancy on the smallest cubes is not required. -/
+/-- Support restricts to each slice, including slices with the fixed coordinate
+outside the top cube. -/
 theorem coordinateFibre_eq_zero_of_notMem_root
     (I : ∀ i, Box (Fin (d i))) (f : ProductPoint d → ℝ)
-    (hs : ∀ x, x ∉ productBox I → f x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → f x = 0)
     (j : Fin (n + 1)) (t : Fin (d j) → ℝ)
     (y : ProductPoint (fun i => d (j.succAbove i)))
-    (hy : y ∉ productBox (fun i => I (j.succAbove i))) :
+    (hy : y ∉ productRectangle (fun i => I (j.succAbove i))) :
     f (j.insertNth t y) = 0 := by
   apply hs
   intro hx
   apply hy
-  apply (mem_productBox _ y).mpr
+  apply (mem_productRectangle _ y).mpr
   intro i
   simpa only [Fin.insertNth_apply_succAbove] using
-    (mem_productBox I _).mp hx (j.succAbove i)
+    (mem_productRectangle I _).mp hx (j.succAbove i)
 
 end ReyZygmund.Geometry

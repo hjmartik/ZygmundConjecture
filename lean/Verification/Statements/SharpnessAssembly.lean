@@ -12,6 +12,8 @@ imported. The independent main challenge remains unchanged.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid dyadicZygmundRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry ReyZygmund.Continuous ReyZygmund.Overlap
@@ -22,28 +24,28 @@ def sharpVolumeFlattenSetContract : Prop :=
 
 def sharpFiniteShadowFlattenContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (G : Finset (∀ i, Box (Fin (d i)))),
-    (flattenCoordinates d) ⁻¹' finiteShadow G = ⋃ R ∈ G, productBox R
+    (flattenCoordinates d) ⁻¹' finiteShadow G = ⋃ R ∈ G, productRectangle R
 
 def sharpFiniteOverlapFlattenContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (G : Finset (∀ i, Box (Fin (d i))))
     (x : ProductPoint d),
     finiteOverlap G (flattenCoordinates d x) =
-      ∑ R ∈ G, (productBox R).indicator (fun _ => (1 : ℝ)) x
+      ∑ R ∈ G, (productRectangle R).indicator (fun _ => (1 : ℝ)) x
 
 def sharpUnitRootVolumeContract : Prop :=
-  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, DyadicGrid (d i))
+  ∀ {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, CubeGrid (d i))
     (Q : ∀ i, Box (Fin (d i))),
-    (∀ i, Q i ∈ (D i).cubes 0) → volume (productBox Q) = 1
+    (∀ i, Q i ∈ (D i).cubesAtGeneration 0) → volume (productRectangle Q) = 1
 
 def sharpFlatConstructionContract : Prop :=
   ∀ (n N s : ℕ), 2 ≤ N → 1 ≤ s →
     ∀ (d : Fin (n + 3) → ℕ), (∀ j, 0 < d j) →
-      ∀ (D : ∀ j, DyadicGrid (d j)),
+      ∀ (D : ∀ j, CubeGrid (d j)),
         ∃ G : Finset (∀ j, Box (Fin (d j))),
           ∃ E : (∀ j, Box (Fin (d j))) → Set (Fin (∑ j, d j) → ℝ),
             ∃ L : Set (Fin (∑ j, d j) → ℝ),
           (↑G : Set (∀ j, Box (Fin (d j)))) ⊆
-            dyadicPhiRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
+            dyadicZygmundRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
           (∀ R ∈ G, ∀ S ∈ G,
             (flatProductBox R : Set (Fin (∑ j, d j) → ℝ)) ⊆ flatProductBox S → R = S) ∧
           volume (finiteShadow G) = 1 ∧

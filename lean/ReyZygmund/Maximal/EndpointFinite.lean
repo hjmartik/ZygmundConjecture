@@ -4,8 +4,8 @@ import ReyZygmund.Maximal.FiniteIdentification
 
 /-! # Endpoint interpolation for finite rectangle maxima
 
-The finite supremum is finite at every point, before its real representative
-is used. No grid or incomparability assumption enters this analytic step.
+The finite supremum is finite at every point, so its real representative can be
+used in the strong power estimate.
 -/
 
 open BoxIntegral MeasureTheory

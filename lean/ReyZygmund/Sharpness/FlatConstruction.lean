@@ -11,6 +11,8 @@ construction has its asserted mass in the ordinary Euclidean space as well.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmund.Sharpness
 
 open Geometry Overlap
@@ -26,27 +28,27 @@ theorem volume_flatten_set (A : Set (ProductPoint d)) :
   simp only [Set.mem_preimage, MeasurableEquiv.symm_apply_apply]
 
 theorem finiteShadow_flatten (G : Finset (∀ i, Box (Fin (d i)))) :
-    (flattenCoordinates d) ⁻¹' finiteShadow G = ⋃ R ∈ G, productBox R := by
+    (flattenCoordinates d) ⁻¹' finiteShadow G = ⋃ R ∈ G, productRectangle R := by
   ext x
   simp only [finiteShadow, Set.mem_preimage, Set.mem_iUnion, Box.mem_coe, mem_flatProductBox]
 
 theorem finiteOverlap_flatten (G : Finset (∀ i, Box (Fin (d i))))
     (x : ProductPoint d) :
     finiteOverlap G (flattenCoordinates d x) =
-      ∑ R ∈ G, (productBox R).indicator (fun _ => (1 : ℝ)) x := by
+      ∑ R ∈ G, (productRectangle R).indicator (fun _ => (1 : ℝ)) x := by
   apply Finset.sum_congr rfl
   intro R _
-  have hmem : flattenCoordinates d x ∈ (flatProductBox R : Set _) ↔ x ∈ productBox R := by
+  have hmem : flattenCoordinates d x ∈ (flatProductBox R : Set _) ↔ x ∈ productRectangle R := by
     simp only [Box.mem_coe, mem_flatProductBox]
-  by_cases hx : x ∈ productBox R
+  by_cases hx : x ∈ productRectangle R
   · simp only [Set.indicator_of_mem hx,
       Set.indicator_of_mem (hmem.mpr hx)]
   · simp only [Set.indicator_of_notMem hx,
       Set.indicator_of_notMem (fun h => hx (hmem.mp h))]
 
-theorem volume_zero_generation_product (D : ∀ i, DyadicGrid (d i))
-    (Q : ∀ i, Box (Fin (d i))) (hQ : ∀ i, Q i ∈ (D i).cubes 0) :
-    volume (productBox Q) = 1 := by
+theorem volume_zero_generation_product (D : ∀ i, CubeGrid (d i))
+    (Q : ∀ i, Box (Fin (d i))) (hQ : ∀ i, Q i ∈ (D i).cubesAtGeneration 0) :
+    volume (productRectangle Q) = 1 := by
   have hreal (i : Fin m) : volume.real (Q i : Set (Fin (d i) → ℝ)) = 1 := by
     simp only [measureReal_def, Box.volume_apply']
     simp_rw [(D i).width 0 (Q i) (hQ i)]
@@ -57,22 +59,20 @@ theorem volume_zero_generation_product (D : ∀ i, DyadicGrid (d i))
           ENNReal.ofReal (volume.real (Q i : Set (Fin (d i) → ℝ))) :=
         (ENNReal.ofReal_toReal ((Q i).measure_coe_lt_top volume).ne).symm
       _ = 1 := by rw [hreal, ENNReal.ofReal_one]
-  change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (Q i : Set (Fin (d i) → ℝ)))) = 1
-  rw [Measure.pi_pi]
+  rw [productRectangle_volume]
   simp_rw [hvol]
   simp
 
-/-- All conclusions are now for the ordinary-coordinate rectangles and
-their finite overlap. The sparse fraction is still exact. -/
+/-- The sharpness construction in Euclidean coordinates, with its finite overlap
+and exact sparse fraction. -/
 theorem exists_sharp_flat_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 ≤ s)
     (d : Fin (n + 3) → ℕ) (hd : ∀ j, 0 < d j)
-    (D : ∀ j, DyadicGrid (d j)) :
+    (D : ∀ j, CubeGrid (d j)) :
     ∃ G : Finset (∀ j, Box (Fin (d j))),
       ∃ E : (∀ j, Box (Fin (d j))) → Set (Fin (∑ j, d j) → ℝ),
         ∃ L : Set (Fin (∑ j, d j) → ℝ),
       (↑G : Set (∀ j, Box (Fin (d j)))) ⊆
-        Continuous.dyadicPhiRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
+        MathlibOnly.dyadicZygmundRectangles D (fun k : Fin (n + 2) → ℤ => ∑ i, k i) ∧
       (∀ R ∈ G, ∀ S ∈ G,
         (flatProductBox R : Set (Fin (∑ j, d j) → ℝ)) ⊆ flatProductBox S → R = S) ∧
       volume (finiteShadow G) = 1 ∧
@@ -83,7 +83,7 @@ theorem exists_sharp_flat_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 ≤ 
       MeasurableSet L ∧ L ⊆ finiteShadow G ∧
       (∀ x ∈ L, finiteOverlap G x = (N : ℝ) ^ (n + 2)) ∧
       volume.real L = ((2 : ℝ) ^ (-(s : ℤ))) ^ ((n + 2) * (N - 1)) := by
-  have hroots (j : Fin (n + 3)) : ∃ Q, Q ∈ (D j).cubes 0 := by
+  have hroots (j : Fin (n + 3)) : ∃ Q, Q ∈ (D j).cubesAtGeneration 0 := by
     obtain ⟨Q, hQ, _⟩ := (D j).cover 0 0
     exact ⟨Q, hQ⟩
   choose Q hQ using hroots
@@ -120,7 +120,7 @@ theorem exists_sharp_flat_construction (n N s : ℕ) (hN : 2 ≤ N) (hs : 1 ≤ 
       exact hy
     simpa only [Set.mem_preimage, MeasurableEquiv.apply_symm_apply] using this
   · intro x hx
-    have hy : (∑ R ∈ G, (productBox R).indicator (fun _ => (1 : ℝ)) (e.symm x)) =
+    have hy : (∑ R ∈ G, (productRectangle R).indicator (fun _ => (1 : ℝ)) (e.symm x)) =
         (N : ℝ) ^ (n + 2) := by
       rw [hlevel] at hx
       exact hx

@@ -10,9 +10,7 @@ import Mathlib.Tactic.Ring
 /-! # The quantitative scalar remainder inequality
 
 After the second-derivative calculation, subtract the quadratic term and apply the
-supporting-line inequality. This proves the same remainder estimate without the
-paper's two successive integrations.
-
+supporting-line inequality to obtain the remainder estimate.
 -/
 
 namespace ReyZygmund
@@ -164,8 +162,7 @@ private lemma scalar_second_derivative_bound
       rw [hcomplete]
       linarith
 
-/-- `lem:scalar-estimate`: the exact remainder for arbitrary signed increments.
-The only positivity assumptions concern the two denominator endpoints. -/
+/-- The quantitative remainder for signed increments and positive denominator endpoints. -/
 theorem scalar_estimate
     (p a h b η : ℝ) (hp : 1 < p) (hp2 : p ≤ 2)
     (hb : 0 < b) (hbη : 0 < b + η) :

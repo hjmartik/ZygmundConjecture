@@ -7,22 +7,27 @@
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head><body><header><nav aria-label="Main navigation">
 <a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
-<a href="consistency.html">Definitions and consistency</a>
+<a href="supporting-statements.html">Supporting results</a>
+<a href="mathlib-only.html">Specification and definitions</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="tests-of-the-checking-programs">Tests of the checking programs</h1>
 <p>These tests check that the verification programs accept valid inputs, reject
 deliberately invalid ones and recover missing compiled dependencies.
-The mathematical verification results are recorded separately in
-<a href="files/verification/RESULTS.json">RESULTS.json</a>.</p>
-<p>Test outcomes and checking-program identities are recorded in
-<a href="files/verification/TOOLING-RESULTS.json">TOOLING-RESULTS.json</a>. The eight Linux runtime fixtures
-passed in the freshly provisioned VM used for the six-result checks.</p>
+<a href="files/verification/RESULTS.json">RESULTS.json</a> records the twenty-two-result mathematical verification;
+<a href="files/verification/TOOLING-RESULTS.json">TOOLING-RESULTS.json</a> records the tests and checking-program
+identities. The lightweight tests, seven Lean inspection cases and eight Linux
+fixtures passed. Earlier native macOS and dependency-recovery fixture receipts
+are retained separately, with their original execution identities.</p>
+<p>The two statement-mismatch cases require the exact diagnostic after two
+successful builds, with the expected exit and no other error. All eight Linux
+fixtures passed with the current checking programs in the fresh VM.</p>
 <h2 id="lightweight-tests">Lightweight tests</h2>
-<p>The 13 tests in <code>tools/test_checker.py</code> passed, covering inventories, changed
-or missing sources, duplicate targets, origins, import separation, configuration
-identities, axiom restrictions, archive safety and artifact completeness.</p>
-<p>The 13 tests in <code>tools/test_comparator_acceptance.py</code> passed, covering the four
-required acceptance reports, failed exits, configuration, environment and
+<p>The 25 tests in <code>tools/test_checker.py</code> cover inventories, changed or missing
+sources, duplicate targets, origins, import separation, configuration identities,
+axiom restrictions, archive safety, artifact completeness, selection of all twenty-two
+comparisons and distinct success labels for full and partial runs.</p>
+<p>The 13 tests in <code>tools/test_comparator_acceptance.py</code> cover the four required
+acceptance reports, failed exits, configuration, environment and
 sandbox command construction. Timeout cleanup uses a mocked process; these
 tests do not themselves execute a sandbox or kernel.</p>
 <p>These tests require only Python 3.12 or later and the repository.</p>
@@ -39,98 +44,94 @@ listed in <a href="files/verification/TARGETS.json">TARGETS.json</a>. The surrou
 missing or duplicate reports, wrong declaration origins and unapproved axioms,
 including indirect uses of an omitted proof. The fresh-build command also
 rejects compiler warnings and changed source files.</p>
-<p>Seven Lean inspection fixtures passed their expected outcomes. A valid theorem
-and a definitionally equal presentation were accepted. A merely logically
+<p>The seven Lean inspection fixtures require acceptance of a valid theorem and
+a definitionally equal presentation, and rejection of a merely logically
 equivalent presentation, indirect admission, custom axiom, changed conclusion
-and extra assumption were rejected. The valid case also tested wrong-origin
-rejection through the <a href="source/lean/Verification/Inspect.lean.html">statement-and-axiom checking program</a>
-and its report checks.</p>
+and extra assumption. The valid case also tests wrong-origin rejection through
+the <a href="source/lean/Verification/Inspect.lean.html">statement-and-axiom checking program</a> and
+its report checks.</p>
 <pre><code class="language-sh">python3 -I -B tools/test_inspection.py
 </code></pre>
 <h2 id="linux-comparisons">Linux comparisons</h2>
-<p>Eight Linux fixtures passed their expected outcomes with the pinned tools:</p>
+<p>The eight Linux fixtures check the following expected outcomes with the pinned tools:</p>
 <table>
 <thead>
 <tr>
 <th>Fixture</th>
-<th>Observed outcome</th>
+<th>Expected outcome</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Valid theorem</td>
-<td>Comparator, Lean, Nanoda and con-ron accepted.</td>
+<td>Comparator, Lean, Nanoda and con-ron accept.</td>
 </tr>
 <tr>
 <td>Extra assumption</td>
-<td>Rejected for the statement mismatch.</td>
+<td>Rejection for the statement mismatch.</td>
 </tr>
 <tr>
-<td>Changed definition</td>
-<td>Rejected for the mismatch.</td>
+<td>Changed definition and conclusion</td>
+<td>Rejection for the statement mismatch.</td>
 </tr>
 <tr>
 <td>Indirect admission</td>
-<td>Rejected for <code>sorryAx</code>.</td>
+<td>Rejection for <code>sorryAx</code>.</td>
 </tr>
 <tr>
 <td>Missing Nanoda</td>
-<td>Rejected for the missing executable.</td>
+<td>Refusal to start because the executable is missing.</td>
 </tr>
 <tr>
 <td>Failing Nanoda</td>
-<td>The regular executable ran and printed its marker; Lean and con-ron accepted, Comparator rejected.</td>
+<td>The regular executable runs and prints its marker; Lean and con-ron accept, Comparator rejects.</td>
 </tr>
 <tr>
 <td>Missing con-ron</td>
-<td>Rejected for the missing executable.</td>
+<td>Refusal to start because the executable is missing.</td>
 </tr>
 <tr>
 <td>Failing con-ron</td>
-<td>The regular executable ran and printed its marker; Lean and Nanoda accepted, Comparator rejected.</td>
+<td>The regular executable runs and prints its marker; Lean and Nanoda accept, Comparator rejects.</td>
 </tr>
 </tbody></table>
-<p>The deliberately failing executables exit 73. The public record includes their
-hashes, invocation markers and log hashes; the full logs remain in the test run
-directories. The runtime preflight tested network
-namespace isolation, denied writes outside the checking directory and permitted
-scratch writes. The checking process confirmed its memory and swap limits.</p>
+<p>The deliberately failing executables exit 73. Each run records their hashes,
+invocation markers and log hashes; the full logs remain in its directory. The
+runtime preflight tests network namespace isolation, denied writes outside the
+checking directory and permitted scratch writes. The checking process confirms
+its memory and swap limits.</p>
+<p>These cases are generated by <code>tools/test_comparator_runtime.py</code>. The separate
+examples in <code>verification/fixtures/comparator/</code> are not the inputs to this suite.</p>
 <pre><code class="language-sh">python3 -I -B tools/test_comparator_runtime.py
 </code></pre>
 <h2 id="native-macos-comparisons">Native macOS comparisons</h2>
-<p>The optional local runner was tested on an Apple Silicon Mac with the pinned
-Lean toolchain. Its nine small cases cover a valid theorem, an extra assumption,
-a changed definition, an indirect admission, a custom axiom, and missing or
-deliberately failing Nanoda and con-ron executables. Each produced its intended
-outcome. Both failing executables ran and printed their markers; Lean and the
-other checker accepted while Comparator rejected.</p>
-<p>Three additional checks covered the required trust acknowledgement, selection
-of the local toolchain without inherited checker overrides, and an actual
-timeout. The test receipt is recorded under <code>native_macos_fixtures</code> in
-<a href="files/verification/TOOLING-RESULTS.json">TOOLING-RESULTS.json</a>.</p>
+<p>The optional local runner has nine small cases using the pinned Lean toolchain:
+a valid theorem, an extra assumption, a changed definition, an indirect
+admission, a custom axiom, and missing or deliberately failing Nanoda and con-ron
+executables. Both failing executables must run and print their markers; Lean
+and the other checker must accept while Comparator rejects.</p>
+<p>Three additional checks cover the required trust acknowledgement, selection of
+the local toolchain without inherited checker overrides, and an actual timeout.</p>
 <pre><code class="language-sh">python3 -I -B tools/test_comparator_local.py --trust-project-code
 </code></pre>
 <p>These tests deliberately run <strong>without a sandbox</strong> and do not establish sandbox
-protection. Their success label is <code>PASS_LOCAL_FIXTURES_ONLY</code>. The existing
-sandboxed Linux procedure and its test results are unchanged.</p>
-<p>The complete local command was also exercised on all six main results using
-the existing matching Mathlib cache. All six comparisons and all three proof
-checkers succeeded, with status <code>PASS_ALL_SIX_UNSANDBOXED</code>. This validates the
-native Mac procedure; the recorded sandboxed verification remains the one
-described in <a href="verifying.html#what-has-been-checked">the verification guide</a>.</p>
+protection. Their success label is <code>PASS_LOCAL_FIXTURES_ONLY</code>.</p>
+<p>The complete local command checks all twenty-two results; success is reported as
+<code>PASS_ALL_TWENTY_TWO_UNSANDBOXED</code>. See <a href="verifying.html#local-checking-on-macos">the verification guide</a>
+for this optional procedure and its additional trust requirement.</p>
 <h2 id="dependency-recovery">Dependency recovery</h2>
-<p>The three dependency-recovery fixtures passed with the pinned Linux tools:
-a wholly absent compiled module, a missing <code>.olean.server</code>, and a
-missing <code>.ir</code> with the other artifacts retained. Each detected the intended
-import failure, rebuilt the module from pinned sources, and checked a small
-theorem through the same statement-and-axiom checker. The original cache was unchanged.</p>
+<p>The three dependency-recovery fixtures exercise a wholly absent compiled
+module, a missing <code>.olean.server</code>, and a missing <code>.ir</code> with the other artifacts
+retained. Each requires the intended import failure, recovery of the module
+from pinned sources, and acceptance of a small theorem through the same
+statement-and-axiom checker. The original cache must remain unchanged.</p>
 <pre><code class="language-sh">python3 -I -B tools/test_recovery.py --packages lean/.lake/packages
 </code></pre>
 <h2 id="source-and-packet-checks">Source and packet checks</h2>
-<p>Source checks matched all 396 supplied Lean files exactly outside comments to the checked
-code, the seven adapter files and six comparison configurations to the
-checked inputs, and the 508 declaration mappings to their contracts. The selected
-local build/replay closure contains 382 modules. Packet preparation passed its
-source and import-boundary checks; preparation does not verify proofs.</p>
+<p>Source checks compare the 409 supplied Lean files with the source inventory,
+the twenty-three adapter Lean files and twenty-two comparison configurations with the
+comparison inventory, and the 516 declaration mappings with their contracts.
+The selected local build/replay closure contains 404 modules. Packet preparation
+checks source identities and import boundaries; preparation does not verify proofs.</p>
 <p>See <a href="verifying.html">the verification guide</a> for the mathematical checking scope and
 reproduction instructions.</p>
 </main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

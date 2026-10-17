@@ -13,6 +13,8 @@ The set identities hold pointwise.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmund.Sharpness
 
 open Geometry
@@ -53,10 +55,10 @@ private theorem mem_spatialWitness
 private theorem spatialWitness_subset
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (a : Fin (n + 2) → Fin N) (R : ∀ j, Box (Fin (d j))) :
-    sharpSpatialWitness P a R ⊆ productBox R := by
+    sharpSpatialWitness P a R ⊆ productRectangle R := by
   intro x hx
   have h := (mem_spatialWitness P a R x).mp hx
-  apply (mem_productBox R x).mpr
+  apply (mem_productRectangle R x).mpr
   intro j
   exact Fin.cases h.1 (fun i => (h.2 i).1) j
 
@@ -78,18 +80,18 @@ private theorem volume_pi_real {m : ℕ} {e : Fin m → ℕ}
   rw [Measure.pi_pi, ENNReal.toReal_prod]
 
 private theorem spatial_coordinate_subset (hN : 2 ≤ N) (s : ℕ)
-    (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
-    (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (D : ∀ j, CubeGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
+    (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (a : Fin (n + 2) → Fin N) (R : ∀ j, Box (Fin (d j)))
     (hR : R ∈ sharpSpatialFamily s Q P a) (i : Fin (n + 2)) :
     (R i.succ : Set (Fin (d i.succ) → ℝ)) ⊆ boxUnion (P i (a i).val) := by
   intro y hy
   let x : ProductPoint d := Function.update (fun j => (R j).upper) i.succ y
-  have hx : x ∈ productBox R := by
-    apply (mem_productBox R x).mpr
+  have hx : x ∈ productRectangle R := by
+    apply (mem_productRectangle R x).mpr
     intro j
     by_cases hji : j = i.succ
     · subst j
@@ -101,22 +103,22 @@ private theorem spatial_coordinate_subset (hN : 2 ≤ N) (s : ℕ)
 /-- The local retention identity gives the measure of `E_I` as the stated product
 fraction of the rectangle's measure. -/
 theorem sharpSpatialWitness_properties (hN : 2 ≤ N) (s : ℕ)
-    (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
-    (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (D : ∀ j, CubeGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
+    (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hlocal : ∀ (a : Fin (n + 2) → Fin N) i (I : Box (Fin (d i.succ))),
-      I ∈ (D i.succ).cubes (sharpGeneration s a i.succ) →
+      I ∈ (D i.succ).cubesAtGeneration (sharpGeneration s a i.succ) →
       (I : Set (Fin (d i.succ) → ℝ)) ⊆ boxUnion (P i (a i).val) →
       volume.real ((I : Set (Fin (d i.succ) → ℝ)) ∩ boxUnion (P i ((a i).val + 1))) =
         (2 : ℝ) ^ (-(s : ℤ)) * volume.real (I : Set (Fin (d i.succ) → ℝ)))
     (a : Fin (n + 2) → Fin N) (R : ∀ j, Box (Fin (d j)))
     (hR : R ∈ sharpSpatialFamily s Q P a) :
     MeasurableSet (sharpSpatialWitness P a R) ∧
-      sharpSpatialWitness P a R ⊆ productBox R ∧
+      sharpSpatialWitness P a R ⊆ productRectangle R ∧
       volume.real (sharpSpatialWitness P a R) =
-        (1 - (2 : ℝ) ^ (-(s : ℤ))) ^ (n + 2) * volume.real (productBox R) := by
+        (1 - (2 : ℝ) ^ (-(s : ℤ))) ^ (n + 2) * volume.real (productRectangle R) := by
   refine ⟨measurableSet_spatialWitness P a R, spatialWitness_subset P a R, ?_⟩
   have hcoord (i : Fin (n + 2)) :
       volume.real ((R i.succ : Set (Fin (d i.succ) → ℝ)) \
@@ -138,10 +140,10 @@ theorem sharpSpatialWitness_properties (hN : 2 ≤ N) (s : ℕ)
           boxUnion (P i ((a i).val + 1))) := by
     simp only [sharpSpatialWitness, volume_pi_real, Fin.prod_univ_succ,
       Fin.cons_zero, Fin.cons_succ]
-  have hprod : volume.real (productBox R) =
+  have hprod : volume.real (productRectangle R) =
       volume.real (R 0 : Set (Fin (d 0) → ℝ)) *
         ∏ i : Fin (n + 2), volume.real (R i.succ : Set (Fin (d i.succ) → ℝ)) := by
-    rw [productBox, volume_pi_real, Fin.prod_univ_succ]
+    rw [productRectangle_volume_real, Fin.prod_univ_succ]
   rw [hw, hprod]
   simp_rw [hcoord]
   rw [Finset.prod_mul_distrib]
@@ -156,11 +158,11 @@ private theorem mem_spatialTotal_of_mem {s : ℕ}
   Finset.mem_biUnion.mpr ⟨a, Finset.mem_univ a, hR⟩
 
 private theorem spatialWitness_disjoint_of_ne (hN : 2 ≤ N) (s : ℕ)
-    (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
-    (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (D : ∀ j, CubeGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
+    (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hPnest : ∀ i k, boxUnion (P i (k + 1)) ⊆ boxUnion (P i k))
     {a b : Fin (n + 2) → Fin N} {R S : ∀ j, Box (Fin (d j))}
     (hR : R ∈ sharpSpatialFamily s Q P a) (hS : S ∈ sharpSpatialFamily s Q P b)
@@ -187,15 +189,15 @@ private theorem spatialWitness_disjoint_of_ne (hN : 2 ≤ N) (s : ℕ)
 /-- Assign a disjoint subset to each rectangle of the total family, counting equal rectangles once.
 The computed measure fraction gives sparseness for every parameter at most that fraction. -/
 theorem sharpSpatialTotal_witnesses (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
-    (hd : ∀ j, 0 < d j) (D : ∀ j, DyadicGrid (d j))
-    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (hd : ∀ j, 0 < d j) (D : ∀ j, CubeGrid (d j))
+    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hPzero : ∀ i, boxUnion (P i 0) = (Q i.succ : Set (Fin (d i.succ) → ℝ)))
     (hPnest : ∀ i k, boxUnion (P i (k + 1)) ⊆ boxUnion (P i k))
     (hlocal : ∀ (a : Fin (n + 2) → Fin N) i (I : Box (Fin (d i.succ))),
-      I ∈ (D i.succ).cubes (sharpGeneration s a i.succ) →
+      I ∈ (D i.succ).cubesAtGeneration (sharpGeneration s a i.succ) →
       (I : Set (Fin (d i.succ) → ℝ)) ⊆ boxUnion (P i (a i).val) →
       volume.real ((I : Set (Fin (d i.succ) → ℝ)) ∩ boxUnion (P i ((a i).val + 1))) =
         (2 : ℝ) ^ (-(s : ℤ)) * volume.real (I : Set (Fin (d i.succ) → ℝ))) :
@@ -203,9 +205,9 @@ theorem sharpSpatialTotal_witnesses (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
       (∀ (a : Fin (n + 2) → Fin N) R, R ∈ sharpSpatialFamily s Q P a →
         E R = sharpSpatialWitness P a R) ∧
       (∀ R ∈ sharpSpatialTotal N s Q P,
-        MeasurableSet (E R) ∧ E R ⊆ productBox R ∧
+        MeasurableSet (E R) ∧ E R ⊆ productRectangle R ∧
           volume.real (E R) = (1 - (2 : ℝ) ^ (-(s : ℤ))) ^ (n + 2) *
-            volume.real (productBox R)) ∧
+            volume.real (productRectangle R)) ∧
       Set.PairwiseDisjoint (↑(sharpSpatialTotal N s Q P) :
         Set (∀ j, Box (Fin (d j)))) E := by
   have hu := (sharpSpatialTotal_properties hN s hs hd D Q hQ P hP hPzero hPnest).2.2.2
@@ -236,11 +238,11 @@ theorem sharpSpatialTotal_witnesses (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
         (hidx R hR) (hidx S hS) hab
 
 private theorem spatial_sum_by_index (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
-    (hd : ∀ j, 0 < d j) (D : ∀ j, DyadicGrid (d j))
-    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (hd : ∀ j, 0 < d j) (D : ∀ j, CubeGrid (d j))
+    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hPzero : ∀ i, boxUnion (P i 0) = (Q i.succ : Set (Fin (d i.succ) → ℝ)))
     (hPnest : ∀ i k, boxUnion (P i (k + 1)) ⊆ boxUnion (P i k))
     (f : (∀ j, Box (Fin (d j))) → ℝ) :
@@ -260,15 +262,15 @@ private theorem spatial_sum_by_index (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
 /-- The paper's overlap product, with each total-family rectangle
 counted once and every index accounted for. -/
 theorem sharpSpatialTotal_overlap (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
-    (hd : ∀ j, 0 < d j) (D : ∀ j, DyadicGrid (d j))
-    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (hd : ∀ j, 0 < d j) (D : ∀ j, CubeGrid (d j))
+    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hPzero : ∀ i, boxUnion (P i 0) = (Q i.succ : Set (Fin (d i.succ) → ℝ)))
     (hPnest : ∀ i k, boxUnion (P i (k + 1)) ⊆ boxUnion (P i k))
     (x : ProductPoint d) :
-    (∑ R ∈ sharpSpatialTotal N s Q P, (productBox R).indicator (fun _ => (1 : ℝ)) x) =
+    (∑ R ∈ sharpSpatialTotal N s Q P, (productRectangle R).indicator (fun _ => (1 : ℝ)) x) =
       (Q 0 : Set (Fin (d 0) → ℝ)).indicator (fun _ => (1 : ℝ)) (x 0) *
         ∏ i : Fin (n + 2), ∑ k : Fin N,
           (boxUnion (P i k.val)).indicator (fun _ => (1 : ℝ)) (x i.succ) := by
@@ -283,19 +285,19 @@ theorem sharpSpatialTotal_overlap (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
       (boxUnion (P i k.val)).indicator (fun _ => (1 : ℝ)) (x i.succ))).symm
 
 private theorem spatial_sum_indicator (hN : 2 ≤ N) (s : ℕ)
-    (D : ∀ j, DyadicGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
-    (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (D : ∀ j, CubeGrid (d j)) (Q : ∀ j, Box (Fin (d j)))
+    (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (a : Fin (n + 2) → Fin N) (x : ProductPoint d) :
-    (∑ R ∈ sharpSpatialFamily s Q P a, (productBox R).indicator (fun _ => (1 : ℝ)) x) =
+    (∑ R ∈ sharpSpatialFamily s Q P a, (productRectangle R).indicator (fun _ => (1 : ℝ)) x) =
       {y : ProductPoint d | y 0 ∈ Q 0 ∧
         ∀ i, y i.succ ∈ boxUnion (P i (a i).val)}.indicator (fun _ => (1 : ℝ)) x := by
   obtain ⟨_, hcover, hdis, _⟩ := sharpSpatialFamily_partition hN s D Q hQ P hP a
   by_cases hx : x ∈ {y : ProductPoint d | y 0 ∈ Q 0 ∧
       ∀ i, y i.succ ∈ boxUnion (P i (a i).val)}
-  · have hxc : x ∈ ⋃ R ∈ sharpSpatialFamily s Q P a, productBox R := by
+  · have hxc : x ∈ ⋃ R ∈ sharpSpatialFamily s Q P a, productRectangle R := by
       rw [hcover]
       exact hx
     obtain ⟨R, hxR⟩ := Set.mem_iUnion.mp hxc
@@ -316,24 +318,23 @@ private theorem spatial_sum_indicator (hN : 2 ≤ N) (s : ℕ)
     rw [← hcover]
     exact Set.mem_iUnion.mpr ⟨R, Set.mem_iUnion.mpr ⟨hR, hxR⟩⟩
 
-/-- The maximum-overlap set is exactly the deepest retained product set,
-not just a subset or an almost-everywhere representative. -/
+/-- The maximum-overlap set equals the deepest retained product set pointwise. -/
 theorem sharpSpatialTotal_maximum_set (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
-    (hd : ∀ j, 0 < d j) (D : ∀ j, DyadicGrid (d j))
-    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubes 0)
+    (hd : ∀ j, 0 < d j) (D : ∀ j, CubeGrid (d j))
+    (Q : ∀ j, Box (Fin (d j))) (hQ : ∀ j, Q j ∈ (D j).cubesAtGeneration 0)
     (P : ∀ i : Fin (n + 2), ℕ → Finset (Box (Fin (d i.succ))))
     (hP : ∀ i k R, R ∈ P i k →
-      R ∈ (D i.succ).cubes ((s : ℤ) * selectionScale N i k))
+      R ∈ (D i.succ).cubesAtGeneration ((s : ℤ) * selectionScale N i k))
     (hPzero : ∀ i, boxUnion (P i 0) = (Q i.succ : Set (Fin (d i.succ) → ℝ)))
     (hPnest : ∀ i k, boxUnion (P i (k + 1)) ⊆ boxUnion (P i k)) :
     {x : ProductPoint d | (∑ R ∈ sharpSpatialTotal N s Q P,
-      (productBox R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2)} =
+      (productRectangle R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2)} =
       {x : ProductPoint d | x 0 ∈ Q 0 ∧
         ∀ i, x i.succ ∈ boxUnion (P i (N - 1))} := by
   let U (a : Fin (n + 2) → Fin N) : Set (ProductPoint d) :=
     {x | x 0 ∈ Q 0 ∧ ∀ i, x i.succ ∈ boxUnion (P i (a i).val)}
   have hsum (x : ProductPoint d) :
-      (∑ R ∈ sharpSpatialTotal N s Q P, (productBox R).indicator (fun _ => (1 : ℝ)) x) =
+      (∑ R ∈ sharpSpatialTotal N s Q P, (productRectangle R).indicator (fun _ => (1 : ℝ)) x) =
         ∑ a : Fin (n + 2) → Fin N, (U a).indicator (fun _ => (1 : ℝ)) x := by
     rw [spatial_sum_by_index hN s hs hd D Q hQ P hP hPzero hPnest]
     exact Finset.sum_congr rfl (fun a _ => spatial_sum_indicator hN s D Q hQ P hP a x)
@@ -341,7 +342,7 @@ theorem sharpSpatialTotal_maximum_set (hN : 2 ≤ N) (s : ℕ) (hs : 1 ≤ s)
     simp
   ext x
   change (∑ R ∈ sharpSpatialTotal N s Q P,
-    (productBox R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2) ↔ _
+    (productRectangle R).indicator (fun _ => (1 : ℝ)) x) = (N : ℝ) ^ (n + 2) ↔ _
   rw [hsum x]
   constructor
   · intro hx

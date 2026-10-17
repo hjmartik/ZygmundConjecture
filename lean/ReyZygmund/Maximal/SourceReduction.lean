@@ -8,13 +8,13 @@ import ReyZygmund.Geometry.ProductLp
 
 The common smallest side length and the input determine the finite step function.
 Its constancy on the smallest cubes gives finiteness of all three norms. The
-finite power-integral estimates then give the norm inequalities without additional
-boundedness or scale-compatibility assumptions.
-
+finite power-integral estimates then give the norm inequalities.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmund
 
@@ -25,7 +25,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 private theorem finite_source_norm_data
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : ProductPoint d → ℝ)
-    (hf : ProductLeafConstant I N f) (hs : ∀ x, x ∉ productBox I → f x = 0) :
+    (hf : ProductLeafConstant I N f) (hs : ∀ x, x ∉ productRectangle I → f x = 0) :
     let u := finiteInput I N f hf
     let F := finiteProjectionMap I N G u
     let M := finiteFunctionMaximal (averagingRectangles I N G) f
@@ -34,12 +34,12 @@ private theorem finite_source_norm_data
   let u := finiteInput I N f hf
   have hu : u.1 = f := by
     funext x
-    by_cases hx : x ∈ productBox I
+    by_cases hx : x ∈ productRectangle I
     · exact Set.indicator_of_mem hx f
-    · change (productBox I).indicator f x = f x
+    · change (productRectangle I).indicator f x = f x
       rw [Set.indicator_of_notMem hx, hs x hx]
   have hul : ProductLeafConstant I N u.1 := by rw [hu]; exact hf
-  have hus : ∀ x, x ∉ productBox I → u.1 x = 0 := by rw [hu]; exact hs
+  have hus : ∀ x, x ∉ productRectangle I → u.1 x = 0 := by rw [hu]; exact hs
   have hF := finiteProjectionMap_productStep_closure I N G u hul hus
   refine ⟨hu, ?_, productLeafConstant_finiteComplementSquareFunction I N
     (finiteProjectionMap I N G u) hF.1 hF.2⟩
@@ -52,17 +52,17 @@ dimension constant is uniform in the grids, top rectangle, scale, family, input
 and exponent. -/
 theorem source_maximal_to_square
     (hm : 2 ≤ m) (hd : ∀ i, 0 < d i)
-    (D : ∀ i, DyadicGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
-    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubes (n i))
+    (D : ∀ i, CubeGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
+    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubesAtGeneration (n i))
     (G : Finset (∀ i, Box (Fin (d i)))) (hne : G.Nonempty)
-    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (2 : ℝ) ^ (-k) ≤ (R i).upper u - (R i).lower u)
-    (_hinc : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S)
-    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productBox I → f x = 0)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
-    (hf : ∀ R, (R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (_hinc : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S)
+    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productRectangle I → f x = 0)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
+    (hf : ∀ R, (R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (R i).upper u - (R i).lower u = (2 : ℝ) ^ (-k)) →
-      ∀ x ∈ productBox R, ∀ y ∈ productBox R, f x = f y)
+      ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R, f x = f y)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
     let N := fun i => (k - n i).toNat
     ∃ hleaf : ProductLeafConstant I N f,
@@ -70,7 +70,7 @@ theorem source_maximal_to_square
       let F := finiteProjectionMap I N G u
       let M := finiteFunctionMaximal (averagingRectangles I N G) f
       let W := finiteComplementSquareFunction I N F
-      let μ := volume.restrict (productBox I)
+      let μ := volume.restrict (productRectangle I)
       let C := (m : ℝ) * (2 : ℝ) ^ m *
         ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) + (2 : ℝ) ^ (m - 1))
       u.1 = f ∧ MemLp f (ENNReal.ofReal p) μ ∧
@@ -89,13 +89,13 @@ theorem source_maximal_to_square
   let F := finiteProjectionMap I N G u
   let M := finiteFunctionMaximal (averagingRectangles I N G) f
   let W := finiteComplementSquareFunction I N F
-  let μ := volume.restrict (productBox I)
+  let μ := volume.restrict (productRectangle I)
   let C := (m : ℝ) * (2 : ℝ) ^ m *
     ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) + (2 : ℝ) ^ (m - 1))
   obtain ⟨hu, hMleaf, hWleaf⟩ := finite_source_norm_data I N G f hleaf hs
   have hfu : ProductLeafConstant I N u.1 := by rw [hu]; exact hleaf
-  have hus : ∀ x, x ∉ productBox I → u.1 x = 0 := by rw [hu]; exact hs
-  have hup : ∀ x ∈ productBox I, 0 ≤ u.1 x := by
+  have hus : ∀ x, x ∉ productRectangle I → u.1 x = 0 := by rw [hu]; exact hs
+  have hup : ∀ x ∈ productRectangle I, 0 ≤ u.1 x := by
     rw [hu]
     exact fun x hx => (hfpos x hx).le
   have hmax : M = finiteFamilyMaximal (averagingRectangles I N G) u := by
@@ -110,16 +110,16 @@ theorem source_maximal_to_square
     ENNReal.ofReal (C * (p / (p - 1)) ^ (m - 2)) * eLpNorm f (ENNReal.ofReal p) μ +
     ENNReal.ofReal C * eLpNorm W (ENNReal.ofReal p) μ
   have hraw :
-      Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 / p) ≤
+      Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 / p) ≤
         C * (p / (p - 1)) ^ (m - 2) *
-          Real.rpow (∫ x in productBox I, Real.rpow |f x| p) (1 / p) +
-        C * Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) := by
+          Real.rpow (∫ x in productRectangle I, Real.rpow |f x| p) (1 / p) +
+        C * Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) := by
     have h := finite_maximal_to_square hm I N hd G u hfu hus hup p hp hp3
     rw [← hmax] at h
-    change Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 / p) ≤
+    change Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 / p) ≤
       C * (p / (p - 1)) ^ (m - 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow |u.1 x| p) (1 / p) +
-      C * Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) at h
+        Real.rpow (∫ x in productRectangle I, Real.rpow |u.1 x| p) (1 / p) +
+      C * Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) at h
     rw [hu] at h
     exact h
   have hreal : lpNorm M (ENNReal.ofReal p) μ ≤
@@ -144,21 +144,20 @@ theorem source_maximal_to_square
         (ENNReal.ofReal_mul hCq) (ENNReal.ofReal_mul hC)
 
 /-- The Hölder estimate for the averaging-family maximum and the common-projection
-square function. Finiteness of the three norms is proved before converting the
-power-integral estimate to norm form. -/
+square function. -/
 theorem source_holder_absorption
     (hm : 2 ≤ m) (hd : ∀ i, 0 < d i)
-    (D : ∀ i, DyadicGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
-    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubes (n i))
+    (D : ∀ i, CubeGrid (d i)) (n : Fin m → ℤ) (k : ℤ)
+    (I : ∀ i, Box (Fin (d i))) (hI : ∀ i, I i ∈ (D i).cubesAtGeneration (n i))
     (G : Finset (∀ i, Box (Fin (d i)))) (hne : G.Nonempty)
-    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (hG : ∀ R ∈ G, R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (2 : ℝ) ^ (-k) ≤ (R i).upper u - (R i).lower u)
-    (_hinc : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S)
-    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productBox I → f x = 0)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
-    (hf : ∀ R, (R ∈ gridRectangles D ∧ productBox R ⊆ productBox I ∧
+    (_hinc : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S)
+    (f : ProductPoint d → ℝ) (hs : ∀ x, x ∉ productRectangle I → f x = 0)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
+    (hf : ∀ R, (R ∈ gridRectangles D ∧ productRectangle R ⊆ productRectangle I ∧
       ∀ i u, (R i).upper u - (R i).lower u = (2 : ℝ) ^ (-k)) →
-      ∀ x ∈ productBox R, ∀ y ∈ productBox R, f x = f y)
+      ∀ x ∈ productRectangle R, ∀ y ∈ productRectangle R, f x = f y)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
     let N := fun i => (k - n i).toNat
     ∃ hleaf : ProductLeafConstant I N f,
@@ -166,7 +165,7 @@ theorem source_holder_absorption
       let F := finiteProjectionMap I N G u
       let M := finiteFunctionMaximal (averagingRectangles I N G) f
       let W := finiteComplementSquareFunction I N F
-      let μ := volume.restrict (productBox I)
+      let μ := volume.restrict (productRectangle I)
       let C := Real.sqrt ((m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)))
       u.1 = f ∧ MemLp f (ENNReal.ofReal p) μ ∧
       MemLp M (ENNReal.ofReal p) μ ∧ MemLp W (ENNReal.ofReal p) μ ∧
@@ -189,7 +188,7 @@ theorem source_holder_absorption
   let F := finiteProjectionMap I N G u
   let M := finiteFunctionMaximal (averagingRectangles I N G) f
   let W := finiteComplementSquareFunction I N F
-  let μ := volume.restrict (productBox I)
+  let μ := volume.restrict (productRectangle I)
   let C := Real.sqrt ((m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)))
   let K := C * Real.rpow (p - 1) (-((m - 1 : ℕ) : ℝ) / 2)
   obtain ⟨hu, hMleaf, hWleaf⟩ := finite_source_norm_data I N G f hleaf hs
@@ -198,7 +197,7 @@ theorem source_holder_absorption
   have hM0 (x) : 0 ≤ M x := by rw [hmax]; exact finiteFamilyMaximal_nonneg _ u x
   have hW0 (x) : 0 ≤ W x := Real.sqrt_nonneg _
   have hf0 (x) : 0 ≤ f x := by
-    by_cases hx : x ∈ productBox I
+    by_cases hx : x ∈ productRectangle I
     · exact (hfpos x hx).le
     · rw [hs x hx]
   have hfm := memLp_productLeafConstant I N f hleaf p hp0
@@ -209,10 +208,10 @@ theorem source_holder_absorption
     ENNReal.ofReal K * (eLpNorm f (ENNReal.ofReal p) μ) ^ (p / 2) *
       (eLpNorm M (ENNReal.ofReal p) μ) ^ (1 - p / 2)
   have hraw :
-      Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
-        K * Real.rpow (Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p))
+      Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
+        K * Real.rpow (Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p))
           (p / 2) *
-        Real.rpow (Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 / p))
+        Real.rpow (Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 / p))
           (1 - p / 2) := by
     have h := projected_holder_norm_variables (by omega : 0 < m)
       I N hd G hGN f hleaf hfpos p hp hp2

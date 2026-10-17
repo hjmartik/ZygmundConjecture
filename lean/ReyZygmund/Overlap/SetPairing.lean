@@ -1,12 +1,11 @@
 import ReyZygmund.Overlap.SetFinite
 import ReyZygmund.Maximal.SetEndpoint
-import Mathlib.MeasureTheory.Integral.Bochner.Set
+import ReyZygmund.ToMathlib.MeasureTheory.SetIntegral
 
-/-! # Sparse pairing on arbitrary finite measurable-set families
+/-! # Sparse pairing on finite measurable-set families
 
-Memberwise integrability identifies the extended means with real
-means. A finite indicator-sum majorant supplies finiteness and integrability
-without any spatial boundedness assumption on the sets.
+Memberwise integrability identifies the extended means with real means. A finite
+indicator-sum majorant supplies finiteness and integrability.
 -/
 
 open MeasureTheory
@@ -49,7 +48,7 @@ theorem setFamilyMaximal_finset_lt_top
     ENNReal.ofReal_lt_top
 
 /-- A finite sum of supported means is an Lp majorant for every
-exponent, including infinity. The member sets need not be bounded. -/
+exponent, including infinity. -/
 theorem memLp_setFamilyMaximal_finset
     (H : Finset (Set (Fin d → ℝ))) (hm : ∀ I ∈ H, MeasurableSet I)
     (hpos : ∀ I ∈ H, 0 < volume I) (hfin : ∀ I ∈ H, volume I < ∞)
@@ -113,14 +112,14 @@ private theorem absolute_mean_le_finiteSetMaximal
   simpa only [ENNReal.toReal_ofReal hmean] using
     ENNReal.toReal_mono (setFamilyMaximal_finset_lt_top H hpos hfin g hgi x).ne hsup
 
-/-- Disjoint measurable subsets give the sparse pairing estimate for sets of positive
-finite measure. Values outside the shadow are unrestricted. -/
+/-- Disjoint Lebesgue-measurable subsets give the sparse pairing estimate for
+sets of positive finite measure. -/
 theorem finite_set_sparse_pairing
     (H : Finset (Set (Fin d → ℝ))) (hm : ∀ I ∈ H, MeasurableSet I)
     (hpos : ∀ I ∈ H, 0 < volume I) (hfin : ∀ I ∈ H, volume I < ∞)
     (eta : ℝ) (heta : 0 < eta)
     (E : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hEmeas : ∀ I ∈ H, MeasurableSet (E I)) (hEsub : ∀ I ∈ H, E I ⊆ I)
+    (hEmeas : ∀ I ∈ H, NullMeasurableSet (E I) volume) (hEsub : ∀ I ∈ H, E I ⊆ I)
     (hEdis : Set.Pairwise (H : Set (Set (Fin d → ℝ)))
       (fun I J => Disjoint (E I) (E J)))
     (hEmass : ∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I))
@@ -158,7 +157,7 @@ theorem finite_set_sparse_pairing
         mul_le_mul_of_nonneg_right hmass hmean
       _ ≤ _ := by
         simpa only [smul_eq_mul] using
-          setIntegral_ge_of_const_le (hEmeas I hI) hEfinite.ne hpoint hM.integrableOn
+          setIntegral_ge_of_const_le₀ (hEmeas I hI) hEfinite.ne hpoint hM.integrableOn
   have hsub : (⋃ I ∈ H, E I) ⊆ finiteSetShadow H :=
     Set.iUnion_subset (fun I => Set.iUnion_subset (fun hI =>
       (hEsub I hI).trans (subset_finiteSetShadow H I hI)))
@@ -167,7 +166,8 @@ theorem finite_set_sparse_pairing
     _ ≤ ∑ I ∈ H, ∫ x in E I, (setFamilyMaximal (H : Set _) g x).toReal :=
       Finset.sum_le_sum hterm
     _ = ∫ x in ⋃ I ∈ H, E I, (setFamilyMaximal (H : Set _) g x).toReal :=
-      (integral_biUnion_finset H hEmeas hEdis (fun _ _ => hM.integrableOn)).symm
+      (integral_biUnion_finset₀ H hEmeas (Set.PairwiseDisjoint.aedisjoint hEdis)
+        (fun _ _ => hM.integrableOn)).symm
     _ ≤ _ := setIntegral_mono_set hM.integrableOn
       (Filter.Eventually.of_forall (fun _ => ENNReal.toReal_nonneg))
       (Filter.Eventually.of_forall (fun _ hx => hsub hx))

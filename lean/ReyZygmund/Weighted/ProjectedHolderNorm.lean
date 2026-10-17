@@ -4,10 +4,8 @@ import ReyZygmund.Weighted.ProjectedHolder
 
 Rewrite the power-integral estimate using the norms of the input, the square
 function of its projection, and the averaging-family maximal function. Separate
-the dimension factor from the power of `p - 1`. No norm is divided out, so zero
-norms are included. The subsequent absorption step is proved separately.
-
-
+the dimension factor from the power of `p - 1`. The subsequent absorption step
+is proved separately.
 -/
 
 open BoxIntegral MeasureTheory
@@ -46,44 +44,43 @@ private theorem norm_complement_power {a : ℝ} (ha : 0 ≤ a) (p : ℝ) :
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The projected Hölder bound with the norm variables and exact
-coefficient used in the subsequent absorption step. Real powers retain zero
-integrals and the endpoint `p = 2` without cancellation. -/
+/-- The projected Hölder bound in norm variables, with the exact coefficient
+used in absorption and the endpoint `p = 2`. -/
 theorem projected_holder_norm_variables
     (hm : 0 < m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
     let F := finiteInput I N f hf
     let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
     let M := finiteFamilyMaximal (averagingRectangles I N G) F
-    let X := Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 / p)
-    let Y := Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p)
-    Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
+    let X := Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 / p)
+    let Y := Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p)
+    Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
       Real.sqrt ((m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1))) *
         Real.rpow (p - 1) (-((m - 1 : ℕ) : ℝ) / 2) *
         Real.rpow Y (p / 2) * Real.rpow X (1 - p / 2) := by
   let F := finiteInput I N f hf
   let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
   let M := finiteFamilyMaximal (averagingRectangles I N G) F
-  let U := ∫ x in productBox I, Real.rpow (f x) p
-  let V := ∫ x in productBox I, Real.rpow (M x) p
+  let U := ∫ x in productRectangle I, Real.rpow (f x) p
+  let V := ∫ x in productRectangle I, Real.rpow (M x) p
   let A := (m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1))
-  change Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
+  change Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
     Real.sqrt A * Real.rpow (p - 1) (-((m - 1 : ℕ) : ℝ) / 2) *
       Real.rpow (Real.rpow U (1 / p)) (p / 2) *
       Real.rpow (Real.rpow V (1 / p)) (1 - p / 2)
   have hU : 0 ≤ U :=
-    integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productBox I)
+    integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productRectangle I)
       (fun x hx => Real.rpow_nonneg (hfpos x hx).le p))
   have hV : 0 ≤ V :=
     integral_nonneg (fun x => Real.rpow_nonneg (finiteFamilyMaximal_nonneg _ F x) p)
   have hA : 0 ≤ A :=
     mul_nonneg (Nat.cast_nonneg m) (pow_nonneg (by norm_num) _)
   have h := projected_holder_norm hm I N hd G hG f hf hfpos p hp hp2
-  change Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
+  change Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
     Real.sqrt (A / (p - 1) ^ (m - 1)) * Real.rpow U (1 / 2 : ℝ) *
       Real.rpow V ((2 - p) / (2 * p)) at h
   rw [sqrt_div_pow_factor A (p - 1) hA (sub_nonneg.mpr hp.le) (m - 1),

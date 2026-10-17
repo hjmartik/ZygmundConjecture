@@ -14,8 +14,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 theorem shadow_finset (G : Finset (∀ i, Box (Fin (d i)))) :
     shadow (↑G) = finiteShadow G := rfl
 
-/-- The extended overlap of a finite family equals its finite sum;
-there is no infinite real sum or lost multiplicity. -/
+/-- The extended overlap of a finite family equals its finite sum. -/
 theorem overlap_finset (G : Finset (∀ i, Box (Fin (d i))))
     (x : Fin (∑ i, d i) → ℝ) :
     overlap (↑G) x = ENNReal.ofReal (finiteOverlap G x) := by

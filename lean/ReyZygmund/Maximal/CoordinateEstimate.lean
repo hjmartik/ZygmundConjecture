@@ -5,9 +5,7 @@ import ReyZygmund.Geometry.ProductIntegration
 
 Apply the one-coordinate maximal inequality to slices, then integrate over the
 other factors of the top rectangle. Constancy on the smallest cubes gives the
-required integrability. The input may be signed and is unrestricted outside the
-top rectangle; the coefficient has no dimensional or volume factor.
-
+required integrability.
 -/
 
 open BoxIntegral MeasureTheory
@@ -45,30 +43,30 @@ private theorem finite_maximal_integral_bound (k : ℕ) (hk : 0 < k)
 private theorem root_slice_leafConstant
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     ∀ Q ∈ leaves (I j) (N j), ∀ y ∈ Q, ∀ z ∈ Q,
       f (Function.update x j y) = f (Function.update x j z) := by
   intro Q hQ y hy z hz
   have hmem (w : Fin (d j) → ℝ) (hw : w ∈ Q) :
-      Function.update x j w ∈ productBox I := by
-    apply (mem_productBox I _).mpr
+      Function.update x j w ∈ productRectangle I := by
+    apply (mem_productRectangle I _).mpr
     intro i
     by_cases hij : i = j
     · subst i
       simpa using (level (I j) (N j)).le_of_mem hQ hw
-    · simpa [hij] using (mem_productBox I x).mp hx i
+    · simpa [hij] using (mem_productRectangle I x).mp hx i
   simpa only [Set.indicator_of_mem (hmem y hy), Set.indicator_of_mem (hmem z hz)] using
     productStep_coordinate_leafConstant I N f hf j x Q hQ y hy z hz
 
-/-- The finite coordinate maximal estimate with the exact source factor for
-every real `p > 1`. No hypothesis is imposed outside the top rectangle. -/
+/-- The finite coordinate maximal estimate with coefficient `(p / (p - 1)) ^ p`
+for every real `p > 1`. -/
 theorem finite_coordinate_maximal_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (j : Fin m) (hd : 0 < d j)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (p : ℝ) (hp : 1 < p) :
-    (∫ x in productBox I, Real.rpow (coordinateDyadicMaximal j (I j) (N j) f x) p) ≤
-      Real.rpow (p / (p - 1)) p * (∫ x in productBox I, Real.rpow |f x| p) := by
+    (∫ x in productRectangle I, Real.rpow (coordinateDyadicMaximal j (I j) (N j) f x) p) ≤
+      Real.rpow (p / (p - 1)) p * (∫ x in productRectangle I, Real.rpow |f x| p) := by
   have hp0 : 0 < p := lt_trans zero_lt_one hp
   have hM := productLeafConstant_coordinateDyadicMaximal hf j
   have hMp : ProductLeafConstant I N

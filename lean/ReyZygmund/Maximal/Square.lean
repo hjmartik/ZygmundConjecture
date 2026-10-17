@@ -4,9 +4,9 @@ import ReyZygmund.Maximal.DistributionLp
 /-!
 # The finite signed maximal–square estimate
 
-The density distribution bound and the convergent layer-cake argument
-give a constant uniform for `1 ≤ p ≤ 3/2`. The reconstruction hypothesis in
-the final theorem is explicit; no estimate for arbitrary input is claimed.
+The density distribution bound and the convergent layer-cake argument give a
+constant uniform for `1 ≤ p ≤ 3/2`. The final theorem applies to an input equal
+to its full interior martingale-difference sum.
 -/
 
 open BoxIntegral MeasureTheory
@@ -23,13 +23,13 @@ square of the original input. -/
 theorem finite_difference_sum_square_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (p : ℝ) (hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       Real.rpow (finiteSignedProductMaximal I N
         (∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F) x) p) ≤
       (2 : ℝ) ^ (6 * (∑ i, d i) + 10) *
-        ∫ x in productBox I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p := by
+        ∫ x in productRectangle I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p := by
   let G := ∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F
   have hG := productDifference_sum_productStep_closure I N F hf hs
     (productInterior I N) (fun _ h => h)
@@ -49,17 +49,17 @@ theorem finite_difference_sum_square_integral
   rw [hc] at h
   exact h
 
-/-- The finite source estimate for an input equal to its full interior
+/-- The finite estimate for an input equal to its full interior
 martingale-difference sum, including `p = 1` and `p = 3/2`. -/
 theorem finite_signed_square_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (hreconstruct : F = ∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F)
     (p : ℝ) (hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    (∫ x in productBox I, Real.rpow (finiteSignedProductMaximal I N F x) p) ≤
+    (∫ x in productRectangle I, Real.rpow (finiteSignedProductMaximal I N F x) p) ≤
       (2 : ℝ) ^ (6 * (∑ i, d i) + 10) *
-        ∫ x in productBox I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p := by
+        ∫ x in productRectangle I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p := by
   have h := finite_difference_sum_square_integral I N hd F hf hs p hp hp3
   rw [← hreconstruct] at h
   exact h
@@ -69,18 +69,18 @@ theorem finite_signed_square_integral
 theorem finite_signed_square_lp
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (hreconstruct : F = ∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F)
     (p : ℝ) (hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    Real.rpow (∫ x in productBox I, Real.rpow (finiteSignedProductMaximal I N F x) p) (1 / p) ≤
+    Real.rpow (∫ x in productRectangle I, Real.rpow (finiteSignedProductMaximal I N F x) p) (1 / p) ≤
       (2 : ℝ) ^ (6 * (∑ i, d i) + 10) *
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSquareFunction I N Finset.univ F x) p) (1 / p) := by
   have hp0 : 0 < p := zero_lt_one.trans_le hp
-  have hM0 : 0 ≤ ∫ x in productBox I,
+  have hM0 : 0 ≤ ∫ x in productRectangle I,
       Real.rpow (finiteSignedProductMaximal I N F x) p :=
     integral_nonneg (fun x => Real.rpow_nonneg (finiteSignedProductMaximal_nonneg I N F x) p)
-  have hS0 : 0 ≤ ∫ x in productBox I,
+  have hS0 : 0 ≤ ∫ x in productRectangle I,
       Real.rpow (finiteSquareFunction I N Finset.univ F x) p :=
     integral_nonneg (fun _ => Real.rpow_nonneg (Real.sqrt_nonneg _) p)
   have hc1 : 1 ≤ (2 : ℝ) ^ (6 * (∑ i, d i) + 10) := one_le_pow₀ (by norm_num)
@@ -89,11 +89,11 @@ theorem finite_signed_square_lp
     Real.rpow_le_self_of_one_le hc1 ((div_le_one hp0).mpr hp)
   calc
     _ ≤ Real.rpow ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) *
-        (∫ x in productBox I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p)) (1 / p) :=
+        (∫ x in productRectangle I, Real.rpow (finiteSquareFunction I N Finset.univ F x) p)) (1 / p) :=
       Real.rpow_le_rpow hM0 (finite_signed_square_integral I N hd F hf hs hreconstruct p hp hp3)
         (by positivity)
     _ = Real.rpow ((2 : ℝ) ^ (6 * (∑ i, d i) + 10)) (1 / p) *
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSquareFunction I N Finset.univ F x) p) (1 / p) := by
       simp only [Real.rpow_eq_pow]
       exact Real.mul_rpow (by positivity) hS0

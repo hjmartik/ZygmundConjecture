@@ -8,12 +8,12 @@ import ReyZygmund.Overlap.Finite
 Split off the last coordinate and order the rectangles through the slice. The
 half-overlap bound gives disjoint subsets of at least half each projected rectangle's
 volume. Finite unions over equal projections index these subsets by the slice family.
-Incomparability, rounding and joint measurability in the slice parameter are not
-required.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
 
 namespace ReyZygmund.Selection
 
@@ -92,7 +92,7 @@ private theorem enumerated_product_half_overlap
 half-sparse. Its disjoint measurable subsets are indexed by the projected
 rectangles. -/
 theorem finite_slice_half_sparse
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
     (hG : (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (hoverlap : ∀ R ∈ G,
       volume.real ((flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ∩

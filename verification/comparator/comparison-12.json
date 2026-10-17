@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge12",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.projection_differences"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

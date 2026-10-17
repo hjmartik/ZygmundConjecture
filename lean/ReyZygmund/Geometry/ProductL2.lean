@@ -28,24 +28,10 @@ private noncomputable def boundedMul (F G : boundedMeasurableFunctions d) :
     rw [abs_mul]
     exact mul_le_mul (hF x) (hG x) (abs_nonneg _) hC⟩
 
-private theorem boundedMul_apply (F G : boundedMeasurableFunctions d) (x : ProductPoint d) :
-    (boundedMul F G).1 x = F.1 x * G.1 x := rfl
-
-private theorem productBox_volume_pos (I : ∀ i, Box (Fin (d i))) :
-    0 < volume.real (productBox I) := by
-  change 0 < (Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ))))).toReal
-  rw [Measure.pi_pi, ENNReal.toReal_prod]
-  exact Finset.prod_pos (fun i _ => box_volume_pos (I i))
-
 private theorem integrableOn_bounded (I : ∀ i, Box (Fin (d i)))
-    (F : boundedMeasurableFunctions d) : IntegrableOn F.1 (productBox I) volume := by
-  have hvol : volume (productBox I) < ∞ := by
-    change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ∞
-    rw [Measure.pi_pi]
-    exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
+    (F : boundedMeasurableFunctions d) : IntegrableOn F.1 (productRectangle I) volume := by
+  have hvol : volume (productRectangle I) < ∞ := productRectangle_volume_lt_top I
+  let : IsFiniteMeasure (volume.restrict (productRectangle I)) :=
     isFiniteMeasure_restrict.mpr hvol.ne
   obtain ⟨C, _, hC⟩ := F.2.2
   exact (integrable_const C).mono' F.2.1.aestronglyMeasurable
@@ -54,16 +40,16 @@ private theorem integrableOn_bounded (I : ∀ i, Box (Fin (d i)))
 
 private theorem integrableOn_mul (I : ∀ i, Box (Fin (d i)))
     (F G : boundedMeasurableFunctions d) :
-    IntegrableOn (fun x => F.1 x * G.1 x) (productBox I) volume :=
+    IntegrableOn (fun x => F.1 x * G.1 x) (productRectangle I) volume :=
   integrableOn_bounded I (boundedMul F G)
 
 private theorem boxAverage_mul_integral {k : ℕ} (I Q : Box (Fin k)) (hQI : Q ≤ I)
     (f g : (Fin k → ℝ) → ℝ) :
-    (∫ x in (I : Set (Fin k → ℝ)), boxAverage Q f x * g x) =
+    (∫ x in (I : Set (Fin k → ℝ)), cubeAverage Q f x * g x) =
       ((∫ x in (Q : Set (Fin k → ℝ)), f x) / volume.real (Q : Set (Fin k → ℝ))) *
         ∫ x in (Q : Set (Fin k → ℝ)), g x := by
   calc
-    _ = ∫ x in (Q : Set (Fin k → ℝ)), boxAverage Q f x * g x := by
+    _ = ∫ x in (Q : Set (Fin k → ℝ)), cubeAverage Q f x * g x := by
       apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero I.measurableSet_coe hQI
       intro x hx
       rw [DifferenceAlgebra.boxAverage_eq_zero_of_notMem Q f hx.2, zero_mul]
@@ -72,21 +58,21 @@ private theorem boxAverage_mul_integral {k : ℕ} (I Q : Box (Fin k)) (hQI : Q �
           g x := by
       apply setIntegral_congr_fun Q.measurableSet_coe
       intro x hx
-      change boxAverage Q f x * g x = _
-      simp only [boxAverage, Set.indicator_of_mem hx]
+      change cubeAverage Q f x * g x = _
+      simp only [cubeAverage, cubeMean, Set.indicator_of_mem hx]
     _ = _ := integral_const_mul _ _
 
 private theorem boxAverage_pairing {k : ℕ} (I Q : Box (Fin k)) (hQI : Q ≤ I)
     (f g : (Fin k → ℝ) → ℝ) :
-    (∫ x in (I : Set (Fin k → ℝ)), boxAverage Q f x * g x) =
-      ∫ x in (I : Set (Fin k → ℝ)), f x * boxAverage Q g x := by
+    (∫ x in (I : Set (Fin k → ℝ)), cubeAverage Q f x * g x) =
+      ∫ x in (I : Set (Fin k → ℝ)), f x * cubeAverage Q g x := by
   calc
     _ = ((∫ x in (Q : Set (Fin k → ℝ)), f x) /
         volume.real (Q : Set (Fin k → ℝ))) * ∫ x in (Q : Set (Fin k → ℝ)), g x :=
       boxAverage_mul_integral I Q hQI f g
     _ = ((∫ x in (Q : Set (Fin k → ℝ)), g x) /
         volume.real (Q : Set (Fin k → ℝ))) * ∫ x in (Q : Set (Fin k → ℝ)), f x := by ring
-    _ = ∫ x in (I : Set (Fin k → ℝ)), boxAverage Q g x * f x :=
+    _ = ∫ x in (I : Set (Fin k → ℝ)), cubeAverage Q g x * f x :=
       (boxAverage_mul_integral I Q hQI g f).symm
     _ = _ := by
       apply setIntegral_congr_fun I.measurableSet_coe
@@ -109,7 +95,7 @@ private theorem coordinateAverage_pairing (j : Fin m)
 private theorem integral_eq_of_averageMap_eq (I : ∀ i, Box (Fin (d i)))
     (j : Fin m) (F G : boundedMeasurableFunctions d)
     (h : averageMap j (I j) F = averageMap j (I j) G) :
-    (∫ x in productBox I, F.1 x) = ∫ x in productBox I, G.1 x := by
+    (∫ x in productRectangle I, F.1 x) = ∫ x in productRectangle I, G.1 x := by
   have hop : productAverageMap Finset.univ I =
       productAverageMap (Finset.univ.erase j) I * averageMap j (I j) := by
     symm
@@ -118,17 +104,17 @@ private theorem integral_eq_of_averageMap_eq (I : ∀ i, Box (Fin (d i)))
       (fun i _ k _ hik => averageMap_commute i k hik (I i) (I k))
   have hfull : productAverageMap Finset.univ I F = productAverageMap Finset.univ I G := by
     rw [hop, Module.End.mul_apply, Module.End.mul_apply, h]
-  have hx : (fun i => (I i).upper) ∈ productBox I :=
-    (mem_productBox I _).mpr (fun i => (I i).upper_mem)
+  have hx : (fun i => (I i).upper) ∈ productRectangle I :=
+    (mem_productRectangle I _).mpr (fun i => (I i).upper_mem)
   have hmean := congrArg (fun H : boundedMeasurableFunctions d => H.1 (fun i => (I i).upper)) hfull
   simp only [productAverageMap_univ_eq_integral, Set.indicator_of_mem hx] at hmean
-  exact (div_left_inj' (ne_of_gt (productBox_volume_pos I))).mp hmean
+  exact (div_left_inj' (ne_of_gt (productRectangle_volume_pos I))).mp hmean
 
 private theorem averageMap_integral_pairing (I : ∀ i, Box (Fin (d i)))
     (j : Fin m) (Q : Box (Fin (d j))) (hQI : Q ≤ I j)
     (F G : boundedMeasurableFunctions d) :
-    (∫ x in productBox I, (averageMap j Q F).1 x * G.1 x) =
-      ∫ x in productBox I, F.1 x * (averageMap j Q G).1 x := by
+    (∫ x in productRectangle I, (averageMap j Q F).1 x * G.1 x) =
+      ∫ x in productRectangle I, F.1 x * (averageMap j Q G).1 x := by
   apply integral_eq_of_averageMap_eq I j
     (boundedMul (averageMap j Q F) G) (boundedMul F (averageMap j Q G))
   apply Subtype.ext
@@ -137,25 +123,25 @@ private theorem averageMap_integral_pairing (I : ∀ i, Box (Fin (d i)))
 
 private noncomputable def pairing (I : ∀ i, Box (Fin (d i)))
     (F G : boundedMeasurableFunctions d) : ℝ :=
-  ∫ x in productBox I, F.1 x * G.1 x
+  ∫ x in productRectangle I, F.1 x * G.1 x
 
 private theorem pairing_comm (I : ∀ i, Box (Fin (d i)))
     (F G : boundedMeasurableFunctions d) : pairing I F G = pairing I G F := by
-  apply setIntegral_congr_fun (measurableSet_productBox I)
+  apply setIntegral_congr_fun (measurableSet_productRectangle I)
   intro x _
   exact mul_comm _ _
 
 private theorem pairing_add_left (I : ∀ i, Box (Fin (d i)))
     (F G H : boundedMeasurableFunctions d) :
     pairing I (F + G) H = pairing I F H + pairing I G H := by
-  change (∫ x in productBox I, (F.1 x + G.1 x) * H.1 x) = _
+  change (∫ x in productRectangle I, (F.1 x + G.1 x) * H.1 x) = _
   simp_rw [add_mul]
   exact integral_add (integrableOn_mul I F H) (integrableOn_mul I G H)
 
 private theorem pairing_sub_left (I : ∀ i, Box (Fin (d i)))
     (F G H : boundedMeasurableFunctions d) :
     pairing I (F - G) H = pairing I F H - pairing I G H := by
-  change (∫ x in productBox I, (F.1 x - G.1 x) * H.1 x) = _
+  change (∫ x in productRectangle I, (F.1 x - G.1 x) * H.1 x) = _
   simp_rw [sub_mul]
   exact integral_sub (integrableOn_mul I F H) (integrableOn_mul I G H)
 
@@ -201,7 +187,7 @@ theorem productDifference_integral_mul_eq_zero
     (F : boundedMeasurableFunctions d) (L Q : ∀ i, Box (Fin (d i)))
     (hL : L ∈ Projection.productInterior I N) (hQ : Q ∈ Projection.productInterior I N)
     (hne : L ≠ Q) :
-    (∫ x in productBox I, (productDifferenceMap Finset.univ L F).1 x *
+    (∫ x in productRectangle I, (productDifferenceMap Finset.univ L F).1 x *
       (productDifferenceMap Finset.univ Q F).1 x) = 0 := by
   have hex : ∃ i, L i ≠ Q i := by
     by_contra h
@@ -246,31 +232,24 @@ private theorem boundedSum_apply {α : Type*} (S : Finset α)
     change (F a).1 x + (∑ a ∈ S, F a).1 x = (F a).1 x + ∑ a ∈ S, (F a).1 x
     rw [ih]
 
-private theorem integrableOn_sum_sq {α : Type*} (I : ∀ i, Box (Fin (d i)))
-    (S : Finset α) (F : α → boundedMeasurableFunctions d) :
-    IntegrableOn (fun x => (∑ a ∈ S, (F a).1 x) ^ 2) (productBox I) volume := by
-  simpa only [boundedSum_apply, pow_two] using
-    integrableOn_mul I (∑ a ∈ S, F a) (∑ a ∈ S, F a)
-
-/-- Exact finite-sum square identity on the top rectangle. In particular,
-the empty family is allowed, and the input need not be nonnegative. -/
+/-- The finite-sum square identity on the top rectangle. -/
 theorem productDifference_integral_sum_sq
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (H : Finset (∀ i, Box (Fin (d i))))
     (hH : H ⊆ Projection.productInterior I N) :
-    (∫ x in productBox I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
-      ∑ Q ∈ H, ∫ x in productBox I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
+    (∫ x in productRectangle I, (∑ Q ∈ H, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
+      ∑ Q ∈ H, ∫ x in productRectangle I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
   let U := fun Q : ∀ i, Box (Fin (d i)) => productDifferenceMap Finset.univ Q F
   calc
-    (∫ x in productBox I, (∑ Q ∈ H, (U Q).1 x) ^ 2) =
+    (∫ x in productRectangle I, (∑ Q ∈ H, (U Q).1 x) ^ 2) =
         pairing I (∑ Q ∈ H, U Q) (∑ Q ∈ H, U Q) := by
-      apply setIntegral_congr_fun (measurableSet_productBox I)
+      apply setIntegral_congr_fun (measurableSet_productRectangle I)
       intro x _
       simp only [boundedSum_apply, pow_two]
     _ = ∑ Q ∈ H, ∑ L ∈ H, pairing I (U Q) (U L) := by
       rw [pairing_sum_left]
       exact Finset.sum_congr rfl (fun Q _ => pairing_sum_right I H (U Q) U)
-    _ = ∑ Q ∈ H, ∫ x in productBox I, ((U Q).1 x) ^ 2 := by
+    _ = ∑ Q ∈ H, ∫ x in productRectangle I, ((U Q).1 x) ^ 2 := by
       apply Finset.sum_congr rfl
       intro Q hQ
       rw [Finset.sum_eq_single Q]

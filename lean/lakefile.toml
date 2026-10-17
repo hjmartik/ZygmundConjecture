@@ -36,5 +36,53 @@ name = "Challenge5"
 name = "Challenge6"
 
 [[lean_lib]]
+name = "Challenge7"
+
+[[lean_lib]]
+name = "Challenge8"
+
+[[lean_lib]]
+name = "Challenge9"
+
+[[lean_lib]]
+name = "Challenge10"
+
+[[lean_lib]]
+name = "Challenge11"
+
+[[lean_lib]]
+name = "Challenge12"
+
+[[lean_lib]]
+name = "Challenge13"
+
+[[lean_lib]]
+name = "Challenge14"
+
+[[lean_lib]]
+name = "Challenge15"
+
+[[lean_lib]]
+name = "Challenge16"
+
+[[lean_lib]]
+name = "Challenge17"
+
+[[lean_lib]]
+name = "Challenge18"
+
+[[lean_lib]]
+name = "Challenge19"
+
+[[lean_lib]]
+name = "Challenge20"
+
+[[lean_lib]]
+name = "Challenge21"
+
+[[lean_lib]]
+name = "Challenge22"
+
+[[lean_lib]]
 name = "Verification"
 globs = ["Verification.+"]

@@ -6,6 +6,8 @@ No maximal estimate is supplied by these conditional limit propositions. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry
@@ -20,33 +22,33 @@ def finiteSignedGridMaximalMonotoneContract : Prop :=
       finiteSignedGridMaximal H f x ≤ finiteSignedGridMaximal K f x
 
 def signedGridMaximalFiniteSupremumContract : Prop :=
-  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, DyadicGrid (d i))
+  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, CubeGrid (d i))
     (f : ProductPoint d → ℝ) (x : ProductPoint d),
       signedGridMaximal D f x = ⨆ H : Finset (gridRectangles D),
         finiteSignedGridMaximal (H.image Subtype.val) f x
 
 def signedGridMaximalPowerIntegralSupremumContract : Prop :=
-  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, DyadicGrid (d i))
+  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, CubeGrid (d i))
     (f : ProductPoint d → ℝ) (p : ℝ), 0 < p →
       (∫⁻ x, (signedGridMaximal D f x) ^ p) =
         ⨆ H : Finset (gridRectangles D), ∫⁻ x,
           (finiteSignedGridMaximal (H.image Subtype.val) f x) ^ p
 
 def signedGridMaximalPowerIntegralBoundContract : Prop :=
-  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, DyadicGrid (d i))
+  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, CubeGrid (d i))
     (f : ProductPoint d → ℝ) (p : ℝ), 0 < p → ∀ (C : ℝ≥0∞),
       (∀ H : Finset (gridRectangles D),
         (∫⁻ x, (finiteSignedGridMaximal (H.image Subtype.val) f x) ^ p) ≤ C) →
       (∫⁻ x, (signedGridMaximal D f x) ^ p) ≤ C
 
 def signedGridMaximalAeFiniteContract : Prop :=
-  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, DyadicGrid (d i))
+  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, CubeGrid (d i))
     (f : ProductPoint d → ℝ) (p : ℝ), 0 < p →
       (∫⁻ x, (signedGridMaximal D f x) ^ p) < ∞ →
       ∀ᵐ x ∂volume, signedGridMaximal D f x < ∞
 
 def signedGridMaximalMemLpContract : Prop :=
-  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, DyadicGrid (d i))
+  ∀ (m : ℕ) (d : Fin m → ℕ) (D : ∀ i, CubeGrid (d i))
     (f : ProductPoint d → ℝ) (p : ℝ), 0 < p →
       (∫⁻ x, (signedGridMaximal D f x) ^ p) < ∞ →
       MemLp (fun x => (signedGridMaximal D f x).toReal) (ENNReal.ofReal p) volume

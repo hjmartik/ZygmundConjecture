@@ -14,8 +14,7 @@ open scoped ENNReal
 
 namespace ReyZygmund
 
-/-- The exact Tonelli identity after removing the input below half the level.
-This is the middle line of formula (26) in the admitted support proof. -/
+/-- The Tonelli identity after removing the input below half the level. -/
 theorem endpoint_truncated_moment_swap
     {X : Type} [MeasurableSpace X] (mu : Measure X) [SFinite mu]
     (f : X → ℝ) (hm : Measurable f) (hn : ∀ x, 0 ≤ f x)

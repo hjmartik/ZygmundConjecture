@@ -3,13 +3,15 @@ import ReyZygmund.Maximal.WeakerGlobal
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry
 
 def weakerGlobalMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -21,7 +23,7 @@ def weakerGlobalMaximalIntegralContract : Prop :=
 
 def weakerGlobalMaximalFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -30,7 +32,7 @@ def weakerGlobalMaximalFiniteAEContract : Prop :=
 
 def weakerGlobalMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -41,9 +43,9 @@ def weakerGlobalMaximalNormContract : Prop :=
 
 def weakerGlobalSetContainmentNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
-  (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i) →
+  (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
   MemLp f (ENNReal.ofReal p) volume →
     eLpNorm (fun x => (familyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤
@@ -52,18 +54,18 @@ def weakerGlobalSetContainmentNormContract : Prop :=
 
 def euclideanWeakerMaximalFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
-    (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i) →
+    (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i) →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
       ∀ᵐ x ∂volume, euclideanFamilyMaximal G f x < ∞
 
 def euclideanWeakerMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
     G ⊆ gridRectangles D →
-    (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i) →
+    (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i) →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ), 1 < p →
     MemLp f (ENNReal.ofReal p) volume →
     eLpNorm (fun x => (euclideanFamilyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤

@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge11",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.projection_partial_averages"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

@@ -73,8 +73,7 @@ theorem tendsto_retained_exp_lower_bound
     _ ≤ δ ^ (r * (N - 1)) * (Real.exp (c * Real.rpow (N : ℝ) α) - 1) :=
       mul_le_mul_of_nonneg_right hdecay_le hexp0
 
-/-- A single retention scale works independently of the family index. The
-paper's strict positivity premise on `η` is retained in the public type. -/
+/-- A single retention scale works independently of the family index. -/
 theorem exists_retention_scale (r : ℕ) (hr : 0 < r) (η : ℝ)
     (_hη0 : 0 < η) (hη1 : η < 1) :
     ∃ s : ℕ, 1 ≤ s ∧ η ≤ (1 - (2 : ℝ) ^ (-(s : ℤ))) ^ r := by

@@ -1,7 +1,8 @@
-import ReyZygmund.Maximal.WeakIncomparability
+import ReyZygmund.Projection.AveragingGeometry
 import ReyZygmund.Maximal.PartialSigned
 import ReyZygmund.Maximal.PartialReduction
-import ReyZygmund.Maximal.Represented
+import ReyZygmund.Maximal.Constants
+import ReyZygmund.Maximal.Family
 import ReyZygmund.Weighted.ProjectedConjugateEstimate
 import ReyZygmund.Weighted.MaximalAbsorption
 
@@ -9,16 +10,16 @@ import ReyZygmund.Weighted.MaximalAbsorption
 # The finite weakly incomparable maximal estimate
 
 The proof starts from the signed representation on the enlarged family proved
-in `Maximal.WeakIncomparability`. Proper coordinate subsets give the pointwise
+in `Projection.AveragingGeometry`. Proper coordinate subsets give the pointwise
 signed-maximal bound; taking norms and estimating the projected partial maxima
 then gives the maximal-to-square reduction. The weighted square estimate retains
 the averaging-family denominator until monotonicity into the enlarged family
 permits absorption. Finally the original family is a subfamily of the enlargement.
 
-The partial-coordinate estimate is unchanged. The projected-square coefficient
-is simplified to the paper's `p'` coefficient before Hölder, and absorption
-retains the intermediate exponent `(m - 1) / p`. The finite-family reductions below connect them
-to the signed representation for the enlarged family.
+The projected-square coefficient is expressed in terms of `p'` before Hölder.
+Absorption first produces the exponent `(m - 1) / p`; its comparison with
+`m - 1` is the last step. The finite norm estimate holds for `1 < p ≤ 3/2`,
+with a constant depending only on the number and dimensions of the blocks.
 -/
 
 open BoxIntegral MeasureTheory
@@ -27,7 +28,7 @@ open scoped BigOperators Classical
 namespace ReyZygmund
 
 open Geometry Projection
-open MathlibOnly.Proof.Estimates (WeaklyIncomparable)
+open MathlibOnly (WeaklyIncomparable)
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
@@ -39,14 +40,14 @@ theorem finite_weakly_incomparable_representation_maximal
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hweak : WeaklyIncomparable (G : Set (∀ i, Box (Fin (d i)))))
     (f : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
     (x : ProductPoint d) :
     finiteFamilyMaximal (G ∪ averagingRectangles I N G) f x ≤
       (2 : ℝ) ^ m * ∑ j,
         finiteSignedPartialMaximal I N (Finset.univ.erase j)
           (finiteProjectionMap I N G f) x := by
-  by_cases hx : x ∈ productBox I
+  by_cases hx : x ∈ productRectangle I
   swap
   · have hfamily : G ∪ averagingRectangles I N G ⊆ productDescendants I N :=
       Finset.union_subset hG (averagingRectangles_subset_productDescendants I N G)
@@ -102,12 +103,12 @@ theorem finite_weakly_incomparable_representation_maximal
   · rw [finiteFamilyMaximal, dite_eq_left hH]
     apply Finset.sup'_le
     intro R hR
-    by_cases hxR : x ∈ productBox R
+    by_cases hxR : x ∈ productRectangle R
     · have hRI := hfamily hR
-      have hav : (∫ y in productBox R, |f.1 y|) = ∫ y in productBox R, f.1 y := by
-        apply setIntegral_congr_fun (measurableSet_productBox R)
+      have hav : (∫ y in productRectangle R, |f.1 y|) = ∫ y in productRectangle R, f.1 y := by
+        apply setIntegral_congr_fun (measurableSet_productRectangle R)
         intro y hy
-        exact abs_of_nonneg (hpos y (productBox_subset_root_of_mem_productDescendants hRI hy))
+        exact abs_of_nonneg (hpos y (productRectangle_subset_root_of_mem_productDescendants hRI hy))
       rw [hav]
       rw [← productAverageMap_univ_eq_integral R f x]
       rw [finite_weakly_incomparable_representation I N hd G hG hweak R hR f hf hs x hxR]
@@ -125,13 +126,13 @@ private theorem representation_norm
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hweak : WeaklyIncomparable (G : Set (∀ i, Box (Fin (d i)))))
     (f : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
     (p : ℝ) (hp : 1 ≤ p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal (G ∪ averagingRectangles I N G) f x) p) (1 / p) ≤
       (2 : ℝ) ^ m * ∑ j,
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j)
             (finiteProjectionMap I N G f) x) p) (1 / p) := by
   let P := finiteProjectionMap I N G f
@@ -172,7 +173,7 @@ private theorem representation_norm
 private theorem complement_square_leaf
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteComplementSquareFunction I N F) := by
   intro Q hQ x hx y hy
   simp only [finiteComplementSquareFunction_eq_partial]
@@ -201,10 +202,10 @@ private theorem partial_square_le_complement
 private theorem partial_square_norm_le_complement
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (j : Fin m) (p : ℝ) (hp : 0 < p) :
-    Real.rpow (∫ x in productBox I,
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (j : Fin m) (p : ℝ) (hp : 0 < p) :
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteSquareFunction I N (Finset.univ.erase j) F x) p) (1 / p) ≤
-      Real.rpow (∫ x in productBox I,
+      Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteComplementSquareFunction I N F x) p) (1 / p) := by
   have hS0 (x : ProductPoint d) :
       0 ≤ finiteSquareFunction I N (Finset.univ.erase j) F x := Real.sqrt_nonneg _
@@ -229,16 +230,16 @@ theorem finite_weakly_incomparable_maximal_to_square
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hweak : WeaklyIncomparable (G : Set (∀ i, Box (Fin (d i)))))
     (f : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
-    (hpos : ∀ x ∈ productBox I, 0 ≤ f.1 x)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
+    (hpos : ∀ x ∈ productRectangle I, 0 ≤ f.1 x)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
     let C := (m : ℝ) * (2 : ℝ) ^ m *
       ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) + (2 : ℝ) ^ (m - 1))
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal (G ∪ averagingRectangles I N G) f x) p) (1 / p) ≤
       C * (p / (p - 1)) ^ (m - 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) +
-      C * Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) +
+      C * Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteComplementSquareFunction I N (finiteProjectionMap I N G f) x) p)
         (1 / p) := by
   let P := finiteProjectionMap I N G f
@@ -246,10 +247,10 @@ theorem finite_weakly_incomparable_maximal_to_square
   let b : ℝ := (2 : ℝ) ^ (m - 1)
   let a : ℝ := (m : ℝ) * (2 : ℝ) ^ m
   let q : ℝ := (p / (p - 1)) ^ (m - 2)
-  let Y := Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p)
-  let W := Real.rpow (∫ x in productBox I,
+  let Y := Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p)
+  let W := Real.rpow (∫ x in productRectangle I,
     Real.rpow (finiteComplementSquareFunction I N P x) p) (1 / p)
-  let V := fun j => Real.rpow (∫ x in productBox I,
+  let V := fun j => Real.rpow (∫ x in productRectangle I,
     Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j) P x) p) (1 / p)
   have hP := finiteProjectionMap_productStep_closure I N G f hf hs
   have hc : 0 ≤ c := by positivity
@@ -288,9 +289,9 @@ private theorem family_norm_mono
     (G H : Finset (∀ i, Box (Fin (d i))))
     (hG : G ⊆ productDescendants I N) (hH : H ⊆ productDescendants I N)
     (hGH : G ⊆ H) (F : boundedMeasurableFunctions d) (p : ℝ) (hp : 0 < p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal G F x) p) (1 / p) ≤
-      Real.rpow (∫ x in productBox I,
+      Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteFamilyMaximal H F x) p) (1 / p) := by
   have h := rootLp_mono I N (finiteFamilyMaximal G F) (finiteFamilyMaximal H F)
     (productLeafConstant_finiteFamilyMaximal I N G hG F)
@@ -311,23 +312,23 @@ theorem finite_weakly_incomparable_union_maximal_norm
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hweak : WeaklyIncomparable (G : Set (∀ i, Box (Fin (d i)))))
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal (G ∪ averagingRectangles I N G)
         (finiteInput I N f hf) x) p) (1 / p) ≤
       maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1) *
-        Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p) := by
   let F := finiteInput I N f hf
   let B := averagingRectangles I N G
   let H := G ∪ B
   let M := finiteFamilyMaximal H F
   let MB := finiteFamilyMaximal B F
   let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
-  let X := Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 / p)
-  let XB := Real.rpow (∫ x in productBox I, Real.rpow (MB x) p) (1 / p)
-  let Y := Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p)
-  let Z := Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p)
+  let X := Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 / p)
+  let XB := Real.rpow (∫ x in productRectangle I, Real.rpow (MB x) p) (1 / p)
+  let Y := Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p)
+  let Z := Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p)
   let C₀ : ℝ := (m : ℝ) * (2 : ℝ) ^ m *
     ((2 : ℝ) ^ (6 * (∑ i, d i) + 10) + (2 : ℝ) ^ (m - 1))
   let D := Real.sqrt ((m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)))
@@ -347,18 +348,18 @@ theorem finite_weakly_incomparable_union_maximal_norm
   have hXB : XB ≤ X :=
     family_norm_mono I N B H hB hH hBH F p (zero_lt_one.trans hp)
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
-  have hFp : ∀ x ∈ productBox I, 0 ≤ F.1 x := by
+  have hFp : ∀ x ∈ productRectangle I, 0 ≤ F.1 x := by
     intro x hx
-    change 0 ≤ (productBox I).indicator f x
+    change 0 ≤ (productRectangle I).indicator f x
     rw [Set.indicator_of_mem hx]
     exact (hfpos x hx).le
-  have hYeq : Real.rpow (∫ x in productBox I, Real.rpow |F.1 x| p) (1 / p) = Y := by
+  have hYeq : Real.rpow (∫ x in productRectangle I, Real.rpow |F.1 x| p) (1 / p) = Y := by
     congr 1
-    apply setIntegral_congr_fun (measurableSet_productBox I)
+    apply setIntegral_congr_fun (measurableSet_productRectangle I)
     intro x hx
-    change Real.rpow |(productBox I).indicator f x| p = Real.rpow (f x) p
+    change Real.rpow |(productRectangle I).indicator f x| p = Real.rpow (f x) p
     rw [Set.indicator_of_mem hx, abs_of_nonneg (hfpos x hx).le]
   have hred := finite_weakly_incomparable_maximal_to_square hm I N hd G hG hweak F hF hFs hFp p hp hp3
   rw [hYeq] at hred
@@ -383,7 +384,7 @@ theorem finite_weakly_incomparable_union_maximal_norm
   have hXB0 : 0 ≤ XB := Real.rpow_nonneg
     (integral_nonneg (fun x => Real.rpow_nonneg (finiteFamilyMaximal_nonneg B F x) p)) _
   have hY : 0 ≤ Y := Real.rpow_nonneg
-    (integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productBox I)
+    (integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productRectangle I)
       (fun x hx => Real.rpow_nonneg (hfpos x hx).le p))) _
   have hholder_union : Z ≤ D * s * Real.rpow Y (p / 2) *
       Real.rpow X (1 - p / 2) := by
@@ -414,12 +415,12 @@ theorem finite_weakly_incomparable_maximal_norm
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (hweak : WeaklyIncomparable (G : Set (∀ i, Box (Fin (d i)))))
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteFamilyMaximal G (finiteInput I N f hf) x) p) (1 / p) ≤
       maximalDimensionConstant d * (p / (p - 1)) ^ (m - 1) *
-        Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / p) := by
   have hH : G ∪ averagingRectangles I N G ⊆ productDescendants I N := by
     intro R hR
     rcases Finset.mem_union.mp hR with hR | hR

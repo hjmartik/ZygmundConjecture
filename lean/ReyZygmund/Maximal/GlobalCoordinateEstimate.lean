@@ -11,6 +11,8 @@ equality need not hold on every fixed slice. -/
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund
 
 open Geometry
@@ -42,7 +44,7 @@ private theorem ae_coordinate_update_congr (j : Fin m)
         (fun y => G (j.insertNth y (j.removeNth x))) at hx
       simpa only [Fin.insertNth_removeNth] using hx
 
-theorem coordinateGridMaximal_ae_congr (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
+theorem coordinateGridMaximal_ae_congr (D : ∀ i, CubeGrid (d i)) (j : Fin m)
     (F G : ProductPoint d → ℝ≥0∞) (hFG : F =ᵐ[volume] G) :
     coordinateGridMaximal D j F =ᵐ[volume] coordinateGridMaximal D j G := by
   filter_upwards [ae_coordinate_update_congr j F G hFG] with x hx
@@ -56,14 +58,14 @@ theorem coordinateGridMaximal_ae_congr (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
   · rw [coordinateGridAverage_of_notMem j Q.1 F x hQ,
       coordinateGridAverage_of_notMem j Q.1 G x hQ]
 
-theorem aemeasurable_coordinateGridMaximal (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
+theorem aemeasurable_coordinateGridMaximal (D : ∀ i, CubeGrid (d i)) (j : Fin m)
     (F : ProductPoint d → ℝ≥0∞) (hF : AEMeasurable F volume) :
     AEMeasurable (coordinateGridMaximal D j F) volume := by
   exact (measurable_coordinateGridMaximal D j (hF.mk F) hF.measurable_mk).aemeasurable.congr
     (coordinateGridMaximal_ae_congr D j F (hF.mk F) hF.ae_eq_mk).symm
 
 theorem foldr_coordinateGridMaximal_ae_congr
-    (D : ∀ i, DyadicGrid (d i)) (order : List (Fin m))
+    (D : ∀ i, CubeGrid (d i)) (order : List (Fin m))
     (F G : ProductPoint d → ℝ≥0∞) (hFG : F =ᵐ[volume] G) :
     order.foldr (fun j H => coordinateGridMaximal D j H) F =ᵐ[volume]
       order.foldr (fun j H => coordinateGridMaximal D j H) G := by
@@ -71,12 +73,12 @@ theorem foldr_coordinateGridMaximal_ae_congr
   | nil => exact hFG
   | cons j order ih => exact coordinateGridMaximal_ae_congr D j _ _ ih
 
-theorem iteratedGridMaximal_ae_congr (D : ∀ i, DyadicGrid (d i))
+theorem iteratedGridMaximal_ae_congr (D : ∀ i, CubeGrid (d i))
     (F G : ProductPoint d → ℝ≥0∞) (hFG : F =ᵐ[volume] G) :
     iteratedGridMaximal D F =ᵐ[volume] iteratedGridMaximal D G :=
   foldr_coordinateGridMaximal_ae_congr D (List.finRange m) F G hFG
 
-theorem aemeasurable_iteratedGridMaximal (D : ∀ i, DyadicGrid (d i))
+theorem aemeasurable_iteratedGridMaximal (D : ∀ i, CubeGrid (d i))
     (F : ProductPoint d → ℝ≥0∞) (hF : AEMeasurable F volume) :
     AEMeasurable (iteratedGridMaximal D F) volume := by
   exact (measurable_iteratedGridMaximal D (hF.mk F) hF.measurable_mk).aemeasurable.congr
@@ -111,12 +113,12 @@ private theorem ofReal_boxMean_eq_lintegral {q : ℕ} (Q : Box (Fin q))
   exact congrArg ((volume (Q : Set (Fin q → ℝ)))⁻¹ * ·)
     (lintegral_congr_ae (ae_restrict_of_ae hH))
 
-private theorem oneBlock_productBox {q : ℕ} (Q : Box (Fin q)) :
-    productBox (fun _ : Fin 1 => Q) =
+private theorem oneBlock_productRectangle {q : ℕ} (Q : Box (Fin q)) :
+    productRectangle (fun _ : Fin 1 => Q) =
       (MeasurableEquiv.piUnique (fun _ : Fin 1 => Fin q → ℝ)) ⁻¹'
         (Q : Set (Fin q → ℝ)) := by
   ext z
-  rw [mem_productBox]
+  rw [mem_productRectangle]
   change (∀ i : Fin 1, z i ∈ Q) ↔ z default ∈ Q
   constructor
   · exact fun h => h default
@@ -125,10 +127,10 @@ private theorem oneBlock_productBox {q : ℕ} (Q : Box (Fin q)) :
     subst i
     exact h
 
-private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
+private theorem cubeGridMaximal_power_integral {q : ℕ} (D : CubeGrid q)
     (hq : 0 < q) (H : (Fin q → ℝ) → ℝ≥0∞) (hH : Measurable H)
     (p : ℝ) (hp : 1 < p) :
-    (∫⁻ x, (⨆ Q : {Q : Box (Fin q) | ∃ n : ℤ, Q ∈ D.cubes n},
+    (∫⁻ x, (⨆ Q : {Q : Box (Fin q) | ∃ n : ℤ, Q ∈ D.cubesAtGeneration n},
       (Q.1 : Set (Fin q → ℝ)).indicator
         (fun _ => (volume (Q.1 : Set (Fin q → ℝ)))⁻¹ *
           ∫⁻ y in (Q.1 : Set (Fin q → ℝ)), H y) x) ^ p) ≤
@@ -153,7 +155,7 @@ private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
   let e : ProductPoint (fun _ : Fin 1 => q) ≃ᵐ (Fin q → ℝ) :=
     MeasurableEquiv.piUnique (fun _ : Fin 1 => Fin q → ℝ)
   have he : MeasurePreserving e := volume_preserving_piUnique _
-  let D1 : ∀ _ : Fin 1, DyadicGrid q := fun _ => D
+  let D1 : ∀ _ : Fin 1, CubeGrid q := fun _ => D
   let g1 : ProductPoint (fun _ : Fin 1 => q) → ℝ := fun z => g (e z)
   have hg1 : MemLp g1 (ENNReal.ofReal p) volume := hg.comp_measurePreserving he
   have hin : (∫⁻ z, (ENNReal.ofReal |g1 z|) ^ p) = ∫⁻ x, (H x) ^ p := by
@@ -162,7 +164,7 @@ private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
         he.lintegral_comp_emb e.measurableEmbedding _
       _ = _ := lintegral_congr_ae (hreal.fun_comp (fun t => t ^ p))
   have hpoint (x : Fin q → ℝ) :
-      (⨆ Q : {Q : Box (Fin q) | ∃ n : ℤ, Q ∈ D.cubes n},
+      (⨆ Q : {Q : Box (Fin q) | ∃ n : ℤ, Q ∈ D.cubesAtGeneration n},
         (Q.1 : Set (Fin q → ℝ)).indicator
           (fun _ => (volume (Q.1 : Set (Fin q → ℝ)))⁻¹ *
             ∫⁻ y in (Q.1 : Set (Fin q → ℝ)), H y) x) ≤
@@ -172,16 +174,17 @@ private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
     by_cases hx : x ∈ Q.1
     · rw [Set.indicator_of_mem hx]
       let R : ∀ _ : Fin 1, Box (Fin q) := fun _ => Q.1
-      have hR : R ∈ gridRectangles D1 := fun _ => Q.property
-      have hset : productBox R = e ⁻¹' (Q.1 : Set (Fin q → ℝ)) :=
-        oneBlock_productBox Q.1
-      have hxR : e.symm x ∈ productBox R := by
+      have hR : R ∈ gridRectangles D1 :=
+        (mem_gridRectangles_iff D1 R).mpr (fun _ => Q.property)
+      have hset : productRectangle R = e ⁻¹' (Q.1 : Set (Fin q → ℝ)) :=
+        oneBlock_productRectangle Q.1
+      have hxR : e.symm x ∈ productRectangle R := by
         rw [hset]
         exact (e.apply_symm_apply x).symm ▸ hx
-      have hvol : volume.real (productBox R) =
+      have hvol : volume.real (productRectangle R) =
           volume.real (Q.1 : Set (Fin q → ℝ)) := by
         rw [measureReal_def, measureReal_def, hset, he.measure_preimage_equiv]
-      have hi : (∫ z in productBox R, |g1 z|) =
+      have hi : (∫ z in productRectangle R, |g1 z|) =
           ∫ y in (Q.1 : Set (Fin q → ℝ)), |g y| := by
         rw [hset]
         exact (he.restrict_preimage Q.1.measurableSet_coe).integral_comp' (fun y => |g y|)
@@ -190,16 +193,16 @@ private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
           isFiniteMeasure_restrict.mpr (Q.1.measure_coe_lt_top volume).ne
         apply MemLp.integrable _ (hg.restrict (Q.1 : Set (Fin q → ℝ)))
         simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal hp.le
-      have hmean : ENNReal.ofReal ((∫ z in productBox R, |g1 z|) /
-          volume.real (productBox R)) =
+      have hmean : ENNReal.ofReal ((∫ z in productRectangle R, |g1 z|) /
+          volume.real (productRectangle R)) =
           (volume (Q.1 : Set (Fin q → ℝ)))⁻¹ *
             ∫⁻ y in (Q.1 : Set (Fin q → ℝ)), H y := by
         rw [hi, hvol]
         exact ofReal_boxMean_eq_lintegral Q.1 g hgQ H hreal
       have hsel := le_iSup (fun S : gridRectangles D1 =>
-        ENNReal.ofReal ((productBox S.1).indicator
-          (fun _ => (∫ y in productBox S.1, |g1 y|) /
-            volume.real (productBox S.1)) (e.symm x))) ⟨R, hR⟩
+        ENNReal.ofReal ((productRectangle S.1).indicator
+          (fun _ => (∫ y in productRectangle S.1, |g1 y|) /
+            volume.real (productRectangle S.1)) (e.symm x))) ⟨R, hR⟩
       rw [Set.indicator_of_mem hxR, hmean] at hsel
       exact hsel
     · rw [Set.indicator_of_notMem hx]
@@ -219,7 +222,7 @@ private theorem cubeGridMaximal_power_integral {q : ℕ} (D : DyadicGrid q)
 
 /-- The whole-grid coordinate operator has the one-coordinate
 power-integral bound. Both sides may be infinite. -/
-theorem coordinateGridMaximal_power_integral (D : ∀ i, DyadicGrid (d i))
+theorem coordinateGridMaximal_power_integral (D : ∀ i, CubeGrid (d i))
     (j : Fin m) (hd : 0 < d j) (F : ProductPoint d → ℝ≥0∞)
     (hF : Measurable F) (p : ℝ) (hp : 1 < p) :
     (∫⁻ x, (coordinateGridMaximal D j F x) ^ p) ≤
@@ -245,7 +248,7 @@ theorem coordinateGridMaximal_power_integral (D : ∀ i, DyadicGrid (d i))
     _ = _ := lintegral_const_mul C (hF.pow_const p)
 
 private theorem foldr_coordinateGridMaximal_power_integral
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F) (p : ℝ) (hp : 1 < p)
     (order : List (Fin m)) :
     (∫⁻ x, (order.foldr (fun j G => coordinateGridMaximal D j G) F x) ^ p) ≤
@@ -267,7 +270,7 @@ private theorem foldr_coordinateGridMaximal_power_integral
 
 /-- Exact full-grid ordered-composition bound for every real p > 1. The
 empty list has coefficient one and is the identity operator. -/
-theorem iteratedGridMaximal_power_integral (D : ∀ i, DyadicGrid (d i))
+theorem iteratedGridMaximal_power_integral (D : ∀ i, CubeGrid (d i))
     (hd : ∀ i, 0 < d i) (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F)
     (p : ℝ) (hp : 1 < p) :
     (∫⁻ x, (iteratedGridMaximal D F x) ^ p) ≤
@@ -288,7 +291,7 @@ theorem iteratedGridMaximal_power_integral (D : ∀ i, DyadicGrid (d i))
   simpa only [iteratedGridMaximal, List.length_finRange, hC] using
     foldr_coordinateGridMaximal_power_integral D hd F hF p hp (List.finRange m)
 
-theorem iteratedGridMaximal_power_integral_ae (D : ∀ i, DyadicGrid (d i))
+theorem iteratedGridMaximal_power_integral_ae (D : ∀ i, CubeGrid (d i))
     (hd : ∀ i, 0 < d i) (F : ProductPoint d → ℝ≥0∞)
     (hF : AEMeasurable F volume) (p : ℝ) (hp : 1 < p) :
     (∫⁻ x, (iteratedGridMaximal D F x) ^ p) ≤
@@ -302,9 +305,9 @@ theorem iteratedGridMaximal_power_integral_ae (D : ∀ i, DyadicGrid (d i))
       (lintegral_congr_ae (hF.ae_eq_mk.symm.fun_comp (fun t => t ^ p)))
 
 private theorem familyMaximal_le_iteratedGridMaximal_ae
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ)
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ)
     (hf : AEStronglyMeasurable f volume)
-    (hlocal : ∀ Q : ∀ i, Box (Fin (d i)), IntegrableOn f (productBox Q) volume) :
+    (hlocal : ∀ Q : ∀ i, Box (Fin (d i)), IntegrableOn f (productRectangle Q) volume) :
     ∀ᵐ x ∂volume, familyMaximal (gridRectangles D) f x ≤
       iteratedGridMaximal D (fun y => ENNReal.ofReal |f y|) x := by
   let F : ProductPoint d → ℝ≥0∞ := fun x => ENNReal.ofReal |f x|
@@ -316,20 +319,20 @@ private theorem familyMaximal_le_iteratedGridMaximal_ae
   rw [hx]
   apply iSup_le
   intro Q
-  by_cases hxQ : x ∈ productBox Q.1
+  by_cases hxQ : x ∈ productRectangle Q.1
   · rw [Set.indicator_of_mem hxQ]
-    have hmean : ENNReal.ofReal ((∫ y in productBox Q.1, |f y|) /
-        volume.real (productBox Q.1)) =
-        (volume (productBox Q.1))⁻¹ * ∫⁻ y in productBox Q.1, F y := by
+    have hmean : ENNReal.ofReal ((∫ y in productRectangle Q.1, |f y|) /
+        volume.real (productRectangle Q.1)) =
+        (volume (productRectangle Q.1))⁻¹ * ∫⁻ y in productRectangle Q.1, F y := by
       have hi := ofReal_integral_eq_lintegral_ofReal (hlocal Q.1).abs
         (Filter.Eventually.of_forall (fun y => abs_nonneg (f y)))
-      rw [ENNReal.ofReal_div_of_pos (productBox_volume_pos Q.1), measureReal_def,
-        ENNReal.ofReal_toReal (productBox_volume_lt_top Q.1).ne, hi,
+      rw [ENNReal.ofReal_div_of_pos (productRectangle_volume_pos Q.1), measureReal_def,
+        ENNReal.ofReal_toReal (productRectangle_volume_lt_top Q.1).ne, hi,
         div_eq_mul_inv, mul_comm]
     calc
-      _ = (volume (productBox Q.1))⁻¹ * ∫⁻ y in productBox Q.1, F y := hmean
-      _ = (volume (productBox Q.1))⁻¹ * ∫⁻ y in productBox Q.1, hF.mk F y :=
-        congrArg ((volume (productBox Q.1))⁻¹ * ·)
+      _ = (volume (productRectangle Q.1))⁻¹ * ∫⁻ y in productRectangle Q.1, F y := hmean
+      _ = (volume (productRectangle Q.1))⁻¹ * ∫⁻ y in productRectangle Q.1, hF.mk F y :=
+        congrArg ((volume (productRectangle Q.1))⁻¹ * ·)
           (lintegral_congr_ae (ae_restrict_of_ae hF.ae_eq_mk))
       _ ≤ _ := by
         simpa only [Set.indicator_of_mem hxQ] using
@@ -341,7 +344,7 @@ private theorem familyMaximal_le_iteratedGridMaximal_ae
 /-- The middle expression in the ordinary rectangular maximal
 estimate, for arbitrary signed Lp input. Finiteness is established before
 the real-valued representatives are used in the norm chain. -/
-theorem ordinary_coordinate_composition (D : ∀ i, DyadicGrid (d i))
+theorem ordinary_coordinate_composition (D : ∀ i, CubeGrid (d i))
     (hd : ∀ i, 0 < d i) (f : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p)
     (hf : MemLp f (ENNReal.ofReal p) volume) :
     let T := iteratedGridMaximal D (fun x => ENNReal.ofReal |f x|)
@@ -376,10 +379,10 @@ theorem ordinary_coordinate_composition (D : ∀ i, DyadicGrid (d i))
     exact (ENNReal.rpow_lt_top_iff_of_pos hp0).mp hx
   have hTlp : MemLp (fun x => (T x).toReal) (ENNReal.ofReal p) volume :=
     memLp_toReal_of_power_integral volume T hTm p hp0 hout
-  have hlocal (Q : ∀ i, Box (Fin (d i))) : IntegrableOn f (productBox Q) volume := by
-    let : IsFiniteMeasure (volume.restrict (productBox Q)) :=
-      isFiniteMeasure_restrict.mpr (productBox_volume_lt_top Q).ne
-    exact MemLp.integrable hp1 (hf.restrict (productBox Q))
+  have hlocal (Q : ∀ i, Box (Fin (d i))) : IntegrableOn f (productRectangle Q) volume := by
+    let : IsFiniteMeasure (volume.restrict (productRectangle Q)) :=
+      isFiniteMeasure_restrict.mpr (productRectangle_volume_lt_top Q).ne
+    exact MemLp.integrable hp1 (hf.restrict (productRectangle Q))
   have hdom : ∀ᵐ x ∂volume, familyMaximal (gridRectangles D) f x ≤ T x :=
     familyMaximal_le_iteratedGridMaximal_ae D f hf.aestronglyMeasurable hlocal
   have hM : AEStronglyMeasurable

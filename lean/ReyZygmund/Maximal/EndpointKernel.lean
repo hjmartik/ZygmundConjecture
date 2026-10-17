@@ -8,9 +8,8 @@ import Mathlib.Tactic.Ring
 /-!
 # The scalar logarithmic kernel in the endpoint-to-strong estimate
 
-The Gamma integral is first shown integrable. Translation then gives
-the exact `exp 2 * k!` coefficient, with no assumed convergence of the
-logarithmic kernel. The final exponential substitution is a Lebesgue
+The Gamma integral is first shown integrable. Translation then gives the exact
+`exp 2 * k!` coefficient. The final exponential substitution is a Lebesgue
 change-of-variables identity.
 -/
 
@@ -114,8 +113,8 @@ private theorem lintegral_exp_shift_pow (k : ℕ) (ε : ℝ) :
         ∫⁻ u : ℝ in Ioi 2, ENNReal.ofReal (Real.exp (-(ε * u)) * u ^ k) := by
       rw [← hchange]
 
-/-- The exact logarithmic-exponential kernel estimate, including `k = 0` and
-the endpoint `ε = 1`. No convergence hypothesis is imposed. -/
+/-- The logarithmic-exponential kernel estimate, including `k = 0` and
+the endpoint `ε = 1`. -/
 theorem endpoint_log_exp_kernel (k : ℕ) (ε : ℝ) (hε : 0 < ε) (hε1 : ε ≤ 1) :
     (∫⁻ t : ℝ in Ioi 0,
       ENNReal.ofReal (Real.exp (-ε * t) * (Real.log (Real.exp 1 + Real.exp t)) ^ k)) ≤

@@ -1,10 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
-/-! # Scalar function in the quantitative remainder inequality
+/-! # Scalar energy in the weighted square-function estimates
 
-The denominator uses a real power. Its required positivity is a hypothesis of the
-theorem in `Weighted/Scalar.lean`.
-
+The function `scalarPsi` is the energy used in `Weighted/Scalar.lean`.
 -/
 
 namespace ReyZygmund

@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge22",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.dyadic_zygmund_conjecture"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

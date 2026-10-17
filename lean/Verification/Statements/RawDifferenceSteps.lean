@@ -17,7 +17,7 @@ def descendantIndicatorLeafConstantContract : Prop :=
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (P : ∀ i, Box (Fin (d i))),
     P ∈ productDescendants I N → ∀ c : ℝ,
-      ProductLeafConstant I N ((productBox P).indicator (fun _ => c))
+      ProductLeafConstant I N ((productRectangle P).indicator (fun _ => c))
 
 def differenceRectanglesContainmentContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (A : Finset (Fin m))
@@ -42,6 +42,6 @@ def rawDifferenceSupportContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}
     (Q : ∀ i, Box (Fin (d i))) (g : ProductPoint d → ℝ)
     (x : ProductPoint d),
-    x ∉ productBox Q → rawProductDifference Q g x = 0
+    x ∉ productRectangle Q → rawProductDifference Q g x = 0
 
 end ReyZygmundVerification

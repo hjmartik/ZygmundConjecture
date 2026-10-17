@@ -2,11 +2,10 @@ import ReyZygmund.Geometry.FiniteCubes
 import Mathlib.Order.Preorder.Finite
 
 /-!
-# Maximal members of the concrete finite descendant family
+# Maximal members of the finite descendant family
 
-Eligible projections are a finite set, not a multiset. All smallest cubes are
-inserted before maximal members are selected. No incomparability assumption is
-placed on the eligible family.
+Adjoin all smallest cubes to the finite set of eligible projections, then select
+the maximal members to form a partition of the top cube.
 -/
 
 noncomputable section
@@ -54,7 +53,7 @@ theorem partitionCubes_subset_descendants {I : Box ι} {N : ℕ}
   · exact he h
   · exact leaves_subset_descendants I N h
 
-/-- Maximal descendants are disjoint, even when the eligible cubes overlap. -/
+/-- Distinct maximal descendants are disjoint. -/
 theorem partitionCubes_disjoint {I P Q : Box ι} {N : ℕ}
     {eligible : Finset (Box ι)} (he : eligible ⊆ descendants I N)
     (hP : P ∈ partitionCubes I N eligible) (hQ : Q ∈ partitionCubes I N eligible)
@@ -131,8 +130,7 @@ theorem partitionCubes_eq_leaves_of_subset {I : Box ι} {N : ℕ}
   rw [partitionCubes, Finset.union_eq_right.mpr he]
   simpa only [partitionCubes, Finset.empty_union] using partitionCubes_empty I N
 
-/-- Paper-facing positive-dimensional instance of `eq:partition-indices`.
-The eligible family is deduplicated; no incomparability assumption is imposed. -/
+/-- The partition-index identity in positive dimension. -/
 theorem finite_partition_indices (d : ℕ) (hd : 0 < d) (I : Box (Fin d)) (N : ℕ)
     (eligible : Finset (Box (Fin d))) :
     (interior I N).filter (fun L => ∃ J ∈ eligible, L ≤ J) =
@@ -141,7 +139,7 @@ theorem finite_partition_indices (d : ℕ) (hd : 0 < d) (I : Box (Fin d)) (N : �
   exact partition_indices I N eligible
 
 /-- The maximal cubes partition the top cube, and each selected interior cube is
-contained in exactly one of them. The dimension is positive, as in the paper. -/
+contained in exactly one of them. -/
 theorem finite_maximal_partition (d : ℕ) (_hd : 0 < d) (I : Box (Fin d)) (N : ℕ)
     (eligible : Finset (Box (Fin d))) (he : eligible ⊆ descendants I N) :
     (maximalPartition I N eligible he).IsPartition ∧

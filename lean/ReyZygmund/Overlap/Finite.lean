@@ -4,8 +4,8 @@ import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 
 /-! # Finite overlap and its shadow
 
-The overlap is the sum of the indicators of the Euclidean rectangles.
-No geometry, sparseness or estimate is built into either definition.
+The overlap is the sum of the indicators of the Euclidean rectangles, and the
+shadow is their union.
 -/
 
 open BoxIntegral MeasureTheory
@@ -20,6 +20,13 @@ variable {m : ℕ} {d : Fin m → ℕ}
 /-- The union of a finite family of Euclidean rectangles. -/
 def finiteShadow (G : Finset (∀ i, Box (Fin (d i)))) : Set (Fin (∑ i, d i) → ℝ) :=
   ⋃ Q ∈ G, (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ))
+
+/-- Viewing a finite family as a set does not change its shadow. -/
+theorem finiteShadow_eq_shadow (G : Finset (MathlibOnly.Rectangle d)) :
+    finiteShadow G = MathlibOnly.shadow (G : Set (MathlibOnly.Rectangle d)) := by
+  ext x
+  simp only [finiteShadow, MathlibOnly.shadow, rectangle_eq_flatProductBox,
+    Set.mem_iUnion, Subtype.exists, Finset.mem_coe]
 
 /-- The number of rectangles of the finite family containing a point. -/
 noncomputable def finiteOverlap (G : Finset (∀ i, Box (Fin (d i))))

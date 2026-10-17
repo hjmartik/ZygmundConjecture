@@ -2,7 +2,7 @@
 
 These instructions explain how to preview and rebuild the optional website
 from the repository's Markdown and Lean files. The generated pages in `docs/`
-present the mathematical statements, consistency explanations, verification
+present the mathematical statements, specification guide, verification
 instructions and browsable Lean sources.
 
 For a local preview from the repository root:

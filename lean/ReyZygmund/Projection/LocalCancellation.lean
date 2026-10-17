@@ -45,7 +45,7 @@ theorem interior_below_averagingRectangle_removed
   · exact (hLR i).trans (hRJ i hij)
 
 /-- The full difference sum below an averaging rectangle vanishes on the
-projected input. This is an operator identity, including an empty index sum. -/
+projected input, as an operator identity. -/
 theorem averagingRectangle_difference_sum_vanishes
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (R : ∀ i, Box (Fin (d i)))

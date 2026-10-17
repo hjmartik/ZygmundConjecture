@@ -4,13 +4,14 @@ import Mathlib.Data.List.FinRange
 
 /-! # Coordinate maximal functions on the full dyadic grids
 
-The coordinate averages and their composition take extended nonnegative
-values. No cutoff or finite-integral convention enters these definitions.
+The coordinate averages and their composition take extended nonnegative values.
 The signed-input application starts with `ENNReal.ofReal |f x|`.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped ENNReal Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid)
 
 namespace ReyZygmund
 
@@ -26,13 +27,13 @@ noncomputable def coordinateGridAverage (j : Fin m) (Q : Box (Fin (d j)))
       ∫⁻ y in (Q : Set (Fin (d j) → ℝ)), F (Function.update x j y)) x
 
 /-- The maximum over every cube of the specified coordinate grid. -/
-noncomputable def coordinateGridMaximal (D : ∀ i, DyadicGrid (d i))
+noncomputable def coordinateGridMaximal (D : ∀ i, CubeGrid (d i))
     (j : Fin m) (F : ProductPoint d → ℝ≥0∞) (x : ProductPoint d) : ℝ≥0∞ :=
-  ⨆ Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubes n},
+  ⨆ Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n},
     coordinateGridAverage j Q.1 F x
 
 /-- Ordered composition `M₀ (M₁ (... Mₘ₋₁ F))` of the grid operators. -/
-noncomputable def iteratedGridMaximal (D : ∀ i, DyadicGrid (d i))
+noncomputable def iteratedGridMaximal (D : ∀ i, CubeGrid (d i))
     (F : ProductPoint d → ℝ≥0∞) : ProductPoint d → ℝ≥0∞ :=
   (List.finRange m).foldr (fun j H => coordinateGridMaximal D j H) F
 

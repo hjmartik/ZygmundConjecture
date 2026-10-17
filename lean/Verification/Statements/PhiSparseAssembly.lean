@@ -12,6 +12,8 @@ is imported or aliased. The main statement remains the independent challenge.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid dyadicZygmundRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry ReyZygmund.Continuous ReyZygmund.Overlap
@@ -20,11 +22,11 @@ def phiSparseOverlapMomentsContract : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n →
     ∃ K : ℝ, 0 < K ∧
       ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-        ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
-          ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicPhiRectangles D Phi →
+        ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+          ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicZygmundRectangles D Phi →
             ∀ eta : ℝ, 0 < eta →
               ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-                (∀ R ∈ G, MeasurableSet (E R)) →
+                (∀ R ∈ G, NullMeasurableSet (E R) volume) →
                 (∀ R ∈ G, E R ⊆
                   (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
                 Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →
@@ -40,10 +42,10 @@ def phiSparseOverlapExponentialContract : Prop :=
     ∀ eta : ℝ, 0 < eta →
       ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
         ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-          ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
-            ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicPhiRectangles D Phi →
+          ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+            ∀ (G : Set (∀ i, Box (Fin (d i)))), G ⊆ dyadicZygmundRectangles D Phi →
               ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-                (∀ R ∈ G, MeasurableSet (E R)) →
+                (∀ R ∈ G, NullMeasurableSet (E R) volume) →
                 (∀ R ∈ G, E R ⊆
                   (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
                 Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →

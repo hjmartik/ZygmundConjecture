@@ -7,8 +7,7 @@ import Mathlib.Tactic.Ring
 # The scalar logarithmic-exponential Young estimate
 
 The constant is fixed before the two nonnegative inputs. A single term of the
-exponential series gives the polynomial bound needed in the large-input case;
-no asymptotic growth estimate is assumed.
+exponential series gives the polynomial bound needed in the large-input case.
 -/
 
 namespace ReyZygmund.Scalar
@@ -36,8 +35,8 @@ private theorem polynomial_le_exp_above (k : ℕ) (α A t : ℝ)
     _ ≤ Real.exp (α * t) :=
       Real.pow_div_factorial_le_exp (α * t) (mul_nonneg hα.le ht) (k + 1)
 
-/-- The paper's scalar estimate, including zero inputs and the exact inverse
-factor. The logarithmic power is natural and the power of `b` is real. -/
+/-- The logarithmic-exponential Young estimate with its exact inverse factor.
+The logarithmic power is natural and the power of `b` is real. -/
 theorem orlicz_young
     (k : ℕ) (hk : 1 ≤ k) (c C1 C2 : ℝ)
     (hc : 0 < c) (hC1 : 0 < C1) (hC2 : 0 < C2) :

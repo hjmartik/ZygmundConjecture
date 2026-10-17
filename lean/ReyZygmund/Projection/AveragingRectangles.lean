@@ -3,10 +3,8 @@ import ReyZygmund.Projection.FiniteIndices
 /-! # The finite family of averaging rectangles
 
 These product descendants have a cross-coordinate partition cube in at least one
-coordinate. The maximal partitions give coverage without incomparability;
-incomparability is used to include every original rectangle.
-
-
+coordinate. The maximal partitions cover the top rectangle; incomparability
+ensures that the averaging family contains every original rectangle.
 -/
 
 noncomputable section
@@ -30,8 +28,7 @@ def productDescendants (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) :
     R ∈ productDescendants I N ↔ ∀ i, R i ∈ descendants (I i) (N i) :=
   Fintype.mem_piFinset
 
-/-- The averaging family counts each rectangle and each projection once. It need not
-be incomparable. -/
+/-- The averaging family counts each rectangle and each projection once. -/
 def averagingRectangles (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) : Finset (∀ i, Box (Fin (d i))) :=
   (productDescendants I N).filter (fun R =>
@@ -58,14 +55,14 @@ theorem root_mem_productDescendants (I : ∀ i, Box (Fin (d i))) (N : Fin m → 
   intro i
   exact mem_descendants.mpr ⟨0, Nat.zero_le _, by simp⟩
 
-theorem productBox_subset_root_of_mem_productDescendants
+theorem productRectangle_subset_root_of_mem_productDescendants
     {I : ∀ i, Box (Fin (d i))} {N : Fin m → ℕ} {R : ∀ i, Box (Fin (d i))}
-    (hR : R ∈ productDescendants I N) : productBox R ⊆ productBox I := by
+    (hR : R ∈ productDescendants I N) : productRectangle R ⊆ productRectangle I := by
   intro x hx
-  apply (mem_productBox I x).mpr
+  apply (mem_productRectangle I x).mpr
   intro i
   exact le_of_mem_descendants (mem_productDescendants.mp hR i)
-    ((mem_productBox R x).mp hx i)
+    ((mem_productRectangle R x).mp hx i)
 
 /-- The unused coordinate placeholder does not affect eligible projections. -/
 theorem eligibleProjections_update (j : Fin m)
@@ -78,8 +75,7 @@ theorem eligibleProjections_update (j : Fin m)
   intro R _
   constructor <;> intro h i hij <;> simpa [hij] using h i hij
 
-/-- Refinement rules out a strictly larger smallest cube above a descendant.
-The argument also works when a coordinate factor has dimension zero. -/
+/-- Refinement rules out a strictly larger smallest cube above a descendant. -/
 private theorem leaf_le_of_descendant_le {ι : Type*} [Fintype ι]
     {B R Q : Box ι} {n : ℕ} (hR : R ∈ descendants B n) (hQ : Q ∈ leaves B n)
     (hRQ : R ≤ Q) : Q ≤ R := by
@@ -145,36 +141,36 @@ theorem root_update_mem_averagingRectangles
     · simpa [hij] using mem_productDescendants.mp (root_mem_productDescendants I N) i
   · simpa only [Function.update_self, eligibleProjections_update] using hP
 
-/-- The averaging rectangles with at most one factor different from its top cube already
-give coverage. Incomparability is not needed. -/
+/-- The averaging rectangles with at most one factor different from its top cube
+already give coverage. -/
 theorem averagingRectangles_cover_at
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
-    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     ∃ R ∈ averagingRectangles I N G,
-      x ∈ productBox R ∧ ∀ i, i ≠ j → R i = I i := by
+      x ∈ productRectangle R ∧ ∀ i, i ≠ j → R i = I i := by
   have he := eligibleProjections_subset_descendants I N j G I
     (fun R hR i => mem_productDescendants.mp (hG hR) i)
   obtain ⟨P, hP, hxP⟩ := maximalPartition_isPartition (I j) (N j)
-    (eligibleProjections j G I) he (x j) ((mem_productBox I x).mp hx j)
+    (eligibleProjections j G I) he (x j) ((mem_productRectangle I x).mp hx j)
   refine ⟨Function.update I j P, root_update_mem_averagingRectangles I N G hG j P hP,
     ?_, ?_⟩
-  · apply (mem_productBox _ x).mpr
+  · apply (mem_productRectangle _ x).mpr
     intro i
     by_cases hij : i = j
     · subst i
       simpa using hxP
-    · simpa [hij] using (mem_productBox I x).mp hx i
+    · simpa [hij] using (mem_productRectangle I x).mp hx i
   · intro i hij
     simp [hij]
 
 /-- The averaging rectangles cover the top rectangle for every finite original
-family of descendants, including the empty family. -/
+family of descendants. -/
 theorem averagingRectangles_cover (hm : 0 < m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
-    ∃ R ∈ averagingRectangles I N G, x ∈ productBox R := by
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
+    ∃ R ∈ averagingRectangles I N G, x ∈ productRectangle R := by
   obtain ⟨R, hR, hxR, _⟩ := averagingRectangles_cover_at I N G hG ⟨0, hm⟩ x hx
   exact ⟨R, hR, hxR⟩
 
@@ -183,12 +179,12 @@ theorem averagingRectangles_cover (hm : 0 < m)
 theorem averagingRectangles_iUnion (hm : 0 < m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N) :
-    (⋃ R ∈ averagingRectangles I N G, productBox R) = productBox I := by
+    (⋃ R ∈ averagingRectangles I N G, productRectangle R) = productRectangle I := by
   ext x
   simp only [Set.mem_iUnion]
   constructor
   · rintro ⟨R, hR, hxR⟩
-    exact productBox_subset_root_of_mem_productDescendants
+    exact productRectangle_subset_root_of_mem_productDescendants
       (averagingRectangles_subset_productDescendants I N G hR) hxR
   · intro hx
     obtain ⟨R, hR, hxR⟩ := averagingRectangles_cover hm I N G hG x hx

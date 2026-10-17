@@ -7,8 +7,7 @@ import Mathlib.Tactic.Linarith
 
 The last cube factors decrease in the given order. Deleting earlier
 first-coordinate boxes from each first-coordinate box gives disjoint subsets of at
-least half its volume, by the product-overlap bound. This argument needs neither a
-grid nor positive coordinate dimensions.
+least half its volume, by the product-overlap bound.
 -/
 
 open BoxIntegral MeasureTheory

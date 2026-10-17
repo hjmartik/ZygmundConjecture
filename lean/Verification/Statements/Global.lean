@@ -1,7 +1,10 @@
-import ReyZygmund.Maximal.Global
+import ReyZygmund.Maximal.Constants
+import ReyZygmund.Maximal.Countable
 
 open BoxIntegral MeasureTheory
 open scoped Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmundVerification
 
@@ -9,7 +12,7 @@ open ReyZygmund ReyZygmund.Geometry
 
 def globalMaximalIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -21,7 +24,7 @@ def globalMaximalIntegralContract : Prop :=
 
 def globalMaximalFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -30,7 +33,7 @@ def globalMaximalFiniteAEContract : Prop :=
 
 def globalMaximalNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
   (∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
@@ -41,9 +44,9 @@ def globalMaximalNormContract : Prop :=
 
 def globalSetIncomparableNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, 2 ≤ m → (∀ i, 0 < d i) →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+  ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
   G ⊆ gridRectangles D →
-  (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → R = S) →
+  (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → R = S) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 1 < p →
   MemLp f (ENNReal.ofReal p) volume →
     eLpNorm (fun x => (familyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤

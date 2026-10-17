@@ -1,0 +1,3 @@
+import ReyZygmund.MathlibOnly.SupportingStatements
+
+theorem ReyZygmund.MathlibOnly.product_weighted_square_function_estimate : ReyZygmund.MathlibOnly.ProductWeightedSquareFunctionEstimate := by sorry

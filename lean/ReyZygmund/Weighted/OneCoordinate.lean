@@ -17,25 +17,17 @@ open Geometry
 
 variable {d : ℕ}
 
-/-- The scalar average occurring inside the supported averaging operator. -/
-private noncomputable def boxMean (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ) : ℝ :=
-  (∫ x in (Q : Set (Fin d → ℝ)), g x) / volume.real (Q : Set (Fin d → ℝ))
-
 private lemma volume_mul_boxMean (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ) :
-    volume.real (Q : Set (Fin d → ℝ)) * boxMean Q g =
+    volume.real (Q : Set (Fin d → ℝ)) * cubeMean Q g =
       ∫ x in (Q : Set (Fin d → ℝ)), g x := by
-  unfold boxMean
+  unfold cubeMean
   field_simp [ne_of_gt (box_volume_pos Q)]
-
-private lemma boxAverage_apply_mem (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
-    {x : Fin d → ℝ} (hx : x ∈ Q) : boxAverage Q g x = boxMean Q g := by
-  simp [boxAverage, boxMean, hx]
 
 private lemma boxMean_of_constant (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
     (hg : ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) {x : Fin d → ℝ} (hx : x ∈ Q) :
-    boxMean Q g = g x := by
+    cubeMean Q g = g x := by
   have h := congrFun (boxAverage_of_constant Q g hg) x
-  simpa [boxAverage, boxMean, hx] using h
+  simpa [cubeAverage, cubeMean, hx] using h
 
 private lemma sum_integral_partition {I : Box (Fin d)} (π : Prepartition I)
     (hπ : π.IsPartition) (g : (Fin d → ℝ) → ℝ)
@@ -56,8 +48,8 @@ private lemma sum_volume_partition {I : Box (Fin d)} (π : Prepartition I)
 private lemma sum_volume_mul_boxMean {I : Box (Fin d)} (π : Prepartition I)
     (hπ : π.IsPartition) (g : (Fin d → ℝ) → ℝ)
     (hg : IntegrableOn g (I : Set (Fin d → ℝ)) volume) :
-    (∑ Q ∈ π.boxes, volume.real (Q : Set (Fin d → ℝ)) * boxMean Q g) =
-      volume.real (I : Set (Fin d → ℝ)) * boxMean I g := by
+    (∑ Q ∈ π.boxes, volume.real (Q : Set (Fin d → ℝ)) * cubeMean Q g) =
+      volume.real (I : Set (Fin d → ℝ)) * cubeMean I g := by
   simp_rw [volume_mul_boxMean]
   exact sum_integral_partition π hπ g hg
 
@@ -65,7 +57,7 @@ private lemma sum_volume_mul_mean_sub {I : Box (Fin d)} (π : Prepartition I)
     (hπ : π.IsPartition) (g : (Fin d → ℝ) → ℝ)
     (hg : IntegrableOn g (I : Set (Fin d → ℝ)) volume) :
     (∑ Q ∈ π.boxes, volume.real (Q : Set (Fin d → ℝ)) *
-      (boxMean Q g - boxMean I g)) = 0 := by
+      (cubeMean Q g - cubeMean I g)) = 0 := by
   simp_rw [mul_sub]
   rw [Finset.sum_sub_distrib, sum_volume_mul_boxMean π hπ g hg,
     ← Finset.sum_mul, sum_volume_partition π hπ, sub_self]
@@ -88,47 +80,17 @@ private lemma integral_eq_volume_mul {Q : Box (Fin d)}
       setIntegral_congr_fun Q.measurableSet_coe hg
     _ = _ := by rw [setIntegral_const, smul_eq_mul]
 
-private lemma integrableOn_partition_constant {I : Box (Fin d)} (π : Prepartition I)
-    (hπ : π.IsPartition) (g : (Fin d → ℝ) → ℝ)
-    (hg : ∀ Q ∈ π.boxes, ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) :
-    IntegrableOn g (I : Set (Fin d → ℝ)) volume := by
-  rw [← hπ.iUnion_eq, Prepartition.iUnion_def]
-  apply integrableOn_finset_iUnion.mpr
-  intro Q hQ
-  have hc : IntegrableOn (fun _ : Fin d → ℝ => g Q.upper)
-      (Q : Set (Fin d → ℝ)) volume :=
-    integrableOn_const (Q.measure_coe_lt_top volume).ne
-  exact hc.congr_fun (fun x hx => hg Q hQ Q.upper Q.upper_mem x hx) Q.measurableSet_coe
-
-private lemma boxMean_pos (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
-    (hg : IntegrableOn g (Q : Set (Fin d → ℝ)) volume)
-    (hpos : ∀ x ∈ Q, 0 < g x) : 0 < boxMean Q g := by
-  have hnonneg : 0 ≤ᵐ[volume.restrict (Q : Set (Fin d → ℝ))] g :=
-    (ae_restrict_iff' Q.measurableSet_coe).mpr
-      (Filter.Eventually.of_forall fun x hx => (hpos x hx).le)
-  have hsupp : Function.support g ∩ (Q : Set (Fin d → ℝ)) = Q := by
-    ext x
-    constructor
-    · exact And.right
-    · intro hx
-      exact ⟨ne_of_gt (hpos x hx), hx⟩
-  unfold boxMean
-  apply div_pos ?_ (box_volume_pos Q)
-  apply (setIntegral_pos_iff_support_of_nonneg_ae hnonneg hg).mpr
-  rw [hsupp]
-  exact (ENNReal.toReal_pos_iff.mp (box_volume_pos Q)).1
-
 private lemma boxMean_child_le {Q R : Box (Fin d)}
     (hR : R ∈ Prepartition.splitCenter Q) (g : (Fin d → ℝ) → ℝ)
     (hg : IntegrableOn g (Q : Set (Fin d → ℝ)) volume)
     (hnonneg : ∀ x ∈ Q, 0 ≤ g x) :
-    boxMean R g ≤ (2 : ℝ) ^ d * boxMean Q g := by
+    cubeMean R g ≤ (2 : ℝ) ^ d * cubeMean Q g := by
   have hle : (R : Set (Fin d → ℝ)) ⊆ Q := (Prepartition.splitCenter Q).le_of_mem hR
   have hnn : 0 ≤ᵐ[volume.restrict (Q : Set (Fin d → ℝ))] g :=
     (ae_restrict_iff' Q.measurableSet_coe).mpr
       (Filter.Eventually.of_forall hnonneg)
   have hi := setIntegral_mono_set hg hnn (Filter.Eventually.of_forall hle)
-  unfold boxMean
+  unfold cubeMean
   rw [child_volume hR]
   apply (div_le_iff₀ (div_pos (box_volume_pos Q) (pow_pos (by norm_num) d))).mpr
   calc
@@ -138,46 +100,22 @@ private lemma boxMean_child_le {Q R : Box (Fin d)}
         (volume.real (Q : Set (Fin d → ℝ)) / (2 : ℝ) ^ d) := by
       field_simp [ne_of_gt (box_volume_pos Q), ne_of_gt (pow_pos (by norm_num : (0 : ℝ) < 2) d)]
 
-private lemma boxDifference_apply_child {Q R : Box (Fin d)}
-    (hR : R ∈ Prepartition.splitCenter Q) (g : (Fin d → ℝ) → ℝ)
-    {x : Fin d → ℝ} (hx : x ∈ R) :
-    boxDifference Q g x = boxMean R g - boxMean Q g := by
-  classical
-  have hxQ : x ∈ Q := (Prepartition.splitCenter Q).le_of_mem hR hx
-  simp only [boxDifference, Pi.sub_apply, Finset.sum_apply]
-  rw [Finset.sum_eq_single R]
-  · rw [boxAverage_apply_mem R g hx, boxAverage_apply_mem Q g hxQ]
-  · intro S hS hSR
-    have hxS : x ∉ S := fun h =>
-      hSR ((Prepartition.splitCenter Q).eq_of_mem_of_mem hS hR h hx)
-    simp [boxAverage, hxS]
-  · simp [hR]
-
-private lemma difference_quotient_integrable (Q : Box (Fin d))
-    (u : (Fin d → ℝ) → ℝ) (b r : ℝ) :
-    IntegrableOn (fun x => (boxDifference Q u x) ^ 2 / Real.rpow b r)
-      (Q : Set (Fin d → ℝ)) volume := by
-  apply integrableOn_partition_constant (Prepartition.splitCenter Q)
-    (Prepartition.isPartition_splitCenter Q)
-  intro R hR x hx y hy
-  rw [boxDifference_apply_child hR u hx, boxDifference_apply_child hR u hy]
-
 private lemma integral_difference_square (Q : Box (Fin d))
     (u : (Fin d → ℝ) → ℝ) (b r : ℝ) :
-    (∫ x in (Q : Set (Fin d → ℝ)), (boxDifference Q u x) ^ 2 / Real.rpow b r) =
+    (∫ x in (Q : Set (Fin d → ℝ)), (cubeDifference Q u x) ^ 2 / Real.rpow b r) =
       ∑ R ∈ (Prepartition.splitCenter Q).boxes,
-        volume.real (R : Set (Fin d → ℝ)) * (boxMean R u - boxMean Q u) ^ 2 /
+        volume.real (R : Set (Fin d → ℝ)) * (cubeMean R u - cubeMean Q u) ^ 2 /
           Real.rpow b r := by
   rw [← sum_integral_partition (Prepartition.splitCenter Q)
     (Prepartition.isPartition_splitCenter Q)
-    (fun x => (boxDifference Q u x) ^ 2 / Real.rpow b r)
-    (difference_quotient_integrable Q u b r)]
+    (fun x => (cubeDifference Q u x) ^ 2 / Real.rpow b r)
+    (integrableOn_comp_cubeDifference Q u (fun a => a ^ 2 / Real.rpow b r))]
   apply Finset.sum_congr rfl
   intro R hR
   calc
     _ = volume.real (R : Set (Fin d → ℝ)) *
-        ((boxMean R u - boxMean Q u) ^ 2 / Real.rpow b r) :=
-      integral_eq_volume_mul (fun x hx => by rw [boxDifference_apply_child hR u hx])
+        ((cubeMean R u - cubeMean Q u) ^ 2 / Real.rpow b r) :=
+      integral_eq_volume_mul (fun x hx => by rw [cubeDifference_apply_child hR u hx])
     _ = _ := by ring
 
 private lemma energy_integrable (I : Box (Fin d)) (N : ℕ)
@@ -254,40 +192,40 @@ private lemma weighted_parent_step (Q : Box (Fin d))
     (hv : IntegrableOn v (Q : Set (Fin d → ℝ)) volume)
     (hvpos : ∀ x ∈ Q, 0 < v x) :
     (∫ x in (Q : Set (Fin d → ℝ)),
-        (boxDifference Q u x) ^ 2 / Real.rpow (boxMean Q v) (2 - p)) ≤
+        (cubeDifference Q u x) ^ 2 / Real.rpow (cubeMean Q v) (2 - p)) ≤
       (Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1))) *
         ((∑ R ∈ (Prepartition.splitCenter Q).boxes,
-            volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (boxMean R u) (boxMean R v)) -
-          volume.real (Q : Set (Fin d → ℝ)) * scalarPsi p (boxMean Q u) (boxMean Q v)) := by
+            volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (cubeMean R u) (cubeMean R v)) -
+          volume.real (Q : Set (Fin d → ℝ)) * scalarPsi p (cubeMean Q u) (cubeMean Q v)) := by
   have hpair (R : Box (Fin d)) (hR : R ∈ (Prepartition.splitCenter Q).boxes) :=
-    scalar_pair_estimate d p (boxMean Q u) (boxMean R u) (boxMean Q v) (boxMean R v)
-      hp hp2 (boxMean_pos Q v hv hvpos)
-      (boxMean_pos R v (hv.mono_set ((Prepartition.splitCenter Q).le_of_mem hR))
+    scalar_pair_estimate d p (cubeMean Q u) (cubeMean R u) (cubeMean Q v) (cubeMean R v)
+      hp hp2 (cubeMean_pos Q v hv hvpos)
+      (cubeMean_pos R v (hv.mono_set ((Prepartition.splitCenter Q).le_of_mem hR))
         (fun x hx => hvpos x ((Prepartition.splitCenter Q).le_of_mem hR hx)))
       (boxMean_child_le hR v hv (fun x hx => (hvpos x hx).le))
   have hcancel :
       (∑ R ∈ (Prepartition.splitCenter Q).boxes,
         volume.real (R : Set (Fin d → ℝ)) *
-          (scalarPsi p (boxMean R u) (boxMean R v) -
-            scalarPsi p (boxMean Q u) (boxMean Q v) -
-            2 * boxMean Q u * (boxMean R u - boxMean Q u) /
-              Real.rpow (boxMean Q v) (2 - p) +
-            (2 - p) * (boxMean Q u) ^ 2 * (boxMean R v - boxMean Q v) /
-              Real.rpow (boxMean Q v) (3 - p))) =
+          (scalarPsi p (cubeMean R u) (cubeMean R v) -
+            scalarPsi p (cubeMean Q u) (cubeMean Q v) -
+            2 * cubeMean Q u * (cubeMean R u - cubeMean Q u) /
+              Real.rpow (cubeMean Q v) (2 - p) +
+            (2 - p) * (cubeMean Q u) ^ 2 * (cubeMean R v - cubeMean Q v) /
+              Real.rpow (cubeMean Q v) (3 - p))) =
         (∑ R ∈ (Prepartition.splitCenter Q).boxes,
-          volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (boxMean R u) (boxMean R v)) -
-        volume.real (Q : Set (Fin d → ℝ)) * scalarPsi p (boxMean Q u) (boxMean Q v) := by
+          volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (cubeMean R u) (cubeMean R v)) -
+        volume.real (Q : Set (Fin d → ℝ)) * scalarPsi p (cubeMean Q u) (cubeMean Q v) := by
     calc
       _ = (∑ R ∈ (Prepartition.splitCenter Q).boxes,
-            volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (boxMean R u) (boxMean R v)) -
+            volume.real (R : Set (Fin d → ℝ)) * scalarPsi p (cubeMean R u) (cubeMean R v)) -
           (∑ R ∈ (Prepartition.splitCenter Q).boxes, volume.real (R : Set (Fin d → ℝ))) *
-            scalarPsi p (boxMean Q u) (boxMean Q v) -
-          (2 * boxMean Q u / Real.rpow (boxMean Q v) (2 - p)) *
+            scalarPsi p (cubeMean Q u) (cubeMean Q v) -
+          (2 * cubeMean Q u / Real.rpow (cubeMean Q v) (2 - p)) *
             (∑ R ∈ (Prepartition.splitCenter Q).boxes,
-              volume.real (R : Set (Fin d → ℝ)) * (boxMean R u - boxMean Q u)) +
-          ((2 - p) * (boxMean Q u) ^ 2 / Real.rpow (boxMean Q v) (3 - p)) *
+              volume.real (R : Set (Fin d → ℝ)) * (cubeMean R u - cubeMean Q u)) +
+          ((2 - p) * (cubeMean Q u) ^ 2 / Real.rpow (cubeMean Q v) (3 - p)) *
             (∑ R ∈ (Prepartition.splitCenter Q).boxes,
-              volume.real (R : Set (Fin d → ℝ)) * (boxMean R v - boxMean Q v)) := by
+              volume.real (R : Set (Fin d → ℝ)) * (cubeMean R v - cubeMean Q v)) := by
         simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib,
           ← Finset.sum_add_distrib]
         apply Finset.sum_congr rfl
@@ -306,12 +244,12 @@ private lemma weighted_parent_step (Q : Box (Fin d))
     _ ≤ ∑ R ∈ (Prepartition.splitCenter Q).boxes,
         (Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1))) *
           (volume.real (R : Set (Fin d → ℝ)) *
-            (scalarPsi p (boxMean R u) (boxMean R v) -
-              scalarPsi p (boxMean Q u) (boxMean Q v) -
-              2 * boxMean Q u * (boxMean R u - boxMean Q u) /
-                Real.rpow (boxMean Q v) (2 - p) +
-              (2 - p) * (boxMean Q u) ^ 2 * (boxMean R v - boxMean Q v) /
-                Real.rpow (boxMean Q v) (3 - p))) := by
+            (scalarPsi p (cubeMean R u) (cubeMean R v) -
+              scalarPsi p (cubeMean Q u) (cubeMean Q v) -
+              2 * cubeMean Q u * (cubeMean R u - cubeMean Q u) /
+                Real.rpow (cubeMean Q v) (2 - p) +
+              (2 - p) * (cubeMean Q u) ^ 2 * (cubeMean R v - cubeMean Q v) /
+                Real.rpow (cubeMean Q v) (3 - p))) := by
       apply Finset.sum_le_sum
       intro R hR
       convert mul_le_mul_of_nonneg_left (hpair R hR) (box_volume_pos R).le using 1 <;> ring
@@ -339,7 +277,7 @@ private lemma leaf_energy_sum (I : Box (Fin d)) (N : ℕ)
     (hu : ∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, u x = u y)
     (hv : ∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, v x = v y) :
     (∑ Q ∈ leaves I N, volume.real (Q : Set (Fin d → ℝ)) *
-      scalarPsi p (boxMean Q u) (boxMean Q v)) =
+      scalarPsi p (cubeMean Q u) (cubeMean Q v)) =
       ∫ x in (I : Set (Fin d → ℝ)), (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
   rw [← sum_integral_partition (level I N) (level_isPartition I N)
     (fun x => (u x) ^ 2 / Real.rpow (v x) (2 - p)) (energy_integrable I N u v p hu hv)]
@@ -353,7 +291,7 @@ private lemma leaf_energy_sum (I : Box (Fin d)) (N : ℕ)
 
 /-- The weighted square estimate retains the paper's constant and permits signed `u`.
 Constancy on the smallest cubes gives integrability; positivity of `v` gives
-positive denominator averages. The top cube may be any positive-width box. -/
+positive denominator averages. -/
 theorem weighted_square (d : ℕ) (hd : 0 < d)
     (I : Box (Fin d)) (N : ℕ) (u v : (Fin d → ℝ) → ℝ) (p : ℝ)
     (hp : 1 < p) (hp2 : p ≤ 2)
@@ -362,7 +300,7 @@ theorem weighted_square (d : ℕ) (hd : 0 < d)
     (hvpos : ∀ x ∈ I, 0 < v x) :
     (∑ Q ∈ interior I N,
       ∫ x in (Q : Set (Fin d → ℝ)),
-        (boxDifference Q u x) ^ 2 /
+        (cubeDifference Q u x) ^ 2 /
           Real.rpow ((∫ y in (Q : Set (Fin d → ℝ)), v y) /
             volume.real (Q : Set (Fin d → ℝ))) (2 - p)) ≤
       Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1)) *
@@ -374,21 +312,21 @@ theorem weighted_square (d : ℕ) (hd : 0 < d)
     mul_nonneg (Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 2) _).le
       (div_nonneg (by linarith) (by linarith))
   have htop : 0 ≤ volume.real (I : Set (Fin d → ℝ)) *
-      scalarPsi p (boxMean I u) (boxMean I v) := by
+      scalarPsi p (cubeMean I u) (cubeMean I v) := by
     apply mul_nonneg (box_volume_pos I).le
     unfold scalarPsi
-    exact div_nonneg (sq_nonneg _) (Real.rpow_pos_of_pos (boxMean_pos I v hvi hvpos) _).le
+    exact div_nonneg (sq_nonneg _) (Real.rpow_pos_of_pos (cubeMean_pos I v hvi hvpos) _).le
   change (∑ Q ∈ interior I N,
     ∫ x in (Q : Set (Fin d → ℝ)),
-      (boxDifference Q u x) ^ 2 / Real.rpow (boxMean Q v) (2 - p)) ≤ _
+      (cubeDifference Q u x) ^ 2 / Real.rpow (cubeMean Q v) (2 - p)) ≤ _
   calc
     _ ≤ ∑ Q ∈ interior I N,
         (Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1))) *
           ((∑ R ∈ (Prepartition.splitCenter Q).boxes,
               volume.real (R : Set (Fin d → ℝ)) *
-                scalarPsi p (boxMean R u) (boxMean R v)) -
+                scalarPsi p (cubeMean R u) (cubeMean R v)) -
             volume.real (Q : Set (Fin d → ℝ)) *
-              scalarPsi p (boxMean Q u) (boxMean Q v)) := by
+              scalarPsi p (cubeMean Q u) (cubeMean Q v)) := by
       apply Finset.sum_le_sum
       intro Q hQ
       have hQI : (Q : Set (Fin d → ℝ)) ⊆ I :=
@@ -397,12 +335,12 @@ theorem weighted_square (d : ℕ) (hd : 0 < d)
         (fun x hx => hvpos x (hQI hx))
     _ = (Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1))) *
         ((∑ Q ∈ leaves I N, volume.real (Q : Set (Fin d → ℝ)) *
-            scalarPsi p (boxMean Q u) (boxMean Q v)) -
-          volume.real (I : Set (Fin d → ℝ)) * scalarPsi p (boxMean I u) (boxMean I v)) := by
+            scalarPsi p (cubeMean Q u) (cubeMean Q v)) -
+          volume.real (I : Set (Fin d → ℝ)) * scalarPsi p (cubeMean I u) (cubeMean I v)) := by
       rw [← Finset.mul_sum, sum_interior_child_sub]
     _ = (Real.rpow 2 ((d : ℝ) * (2 - p)) * ((3 - p) / (p - 1))) *
         ((∫ x in (I : Set (Fin d → ℝ)), (u x) ^ 2 / Real.rpow (v x) (2 - p)) -
-          volume.real (I : Set (Fin d → ℝ)) * scalarPsi p (boxMean I u) (boxMean I v)) := by
+          volume.real (I : Set (Fin d → ℝ)) * scalarPsi p (cubeMean I u) (cubeMean I v)) := by
       rw [leaf_energy_sum I N u v p hu hv]
     _ ≤ _ := mul_le_mul_of_nonneg_left (sub_le_self _ htop) hK
 

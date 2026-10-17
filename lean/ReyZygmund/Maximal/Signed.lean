@@ -57,16 +57,16 @@ theorem finiteSignedProductMaximal_le_positive
   intro Q hQ
   apply le_trans _ (positiveMean_le_finiteFamilyMaximal _ F Q hQ x)
   rw [productAverageMap_univ_eq_integral]
-  by_cases hx : x ∈ productBox Q
+  by_cases hx : x ∈ productRectangle Q
   · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx, abs_div,
-      abs_of_nonneg (measureReal_nonneg : 0 ≤ volume.real (productBox Q))]
+      abs_of_nonneg (measureReal_nonneg : 0 ≤ volume.real (productRectangle Q))]
     exact div_le_div_of_nonneg_right abs_integral_le_integral_abs measureReal_nonneg
   · simp only [Set.indicator_of_notMem hx, abs_zero, le_refl]
 
 theorem productLeafConstant_finiteSignedProductMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteSignedProductMaximal I N F) := by
   intro P hP x hx y hy
   apply Finset.sup'_congr _ rfl
@@ -75,22 +75,21 @@ theorem productLeafConstant_finiteSignedProductMaximal
     (fun i _ => mem_productDescendants.mp hQ i)).1
   exact congrArg abs (hc P hP x hx y hy)
 
-/-- A full difference has no signed averages outside its parent rectangle.
-This is the finite source cancellation argument, not a support assertion for
-the positive maximal function. -/
+/-- By cancellation, a full difference has zero signed averages outside its
+parent rectangle. -/
 theorem full_difference_average_eq_zero_off_parent
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (Q R : ∀ i, Box (Fin (d i)))
     (hQ : Q ∈ productDescendants I N) (hR : R ∈ productDescendants I N)
-    (F : boundedMeasurableFunctions d) (x : ProductPoint d) (hx : x ∉ productBox Q) :
+    (F : boundedMeasurableFunctions d) (x : ProductPoint d) (hx : x ∉ productRectangle Q) :
     (productAverageMap Finset.univ R (productDifferenceMap Finset.univ Q F)).1 x = 0 := by
   by_cases hstrict : ∀ i, R i < Q i
-  · have hxR : x ∉ productBox R := by
+  · have hxR : x ∉ productRectangle R := by
       intro h
       apply hx
-      apply (mem_productBox Q x).mpr
+      apply (mem_productRectangle Q x).mpr
       intro i
-      exact (hstrict i).le ((mem_productBox R x).mp h i)
+      exact (hstrict i).le ((mem_productRectangle R x).mp h i)
     rw [productAverageMap_univ_eq_integral, Set.indicator_of_notMem hxR]
   · have hbad : ∃ i ∈ (Finset.univ : Finset (Fin m)), 0 < d i ∧ ¬ R i < Q i := by
       push Not at hstrict
@@ -109,7 +108,7 @@ theorem finiteSignedProductMaximal_sum_eq_zero_off
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : H ⊆ productDescendants I N)
     (F : boundedMeasurableFunctions d) (E : Set (ProductPoint d))
-    (hE : ∀ Q ∈ H, productBox Q ⊆ E) (x : ProductPoint d) (hx : x ∉ E) :
+    (hE : ∀ Q ∈ H, productRectangle Q ⊆ E) (x : ProductPoint d) (hx : x ∉ E) :
     finiteSignedProductMaximal I N (∑ Q ∈ H, productDifferenceMap Finset.univ Q F) x = 0 := by
   apply Finset.sup'_eq_of_forall
   intro R hR

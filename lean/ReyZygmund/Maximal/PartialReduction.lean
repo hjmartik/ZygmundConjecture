@@ -23,10 +23,10 @@ variable {m : ℕ} {d : Fin m → ℕ}
 private theorem partial_difference_sum_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (A : Finset (Fin m))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N
         (∑ Q ∈ partialInterior I N A, productDifferenceMap A Q F).1 ∧
-      ∀ x, x ∉ productBox I →
+      ∀ x, x ∉ productRectangle I →
         (∑ Q ∈ partialInterior I N A, productDifferenceMap A Q F).1 x = 0 := by
   have hc Q (hQ : Q ∈ partialInterior I N A) :=
     productDifferenceMap_productStep_closure I N F hf hs A Q
@@ -42,9 +42,9 @@ private theorem partial_difference_sum_closure
 private theorem root_average_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0) (B : Finset (Fin m)) :
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0) (B : Finset (Fin m)) :
     ProductLeafConstant I N (productAverageMap B I f).1 ∧
-      ∀ x, x ∉ productBox I → (productAverageMap B I f).1 x = 0 :=
+      ∀ x, x ∉ productRectangle I → (productAverageMap B I f).1 x = 0 :=
   productAverageMap_productStep_closure I N f hf hs B I
     (fun i _ => mem_productDescendants.mp (root_mem_productDescendants I N) i)
 
@@ -52,7 +52,7 @@ private theorem projected_eq_difference_sum_sub_top_averages
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0) (A : Finset (Fin m)) :
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0) (A : Finset (Fin m)) :
     finiteProjectionMap I N G f =
       (∑ Q ∈ partialInterior I N A,
         productDifferenceMap A Q (finiteProjectionMap I N G f)) -
@@ -63,7 +63,7 @@ private theorem projected_eq_difference_sum_sub_top_averages
   funext x
   simp only [Submodule.coe_sub, Submodule.coe_sum, Submodule.coe_smul,
     Pi.sub_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-  by_cases hx : x ∈ productBox I
+  by_cases hx : x ∈ productRectangle I
   · have h := finiteProjection_top_average_decomposition I N hd G f hf hs A x hx
     linarith
   · have hg0 := hg.2 x hx
@@ -124,7 +124,7 @@ private theorem projected_partial_maximal_le
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
     (A : Finset (Fin m)) (x : ProductPoint d) :
     finiteSignedPartialMaximal I N A (finiteProjectionMap I N G f) x ≤
       finiteSignedPartialMaximal I N A
@@ -160,17 +160,17 @@ private theorem projected_partial_norm_le
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
     (A : Finset (Fin m)) (p : ℝ) (hp : 1 ≤ p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteSignedPartialMaximal I N A (finiteProjectionMap I N G f) x) p)
         (1 / p) ≤
-      Real.rpow (∫ x in productBox I,
+      Real.rpow (∫ x in productRectangle I,
         Real.rpow (finiteSignedPartialMaximal I N A
           (∑ Q ∈ partialInterior I N A,
             productDifferenceMap A Q (finiteProjectionMap I N G f)) x) p) (1 / p) +
       ∑ B ∈ A.powerset.erase ∅,
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSignedPartialMaximal I N A (productAverageMap B I f) x) p)
             (1 / p) := by
   let P := finiteProjectionMap I N G f
@@ -208,8 +208,8 @@ private theorem projected_partial_norm_le
   have htri := rootLp_add_le I N (finiteSignedPartialMaximal I N A H) V hH hV p hp
   have hsum := rootLp_sum_le I N s T (fun B _ => hT B) p hp
   have hsum' :
-      Real.rpow (∫ x in productBox I, Real.rpow |V x| p) (1 / p) ≤
-        ∑ B ∈ s, Real.rpow (∫ x in productBox I, Real.rpow (T B x) p) (1 / p) := by
+      Real.rpow (∫ x in productRectangle I, Real.rpow |V x| p) (1 / p) ≤
+        ∑ B ∈ s, Real.rpow (∫ x in productRectangle I, Real.rpow (T B x) p) (1 / p) := by
     simpa only [V, T, signed_maximal_abs] using hsum
   have hbound := hmono.trans (htri.trans (add_le_add le_rfl hsum'))
   simpa only [P, H, T, s, signed_maximal_abs] using hbound
@@ -234,17 +234,17 @@ theorem finite_projected_partial_maximal_norm
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
     (j : Fin m) (p : ℝ) (hp : 1 < p) (hp3 : p ≤ (3 : ℝ) / 2) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j)
         (finiteProjectionMap I N G f) x) p) (1 / p) ≤
       (2 : ℝ) ^ (6 * (∑ i, d i) + 10) *
-        Real.rpow (∫ x in productBox I,
+        Real.rpow (∫ x in productRectangle I,
           Real.rpow (finiteSquareFunction I N (Finset.univ.erase j)
             (finiteProjectionMap I N G f) x) p) (1 / p) +
       ((2 : ℝ) ^ (m - 1) - 1) * (p / (p - 1)) ^ (m - 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) := by
   cases m with
   | zero => omega
   | succ n =>
@@ -255,15 +255,15 @@ theorem finite_projected_partial_maximal_norm
     have hfibre := finite_partial_difference_sum_square_lp I N hd P hc.1 hc.2 j p hp.le hp3
     have hrem :
         (∑ B ∈ A.powerset.erase ∅,
-          Real.rpow (∫ x in productBox I,
+          Real.rpow (∫ x in productRectangle I,
             Real.rpow (finiteSignedPartialMaximal I N A (productAverageMap B I f) x) p)
               (1 / p)) ≤
         ((2 : ℝ) ^ (n + 1 - 1) - 1) * (p / (p - 1)) ^ (n + 1 - 2) *
-          Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) := by
+          Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) := by
       calc
         _ ≤ ∑ _B ∈ A.powerset.erase ∅,
             (p / (p - 1)) ^ (n + 1 - 2) *
-              Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) := by
+              Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) := by
           apply Finset.sum_le_sum
           intro B hB
           have hBA : B ⊆ Finset.univ.erase j :=
@@ -274,7 +274,7 @@ theorem finite_projected_partial_maximal_norm
             f hf hs p hp
         _ = ((A.powerset.erase ∅).card : ℝ) *
             ((p / (p - 1)) ^ (n + 1 - 2) *
-              Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p)) := by
+              Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p)) := by
           rw [Finset.sum_const, nsmul_eq_mul]
         _ = _ := by
           rw [show ((A.powerset.erase ∅).card : ℝ) =

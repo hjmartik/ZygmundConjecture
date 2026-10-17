@@ -7,17 +7,18 @@
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head><body><header><nav aria-label="Main navigation">
 <a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
-<a href="consistency.html">Definitions and consistency</a>
+<a href="supporting-statements.html">Supporting results</a>
+<a href="mathlib-only.html">Specification and definitions</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="checking-the-formalization">Checking the formalization</h1>
 <p>You can inspect the mathematics without installing software, or reproduce the
 computer checks yourself:</p>
 <ul>
 <li><strong>Read the statements and definitions.</strong> <a href="main-statements.html">Main theorems</a>
-links each result to its independent Lean specification. The
-<a href="consistency.html">consistency guide</a> explains the definitions and the proved
-connections to the proof library.</li>
-<li><strong>Check the six main proofs against those statements.</strong> We recommend
+and <a href="supporting-statements.html">supporting statements</a> link each result to its
+independent Lean specification. The <a href="definitions.html">definition guide</a>
+explains its mathematical objects and their Lean representations.</li>
+<li><strong>Check the twenty-two proofs against those statements.</strong> We recommend
 <a href="#recommended-sandboxed-checking-on-linux">sandboxed Comparator on Linux</a>.
 <a href="#local-checking-on-macos">Local checking on a Mac</a> is a more accessible
 alternative if you trust the repository&#39;s executable code.</li>
@@ -26,50 +27,51 @@ lets you work with the library in a Lean editor. It is not a prerequisite
 for either Comparator route.</li>
 </ul>
 <h2 id="mathematical-scope">Mathematical scope</h2>
-<p><a href="main-statements.html">Main theorems</a> states the six results in full, including
-their hypotheses and qualifications.</p>
-<p>An earlier version of this repository presented seven main theorems. The
-current version presents six: the estimates under weaker containment are
-incorporated into the general statements for weakly incomparable families.
-No mathematical coverage has been removed.</p>
-<h2 id="what-has-been-checked">What has been checked</h2>
+<p><a href="main-statements.html">Main theorems</a> states the three main results, and
+<a href="supporting-statements.html">supporting statements</a> states the nineteen selected
+supporting results, with their hypotheses and qualifications. All twenty-two use
+the same checking standard. A reader assessing one result needs its statement
+and definitions; this does not require assessing every other statement.</p>
+<p><a id="what-has-been-checked"></a></p>
+<h2 id="checking-scope">Checking scope</h2>
 <table>
 <thead>
 <tr>
 <th>Check</th>
-<th>Recorded outcome and scope</th>
+<th>Scope</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Compilation</td>
-<td>All 382 selected local modules compiled.</td>
+<td>The 404 selected local modules.</td>
 </tr>
 <tr>
 <td>Statement and axiom checks</td>
-<td>All 508 registered declarations matched their separately written formal statements and used only the permitted axioms.</td>
+<td>The 516 registered declarations, their separately written formal statements and their axiom dependencies.</td>
 </tr>
 <tr>
 <td>Ordinary Lean replay</td>
-<td>Lean&#39;s own checker rechecked the 382 selected modules, with the exclusions explained <a href="#ordinary-kernel-replay">below</a>.</td>
+<td>The 404 selected modules, with the exclusions explained <a href="#ordinary-kernel-replay">below</a>.</td>
 </tr>
 <tr>
 <td>Comparator, Lean, Nanoda and con-ron</td>
-<td>All six comparisons against the independent specification passed. All three kernels accepted the exported proofs and their exported dependencies.</td>
+<td>Twenty-two comparisons against the independent specification, followed by checking the exported proofs and their exported dependencies with all three kernels.</td>
 </tr>
 </tbody></table>
-<p>The six-result checks ran in a fresh Linux virtual machine, using trusted
-tools and dependency versions, without imported project build artifacts.
-Project compilation and proof export ran inside Comparator&#39;s sandbox. The
-procedure follows the <a href="https://github.com/leanprover/lean4/blob/c29b6dda4f7c20e3eeaa717c4e565663c5cfa364/src/lake/Lake/CLI/Help.lean#L403-L499">documentation for the Comparator version used here</a>.</p>
+<p>All the checks above passed. The twenty-two comparisons and three-kernel checks
+ran in a freshly provisioned Linux VM, using trusted pinned tools and libraries,
+without imported project build artifacts. Project compilation and proof export
+ran inside Comparator&#39;s sandbox. The procedure follows the
+<a href="https://github.com/leanprover/lean4/blob/c29b6dda4f7c20e3eeaa717c4e565663c5cfa364/src/lake/Lake/CLI/Help.lean#L403-L499">documentation for the Comparator version used here</a>.</p>
 <p>The permitted axioms are <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>.
-Nanoda and con-ron checked the six exported proofs and their dependencies,
+Nanoda and con-ron check the twenty-two exported proofs and their dependencies,
 not every other declaration in the library. The source inventory contains
-396 Lean files; the selected build and replay cover 382 modules, excluding
+409 Lean files; the selected build and replay cover 404 modules, excluding
 negative-test fixtures and other files outside their imports.</p>
-<p><a href="files/verification/RESULTS.json">RESULTS.json</a> records the outcomes, dates, software
-versions and checked sources. The distributed Lean code matches that checked
-code exactly outside comments. <a href="packaging-tests.html">Tests of the checking programs</a>
-are recorded separately.</p>
+<p><a href="files/verification/RESULTS.json">RESULTS.json</a> records the outcomes, dates,
+software versions and exact checked sources.
+<a href="packaging-tests.html">Tests of the checking programs</a> are recorded
+separately.</p>
 <h2 id="what-the-programs-do">What the programs do</h2>
 <p><strong>Lean</strong> is the language in which the statements and proofs are written. Its
 kernel is the component that checks the fully explicit proofs produced when
@@ -90,13 +92,12 @@ the specification remains the way to assess whether it expresses the intended
 mathematics.</p>
 <p>Our Python programs prepare the inputs, invoke these tools and collect their
 results. They do not replace the proof checkers. The setup commands obtain the
-specific software versions used for our checks; no manual selection of library
-versions is needed.</p>
+recorded software versions; no manual selection of library versions is needed.</p>
 <p><a id="recommended-verify-the-main-results"></a>
 <a id="4-comparator-with-nanoda-on-linux"></a>
 <a id="4-comparator-with-lean-nanoda-and-con-ron-on-linux"></a></p>
 <h2 id="recommended-sandboxed-checking-on-linux">Recommended: sandboxed checking on Linux</h2>
-<p>This is the strongest checking procedure supplied here for the six main
+<p>This is the strongest checking procedure supplied here for all twenty-two
 results. Comparator runs the project code in a restricted environment, its
 <strong>sandbox</strong>, to prevent that code from interfering with the checking process.
 This reduces the trust you need to place in the proof library&#39;s executable code.</p>
@@ -107,7 +108,7 @@ computer can also run the sandboxed checks without a VM.</p>
 below. Follow the <a href="linux-setup.html">Linux setup and checking guide</a>
 <strong>from start to finish</strong>. Its four numbered steps cover preparing Linux and
 the tools, obtaining the repository, preparing the libraries and testing the
-setup, and checking all six results. It includes the final checking command
+setup, and checking all twenty-two results. It includes the final checking command
 and explains how to read its result; you do not need to return here to complete
 the procedure.</p>
 <p>Run that procedure in a terminal <strong>inside Linux</strong>, including when Linux runs
@@ -122,9 +123,8 @@ not to alter the specification or interfere with the checking tools. It does
 not reproduce the sandbox guarantees of the recommended procedure.</p>
 <p>You need Python 3.12 or later, Apple&#39;s command-line developer tools, and
 <a href="https://github.com/leanprover/elan">elan</a>, which installs and selects Lean.
-The developer tools provide Git and a C compiler. This procedure was tested on
-an Apple Silicon Mac. If you do not yet have a local copy of the repository,
-obtain one:</p>
+The developer tools provide Git and a C compiler. If you do not yet have a
+local copy of the repository, obtain one:</p>
 <pre><code class="language-sh">git clone https://github.com/hjmartik/ZygmundConjecture.git
 cd ZygmundConjecture
 </code></pre>
@@ -136,13 +136,13 @@ python3 -I -B tools/comparator_local.py --trust-project-code
 </code></pre>
 <p>The first three commands install Lean, download the background libraries and
 obtain their compiled files, saving a lengthy library build. The last command
-builds this project&#39;s proofs in a new working directory and checks all six
+builds this project&#39;s proofs in a new working directory and checks all twenty-two
 results. The local runner uses space-saving copies on APFS, the usual Mac disk
 format. Allow at least 15 GiB of free space after installing the libraries.</p>
 <p>The explicit <code>--trust-project-code</code> option acknowledges the additional trust
 described above. Lake prints a warning that the sandbox is disabled; the
 statement comparisons and proof checks still run. Successful completion is
-reported as <strong><code>PASS_ALL_SIX_UNSANDBOXED</code></strong>, with separate results for Comparator
+reported as <strong><code>PASS_ALL_TWENTY_TWO_UNSANDBOXED</code></strong>, with separate results for Comparator
 and all three kernels. The distinct label records the difference in setup.</p>
 <h2 id="optional-compile-and-check-the-lean-library">Optional: compile and check the Lean library</h2>
 <h3 id="ordinary-compilation">Ordinary compilation</h3>
@@ -158,15 +158,15 @@ follow the clean-VM procedure, run this optional build in a different
 environment, or wait until the sandboxed checks have finished.</p>
 <p><a id="2-build-and-check-all-registered-declarations"></a></p>
 <h3 id="fresh-build-and-statement-checks">Fresh build and statement checks</h3>
-<p>To reproduce the broader checks of supporting results, run from the top-level
-directory after the same dependency setup:</p>
+<p>To check the registered library declarations, run from the top-level directory
+after the same dependency setup:</p>
 <pre><code class="language-sh">python3 -I -B tools/test_checker.py
 python3 -I -B tools/test_inspection.py
 python3 -I -B tools/check.py verify
 </code></pre>
-<p>The first two commands test the checking programs. The third builds all 382
+<p>The first two commands test the checking programs. The third builds all 404
 selected modules afresh and checks the statements and axiom dependencies of
-the 508 registered declarations. Success requires a successful exit and <code>PASS</code>
+the 516 registered declarations. Success requires a successful exit and <code>PASS</code>
 in its report. The <a href="packaging-tests.html#compiled-lean-inspection">checking-program guide</a>
 explains precisely how statements are compared.</p>
 <p><a id="3-ordinary-kernel-replay"></a></p>
@@ -203,8 +203,8 @@ do not transfer a Mac&#39;s build files into the Linux checking environment.</p>
 <h2 id="testing-the-verification-tools">Testing the verification tools</h2>
 <p><a href="packaging-tests.html">Tests of the checking programs</a> describes the
 small valid and deliberately invalid examples and how to repeat them. Passing
-those tests is not verification of the six mathematical results.</p>
-<p>The <a href="files/verification/comparator/CASES.json">comparison cases</a> identify the six
+those tests is not verification of the twenty-two mathematical results.</p>
+<p>The <a href="files/verification/comparator/CASES.json">comparison cases</a> identify the twenty-two
 targets. Challenge files state the requested results with intentional proof
 placeholders; the solutions supply the proofs without using those placeholders.
 The <a href="files/verification/SOURCE-MANIFEST.json">source inventory</a> and

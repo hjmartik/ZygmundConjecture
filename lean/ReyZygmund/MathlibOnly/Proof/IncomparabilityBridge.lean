@@ -1,14 +1,12 @@
-import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
+import ReyZygmund.MathlibOnly.Proof.Definitions
 import ReyZygmund.MathlibOnly.Proof.OperatorBridge
 import ReyZygmund.Geometry.ProductContainment
-import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 
 /-!
-# Identifications and exponential normalization for the main statements
+# Containment and weak incomparability
 
-Unlike the independent specifications, this proof module may import the
-implementation. The geometric equivalence below needs no grid or dimension
-restriction. The exponential conversion increases only the allowed constant.
+These identities relate containment of rectangles to the coordinatewise box
+order, and express weak incomparability as containment leaving a factor unchanged.
 -/
 
 open BoxIntegral MeasureTheory
@@ -19,9 +17,9 @@ namespace ReyZygmund.MathlibOnly.Proof.Estimates
 theorem rectangle_subset_iff {m : ℕ} {d : Fin m → ℕ}
     (R S : ∀ i, Box (Fin (d i))) :
     rectangle R ⊆ rectangle S ↔ ∀ i, R i ≤ S i := by
-  rw [rectangle_eq_flat, rectangle_eq_flat]
+  rw [Geometry.rectangle_eq_flatProductBox, Geometry.rectangle_eq_flatProductBox]
   have h : (Geometry.flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ⊆
-      Geometry.flatProductBox S ↔ Geometry.productBox R ⊆ Geometry.productBox S := by
+      Geometry.flatProductBox S ↔ Geometry.productRectangle R ⊆ Geometry.productRectangle S := by
     constructor
     · intro h x hx
       exact (Geometry.mem_flatProductBox S x).mp
@@ -30,46 +28,18 @@ theorem rectangle_subset_iff {m : ℕ} {d : Fin m → ℕ}
       obtain ⟨y, rfl⟩ := (Geometry.flattenCoordinates d).surjective x
       exact (Geometry.mem_flatProductBox S y).mpr
         (h ((Geometry.mem_flatProductBox R y).mp hx))
-  exact h.trans (Geometry.productBox_subset_iff R S)
+  exact h.trans (Geometry.productRectangle_subset_iff R S)
 
 /-- Weak incomparability is equivalent to the condition
 that containment leaves a factor unchanged. -/
 theorem weaklyIncomparable_iff_equalFactor {m : ℕ} {d : Fin m → ℕ}
     (G : Set (∀ i, Box (Fin (d i)))) :
     WeaklyIncomparable G ↔ HasEqualFactorOnContainment G := by
+  rw [Geometry.weaklyIncomparable_iff_equal_factor]
   constructor
   · intro h R hR S hS hRS
-    by_contra! hne
-    exact h R hR S hS (fun i =>
-      lt_of_le_of_ne ((rectangle_subset_iff R S).mp hRS i) (hne i))
-  · intro h R hR S hS hstrict
-    obtain ⟨i, hi⟩ := h R hR S hS
-      ((rectangle_subset_iff R S).mpr (fun i => (hstrict i).le))
-    exact (ne_of_lt (hstrict i)) hi
-
-/-- Restore the constant term in an exponential integral. No measurability
-of `v` is needed because the added integrand is the measurable constant one. -/
-theorem lintegral_exp_le_add_one {α : Type*} [MeasurableSpace α]
-    (μ : Measure α) (s : Set α) (v : α → ℝ) (hv : ∀ x, 0 ≤ v x)
-    (C : ℝ) (hC : 0 ≤ C)
-    (h : (∫⁻ x in s, ENNReal.ofReal (Real.exp (v x)) - 1 ∂μ) ≤
-      ENNReal.ofReal C * μ s) :
-    (∫⁻ x in s, ENNReal.ofReal (Real.exp (v x)) ∂μ) ≤
-      ENNReal.ofReal (C + 1) * μ s := by
-  have hpoint (x) : ENNReal.ofReal (Real.exp (v x)) =
-      (ENNReal.ofReal (Real.exp (v x)) - 1) + 1 := by
-    apply (tsub_add_cancel_of_le _).symm
-    rw [← ENNReal.ofReal_one]
-    exact ENNReal.ofReal_le_ofReal (Real.one_le_exp_iff.mpr (hv x))
-  calc
-    (∫⁻ x in s, ENNReal.ofReal (Real.exp (v x)) ∂μ) =
-        (∫⁻ x in s, (ENNReal.ofReal (Real.exp (v x)) - 1) + 1 ∂μ) :=
-      lintegral_congr hpoint
-    _ = (∫⁻ x in s, ENNReal.ofReal (Real.exp (v x)) - 1 ∂μ) + μ s := by
-      rw [lintegral_add_right _ measurable_const]
-      simp
-    _ ≤ ENNReal.ofReal C * μ s + μ s := add_le_add h le_rfl
-    _ = ENNReal.ofReal (C + 1) * μ s := by
-      rw [ENNReal.ofReal_add hC zero_le_one, ENNReal.ofReal_one, add_mul, one_mul]
+    exact h R hR S hS ((rectangle_subset_iff R S).mp hRS)
+  · intro h R hR S hS hRS
+    exact h R hR S hS ((rectangle_subset_iff R S).mpr hRS)
 
 end ReyZygmund.MathlibOnly.Proof.Estimates

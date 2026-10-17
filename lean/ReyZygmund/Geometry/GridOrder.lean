@@ -3,15 +3,16 @@ import ReyZygmund.Geometry.GridDescendants
 /-! # Generation order and containment in a dyadic grid -/
 
 open BoxIntegral
+open ReyZygmund.Geometry
 
-namespace ReyZygmund.Geometry.DyadicGrid
+namespace ReyZygmund.MathlibOnly.CubeGrid
 
-variable {d : ℕ} (D : DyadicGrid d)
+variable {d : ℕ} (D : CubeGrid d)
 
 /-- Intersecting grid cubes are contained in the direction of increasing
 generation. The conclusion includes shared half-open boundary points. -/
 theorem le_of_generation_le {n k : ℤ} {Q R : Box (Fin d)}
-    (hQ : Q ∈ D.cubes n) (hR : R ∈ D.cubes k) (hnk : n ≤ k)
+    (hQ : Q ∈ D.cubesAtGeneration n) (hR : R ∈ D.cubesAtGeneration k) (hnk : n ≤ k)
     {x : Fin d → ℝ} (hxQ : x ∈ Q) (hxR : x ∈ R) : R ≤ Q := by
   have hindex : n + ((k - n).toNat : ℤ) = k := by omega
   have hlocal : R ∈ level Q (k - n).toNat :=
@@ -19,20 +20,19 @@ theorem le_of_generation_le {n k : ℤ} {Q R : Box (Fin d)}
   exact (level Q _).le_of_mem hlocal
 
 theorem nested_of_common_point {n k : ℤ} {Q R : Box (Fin d)}
-    (hQ : Q ∈ D.cubes n) (hR : R ∈ D.cubes k)
+    (hQ : Q ∈ D.cubesAtGeneration n) (hR : R ∈ D.cubesAtGeneration k)
     {x : Fin d → ℝ} (hxQ : x ∈ Q) (hxR : x ∈ R) : Q ≤ R ∨ R ≤ Q := by
   rcases le_total n k with h | h
   · exact Or.inr (D.le_of_generation_le hQ hR h hxQ hxR)
   · exact Or.inl (D.le_of_generation_le hR hQ h hxR hxQ)
 
-/-- Strict containment forces a strict generation gap; no separate width
-comparison or positive-dimension assumption is needed. -/
+/-- Strict containment forces a strict generation gap. -/
 theorem generation_lt_of_containment_ne {n k : ℤ} {Q R : Box (Fin d)}
-    (hQ : Q ∈ D.cubes n) (hR : R ∈ D.cubes k)
+    (hQ : Q ∈ D.cubesAtGeneration n) (hR : R ∈ D.cubesAtGeneration k)
     (hQR : Q ≤ R) (hne : Q ≠ R) : k < n := by
   by_contra h
   have hRQ := D.le_of_generation_le hQ hR (le_of_not_gt h)
     Q.upper_mem (hQR Q.upper_mem)
   exact hne (le_antisymm hQR hRQ)
 
-end ReyZygmund.Geometry.DyadicGrid
+end ReyZygmund.MathlibOnly.CubeGrid

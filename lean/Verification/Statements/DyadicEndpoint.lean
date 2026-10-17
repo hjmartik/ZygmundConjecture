@@ -6,17 +6,19 @@ import Mathlib.MeasureTheory.Function.LocallyIntegrable
 open BoxIntegral MeasureTheory ReyZygmund ReyZygmund.Geometry
 open scoped BigOperators ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmundVerification
 
 def dyadicPhiEndpointContract : Prop :=
   ∀ (n totalDim : ℕ), 2 ≤ n →
   ∃ C : ℝ, 0 < C ∧
   ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-  ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+  ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
   ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
   ∀ (lam : ℝ), 0 < lam →
     volume {x | ENNReal.ofReal lam <
-      euclideanFamilyMaximal (Continuous.dyadicPhiRectangles D Phi) f x} ≤
+      euclideanFamilyMaximal (MathlibOnly.dyadicZygmundRectangles D Phi) f x} ≤
     ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
       (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2)) ∂volume
 

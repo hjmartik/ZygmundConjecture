@@ -15,6 +15,8 @@ including p = 1.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund
 
 open Geometry
@@ -36,12 +38,12 @@ theorem measurable_finiteSignedGridMaximal
     exact measurable_const
   | @insert Q H _ ih =>
     have hmean : Measurable (fun x : ProductPoint d =>
-        ENNReal.ofReal ((productBox Q).indicator
-          (fun _ => |(∫ y in productBox Q, f y) / volume.real (productBox Q)|) x)) :=
-      (measurable_const.indicator (measurableSet_productBox Q)).ennreal_ofReal
+        ENNReal.ofReal ((productRectangle Q).indicator
+          (fun _ => |(∫ y in productRectangle Q, f y) / volume.real (productRectangle Q)|) x)) :=
+      (measurable_const.indicator (measurableSet_productRectangle Q)).ennreal_ofReal
     have hstep : finiteSignedGridMaximal (insert Q H) f =
-        (fun x : ProductPoint d => ENNReal.ofReal ((productBox Q).indicator
-          (fun _ => |(∫ y in productBox Q, f y) / volume.real (productBox Q)|) x) ⊔
+        (fun x : ProductPoint d => ENNReal.ofReal ((productRectangle Q).indicator
+          (fun _ => |(∫ y in productRectangle Q, f y) / volume.real (productRectangle Q)|) x) ⊔
             finiteSignedGridMaximal H f x) := by
       funext x
       exact Finset.sup_insert
@@ -56,19 +58,19 @@ theorem finiteSignedGridMaximal_mono
   exact Finset.sup_mono hHK
 
 private theorem finiteSignedGridMaximal_le_signedGridMaximal
-    (D : ∀ i, DyadicGrid (d i)) (H : Finset (gridRectangles D))
+    (D : ∀ i, CubeGrid (d i)) (H : Finset (gridRectangles D))
     (f : ProductPoint d → ℝ) (x : ProductPoint d) :
     finiteSignedGridMaximal (H.image Subtype.val) f x ≤ signedGridMaximal D f x := by
   apply Finset.sup_le
   intro Q hQ
   obtain ⟨R, _, rfl⟩ := Finset.mem_image.mp hQ
-  exact le_iSup (fun R : gridRectangles D => ENNReal.ofReal ((productBox R.1).indicator
-    (fun _ => |(∫ y in productBox R.1, f y) / volume.real (productBox R.1)|) x)) R
+  exact le_iSup (fun R : gridRectangles D => ENNReal.ofReal ((productRectangle R.1).indicator
+    (fun _ => |(∫ y in productRectangle R.1, f y) / volume.real (productRectangle R.1)|) x)) R
 
 /-- The full grid supremum is exactly the supremum of all its finite maxima.
 The finite indices are grid rectangles, with no generation multiplicity. -/
 theorem signedGridMaximal_eq_iSup_finset
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ) (x : ProductPoint d) :
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ) (x : ProductPoint d) :
     signedGridMaximal D f x = ⨆ H : Finset (gridRectangles D),
       finiteSignedGridMaximal (H.image Subtype.val) f x := by
   apply le_antisymm
@@ -79,14 +81,14 @@ theorem signedGridMaximal_eq_iSup_finset
         (Subtype.val : gridRectangles D → ∀ i, Box (Fin (d i)))) :=
       Finset.mem_image.mpr ⟨Q, Finset.mem_singleton_self Q, rfl⟩
     exact Finset.le_sup (f := fun R : ∀ i, Box (Fin (d i)) =>
-      ENNReal.ofReal ((productBox R).indicator
-        (fun _ => |(∫ y in productBox R, f y) / volume.real (productBox R)|) x)) hmem
+      ENNReal.ofReal ((productRectangle R).indicator
+        (fun _ => |(∫ y in productRectangle R, f y) / volume.real (productRectangle R)|) x)) hmem
   · exact iSup_le (fun H => finiteSignedGridMaximal_le_signedGridMaximal D H f x)
 
 /-- Directed monotone convergence for positive real powers, allowing infinite
 values and infinite integrals. Countability is derived from the grids. -/
 theorem lintegral_signedGridMaximal_rpow_eq_iSup
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ)
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ)
     (p : ℝ) (hp : 0 < p) :
     (∫⁻ x, (signedGridMaximal D f x) ^ p) =
       ⨆ H : Finset (gridRectangles D), ∫⁻ x,
@@ -113,10 +115,9 @@ theorem lintegral_signedGridMaximal_rpow_eq_iSup
     _ = ⨆ H : Finset (gridRectangles D), ∫⁻ x, F H x :=
       lintegral_iSup_directed_of_measurable hmeas hdir
 
-/-- A uniform bound for every finite subfamily passes to the full grid.
-This statement supplies no estimate without its displayed finite hypotheses. -/
+/-- A uniform bound for every finite subfamily passes to the full grid. -/
 theorem lintegral_signedGridMaximal_rpow_le
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ)
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ)
     (p : ℝ) (hp : 0 < p) (C : ℝ≥0∞)
     (hfinite : ∀ H : Finset (gridRectangles D),
       (∫⁻ x, (finiteSignedGridMaximal (H.image Subtype.val) f x) ^ p) ≤ C) :
@@ -124,20 +125,18 @@ theorem lintegral_signedGridMaximal_rpow_le
   rw [lintegral_signedGridMaximal_rpow_eq_iSup D f p hp]
   exact iSup_le hfinite
 
-/-- Finiteness of the extended power integral gives AE finiteness
-before any real representative is taken. -/
+/-- Finiteness of the extended power integral gives almost-everywhere finiteness. -/
 theorem signedGridMaximal_ae_finite_of_lintegral_lt_top
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ)
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ)
     (p : ℝ) (hp : 0 < p) (hfinite : (∫⁻ x, (signedGridMaximal D f x) ^ p) < ∞) :
     ∀ᵐ x ∂volume, signedGridMaximal D f x < ∞ := by
   have ha := ae_lt_top ((measurable_signedGridMaximal D f).pow_const p) hfinite.ne
   filter_upwards [ha] with x hx
   exact (ENNReal.rpow_lt_top_iff_of_pos hp).mp hx
 
-/-- The real representative is in Lp once the full extended power integral
-is finite. Its enorm is identified only on the proved AE finite set. -/
+/-- The real representative is in Lp when the extended power integral is finite. -/
 theorem memLp_signedGridMaximal_toReal_of_lintegral_lt_top
-    (D : ∀ i, DyadicGrid (d i)) (f : ProductPoint d → ℝ)
+    (D : ∀ i, CubeGrid (d i)) (f : ProductPoint d → ℝ)
     (p : ℝ) (hp : 0 < p) (hfinite : (∫⁻ x, (signedGridMaximal D f x) ^ p) < ∞) :
     MemLp (fun x => (signedGridMaximal D f x).toReal) (ENNReal.ofReal p) volume := by
   have hm : AEStronglyMeasurable (fun x => (signedGridMaximal D f x).toReal) volume :=

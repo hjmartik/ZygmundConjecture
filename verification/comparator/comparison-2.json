@@ -2,7 +2,7 @@
   "challenge_module": "Challenge2",
   "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.weakly_incomparable_overlap"
+    "ReyZygmund.MathlibOnly.weakly_incomparable_rey_conjecture"
   ],
   "permitted_axioms": [
     "propext",

@@ -15,7 +15,7 @@ def finiteMaximalPowerIntegrableContract : Prop :=
 def finiteMaximalForestContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (T G : Finset (∀ i, Box (Fin (d i)))),
   Set.Pairwise (↑T : Set (∀ i, Box (Fin (d i))))
-    (fun R S => Disjoint (productBox R) (productBox S)) →
+    (fun R S => Disjoint (productRectangle R) (productRectangle S)) →
   (∀ Q ∈ G, ∃ R ∈ T, ∀ i, Q i ≤ R i) →
   ∀ (f : ProductPoint d → ℝ) (x : ProductPoint d),
     finiteFunctionMaximal G f x =
@@ -25,11 +25,11 @@ def finiteMaximalForestContract : Prop :=
 def finiteMaximalForestIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (T G : Finset (∀ i, Box (Fin (d i)))),
   Set.Pairwise (↑T : Set (∀ i, Box (Fin (d i))))
-    (fun R S => Disjoint (productBox R) (productBox S)) →
+    (fun R S => Disjoint (productRectangle R) (productRectangle S)) →
   (∀ Q ∈ G, ∃ R ∈ T, ∀ i, Q i ≤ R i) →
   ∀ (f : ProductPoint d → ℝ) (p : ℝ), 0 < p →
     (∫ x, Real.rpow (finiteFunctionMaximal G f x) p) =
-      ∑ R ∈ T, ∫ x in productBox R,
+      ∑ R ∈ T, ∫ x in productRectangle R,
         Real.rpow (finiteFunctionMaximal
           (G.filter (fun Q => ∀ i, Q i ≤ R i)) f x) p
 

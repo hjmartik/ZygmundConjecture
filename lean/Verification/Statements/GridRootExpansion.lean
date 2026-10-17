@@ -15,7 +15,7 @@ def finiteDifferenceSumProductStepContract : Prop :=
     (H : Finset (∀ i, Box (Fin (d i)))), H ⊆ productInterior I N →
       ∀ (F : boundedMeasurableFunctions d),
         let S := ∑ Q ∈ H, productDifferenceMap Finset.univ Q F
-        ProductLeafConstant I N S.1 ∧ ∀ x, x ∉ productBox I → S.1 x = 0
+        ProductLeafConstant I N S.1 ∧ ∀ x, x ∉ productRectangle I → S.1 x = 0
 
 def finiteDifferenceSumReexpansionContract : Prop :=
   ∀ (m : ℕ) (d : Fin m → ℕ) (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ),

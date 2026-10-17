@@ -28,36 +28,36 @@ noncomputable def finiteDyadicMaximal
     (x : Fin d → ℝ) : ℝ :=
   (Finset.range (N + 1)).sup' Finset.nonempty_range_add_one
     (fun n => ∑ Q ∈ (Geometry.level I n).boxes,
-      Geometry.boxAverage Q (fun y => |g y|) x)
+      Geometry.cubeAverage Q (fun y => |g y|) x)
 
 private theorem level_average_at {I Q : Box (Fin d)} {n : ℕ}
     (hQ : Q ∈ level I n) (g : (Fin d → ℝ) → ℝ)
     (x : Fin d → ℝ) (hx : x ∈ Q) :
-    (∑ R ∈ (level I n).boxes, boxAverage R g x) =
+    (∑ R ∈ (level I n).boxes, cubeAverage R g x) =
       (∫ y in (Q : Set (Fin d → ℝ)), g y) / volume.real (Q : Set (Fin d → ℝ)) := by
   rw [Finset.sum_eq_single Q]
-  · simp [boxAverage, hx]
+  · simp [cubeAverage, cubeMean, hx]
   · intro R hR hRQ
     have hxR : x ∉ R := fun h => hRQ ((level I n).eq_of_mem_of_mem hR hQ h hx)
-    simp [boxAverage, hxR]
+    simp [cubeAverage, hxR]
   · simp [hQ]
 
 private theorem level_average_eq_zero {I : Box (Fin d)} (n : ℕ)
     (g : (Fin d → ℝ) → ℝ) (x : Fin d → ℝ) (hx : x ∉ I) :
-    (∑ Q ∈ (level I n).boxes, boxAverage Q g x) = 0 := by
+    (∑ Q ∈ (level I n).boxes, cubeAverage Q g x) = 0 := by
   apply Finset.sum_eq_zero
   intro Q hQ
   have hxQ : x ∉ Q := fun h => hx ((level I n).le_of_mem hQ h)
-  simp [boxAverage, hxQ]
+  simp [cubeAverage, hxQ]
 
 private theorem boxAverage_abs_nonneg (Q : Box (Fin d))
     (g : (Fin d → ℝ) → ℝ) (x : Fin d → ℝ) :
-    0 ≤ boxAverage Q (fun y => |g y|) x := by
+    0 ≤ cubeAverage Q (fun y => |g y|) x := by
   by_cases hx : x ∈ Q
-  · simp only [boxAverage]
+  · simp only [cubeAverage]
     rw [Set.indicator_of_mem (show x ∈ (Q : Set (Fin d → ℝ)) from hx)]
     exact div_nonneg (integral_nonneg (fun y => abs_nonneg (g y))) (box_volume_pos Q).le
-  · simp [boxAverage, hx]
+  · simp [cubeAverage, hx]
 
 theorem finiteDyadicMaximal_nonneg (I : Box (Fin d)) (N : ℕ)
     (g : (Fin d → ℝ) → ℝ) (x : Fin d → ℝ) :
@@ -123,8 +123,7 @@ theorem finiteDyadicMaximal_eq_descendant_sup (I : Box (Fin d)) (N : ℕ)
   · rintro ⟨Q, ⟨hQ, hxQ⟩, htQ⟩
     exact ⟨Q, hQ, hxQ, htQ⟩
 
-/-- The output is constant on smallest cubes, without a constancy hypothesis
-on the input. -/
+/-- The output is constant on the smallest cubes. -/
 theorem finiteDyadicMaximal_leafConstant (I : Box (Fin d)) (N : ℕ)
     (g : (Fin d → ℝ) → ℝ) :
     ∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q,
@@ -144,7 +143,7 @@ theorem integrableOn_finiteDyadicMaximal (I : Box (Fin d)) (N : ℕ)
 
 @[simp] theorem finiteDyadicMaximal_zero_depth (I : Box (Fin d))
     (g : (Fin d → ℝ) → ℝ) :
-    finiteDyadicMaximal I 0 g = boxAverage I (fun y => |g y|) := by
+    finiteDyadicMaximal I 0 g = cubeAverage I (fun y => |g y|) := by
   funext x
   simp [finiteDyadicMaximal]
 
@@ -156,8 +155,7 @@ theorem finiteDyadicMaximal_zero_depth_of_constant (I : Box (Fin d))
   exact boxAverage_of_constant I (fun y => |g y|)
     (fun x hx y hy => congrArg abs (hg x hx y hy))
 
-/-- The stopping-cube weak estimate requires only integrability on the top cube, not
-constancy on the smallest cubes. -/
+/-- The stopping-cube weak estimate for an input integrable on the top cube. -/
 theorem finite_dyadic_maximal_weak (I : Box (Fin d)) (N : ℕ)
     (g : (Fin d → ℝ) → ℝ) (hg : IntegrableOn g (I : Set (Fin d → ℝ)) volume)
     (t : ℝ) (_ht : 0 < t) :
@@ -377,8 +375,7 @@ private theorem rpow_bound_of_moment (A B p : ℝ) (hp : 1 < p)
       A ^ (1 / p) ≤ (p * B ^ (1 / p)) / (p - 1) := (le_div_iff₀' hp1).mpr hcancel
       _ = (p / (p - 1)) * B ^ (1 / p) := by ring
 
-/-- The ordinary finite one-coordinate maximal estimate, with the paper's coefficient
-for each real `p > 1`. Hypotheses on the input concern only the top cube. -/
+/-- The ordinary finite one-coordinate maximal estimate for every real `p > 1`. -/
 theorem finite_dyadic_maximal_lp (d : ℕ) (_hd : 0 < d)
     (I : Box (Fin d)) (N : ℕ) (g : (Fin d → ℝ) → ℝ)
     (p : ℝ) (hp : 1 < p)

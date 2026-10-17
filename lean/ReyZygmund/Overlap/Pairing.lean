@@ -1,13 +1,11 @@
 import ReyZygmund.Overlap.Finite
 import ReyZygmund.Maximal.FiniteIdentification
-import Mathlib.MeasureTheory.Integral.Bochner.Set
+import ReyZygmund.ToMathlib.MeasureTheory.SetIntegral
 
 /-! # Finite sparse pairing
 
 Use the disjoint subsets establishing sparseness to bound the overlap pairing by
-the integral of the finite maximal function on the shadow. This step needs neither
-a grid nor incomparability.
-
+the integral of the finite maximal function on the shadow.
 -/
 
 open BoxIntegral MeasureTheory
@@ -67,13 +65,11 @@ private theorem absolute_mean_le_finite_maximal
   simpa only [ENNReal.toReal_ofReal hmean] using
     ENNReal.toReal_mono (euclideanFamilyMaximal_finset_lt_top G g x).ne hsup
 
-/-- The finite sparse-pairing estimate on Euclidean rectangles.
-All integrability is derived from the local input integrability and the
-finite family; no condition is imposed outside its shadow. -/
+/-- The finite sparse-pairing estimate on Euclidean rectangles. -/
 theorem finite_sparse_pairing
     (G : Finset (∀ i, Box (Fin (d i)))) (eta : ℝ) (heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (hEsub : ∀ R ∈ G,
       E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (hEdis : Set.Pairwise (G : Set (∀ i, Box (Fin (d i))))
@@ -128,7 +124,7 @@ theorem finite_sparse_pairing
         mul_le_mul_of_nonneg_right hmass hmean
       _ ≤ _ := by
         simpa only [smul_eq_mul] using
-          setIntegral_ge_of_const_le (hEmeas R hR) hEfinite.ne hpoint hM.integrableOn
+          setIntegral_ge_of_const_le₀ (hEmeas R hR) hEfinite.ne hpoint hM.integrableOn
   have hsub : (⋃ R ∈ G, E R) ⊆ finiteShadow G :=
     Set.iUnion_subset (fun R => Set.iUnion_subset (fun hR =>
       (hEsub R hR).trans (flatProductBox_subset_finiteShadow G R hR)))
@@ -139,7 +135,8 @@ theorem finite_sparse_pairing
     _ ≤ ∑ R ∈ G, ∫ x in E R, (euclideanFamilyMaximal (G : Set _) g x).toReal :=
       Finset.sum_le_sum hterm
     _ = ∫ x in ⋃ R ∈ G, E R, (euclideanFamilyMaximal (G : Set _) g x).toReal :=
-      (integral_biUnion_finset G hEmeas hEdis (fun _ _ => hM.integrableOn)).symm
+      (integral_biUnion_finset₀ G hEmeas (Set.PairwiseDisjoint.aedisjoint hEdis)
+        (fun _ _ => hM.integrableOn)).symm
     _ ≤ _ := setIntegral_mono_set hM.integrableOn
       (Filter.Eventually.of_forall (fun _ => ENNReal.toReal_nonneg))
       (Filter.Eventually.of_forall (fun _ hx => hsub hx))

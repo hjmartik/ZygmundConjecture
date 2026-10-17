@@ -32,13 +32,12 @@ private theorem halo_coefficient_identity :
   congr 1
   omega
 
-/-- Each density group has the paper's precise coarse dimensional energy
-bound; the estimate does not assume the energy or halo conclusion. -/
+/-- Each density group has the paper's precise coarse dimensional energy bound. -/
 theorem finite_square_piece_energy
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (n : ℤ) :
-    (∫ x in productBox I,
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (n : ℤ) :
+    (∫ x in productRectangle I,
       (∑ Q ∈ squarePieceIndices I N F n, (productDifferenceMap Finset.univ Q F).1 x) ^ 2) ≤
       (2 : ℝ) ^ (4 * (∑ i, d i) + 5) * Real.rpow 2 (2 * (n : ℝ)) *
         volume.real (finiteSquareLevelSet I N F n) := by
@@ -46,13 +45,13 @@ theorem finite_square_piece_energy
     intro Q hQ
     exact (Finset.mem_filter.mp (Finset.mem_filter.mp hQ).1).1
   have hcover : ∀ Q ∈ squarePieceIndices I N F n,
-      productBox Q ⊆ finiteSquareHalo I N F n := by
+      productRectangle Q ⊆ finiteSquareHalo I N F n := by
     intro Q hQ
     obtain ⟨hQ0, hj⟩ := Finset.mem_filter.mp hQ
-    simpa only [hj] using productBox_subset_squareDensityHalo I N F Q hQ0
+    simpa only [hj] using productRectangle_subset_squareDensityHalo I N F Q hQ0
   have hden : ∀ Q ∈ squarePieceIndices I N F n,
-      volume.real (productBox Q ∩ finiteSquareLevelSet I N F (n + 1)) ≤
-        (1 / (2 : ℝ) ^ ((∑ i, d i) + 1)) * volume.real (productBox Q) := by
+      volume.real (productRectangle Q ∩ finiteSquareLevelSet I N F (n + 1)) ≤
+        (1 / (2 : ℝ) ^ ((∑ i, d i) + 1)) * volume.real (productRectangle Q) := by
     intro Q hQ
     obtain ⟨hQ0, hj⟩ := Finset.mem_filter.mp hQ
     simpa only [hj] using (squareDensityIndex_spec I N F Q hQ0).2

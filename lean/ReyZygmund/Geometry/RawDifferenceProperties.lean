@@ -22,14 +22,14 @@ theorem measurable_rawProductDifference (Q : ∀ i, Box (Fin (d i)))
   intro A _
   apply Measurable.const_mul
   exact Finset.measurable_sum _ (fun R _ =>
-    measurable_const.indicator (measurableSet_productBox R))
+    measurable_const.indicator (measurableSet_productRectangle R))
 
 theorem bounded_rawProductDifference (Q : ∀ i, Box (Fin (d i)))
     (g : ProductPoint d → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x, |rawProductDifference Q g x| ≤ C := by
   refine ⟨∑ A ∈ (Finset.univ : Finset (Fin m)).powerset,
     ∑ R ∈ differenceRectangles A Q,
-      |(∫ y in productBox R, g y) / volume.real (productBox R)|,
+      |(∫ y in productRectangle R, g y) / volume.real (productRectangle R)|,
     Finset.sum_nonneg (fun A _ => Finset.sum_nonneg (fun R _ => abs_nonneg _)), ?_⟩
   intro x
   apply (Finset.abs_sum_le_sum_abs _ _).trans
@@ -39,7 +39,7 @@ theorem bounded_rawProductDifference (Q : ∀ i, Box (Fin (d i)))
   apply (Finset.abs_sum_le_sum_abs _ _).trans
   apply Finset.sum_le_sum
   intro R _
-  by_cases hx : x ∈ productBox R
+  by_cases hx : x ∈ productRectangle R
   · rw [Set.indicator_of_mem hx]
   · rw [Set.indicator_of_notMem hx, abs_zero]
     exact abs_nonneg _
@@ -51,8 +51,8 @@ theorem integrable_rawProductDifference (Q : ∀ i, Box (Fin (d i)))
   apply Integrable.const_mul
   apply integrable_finsetSum
   intro R _
-  exact (integrableOn_const (productBox_volume_lt_top R).ne).integrable_indicator
-    (measurableSet_productBox R)
+  exact (integrableOn_const (productRectangle_volume_lt_top R).ne).integrable_indicator
+    (measurableSet_productRectangle R)
 
 /-- The finite coefficient expansion as a bounded measurable function. -/
 noncomputable def rawDifferenceInput (Q : ∀ i, Box (Fin (d i)))
@@ -70,7 +70,7 @@ theorem rawProductDifference_congr_ae (Q : ∀ i, Box (Fin (d i)))
   apply Finset.sum_congr rfl
   intro R _
   have hi := integral_congr_ae (ae_restrict_of_ae heq :
-    g =ᵐ[volume.restrict (productBox R)] h)
+    g =ᵐ[volume.restrict (productRectangle R)] h)
   rw [hi]
 
 theorem finite_raw_expansion_integrable

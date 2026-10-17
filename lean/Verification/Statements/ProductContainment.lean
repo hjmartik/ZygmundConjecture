@@ -6,11 +6,11 @@ namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry
 
-def productBoxContainmentContract : Prop :=
+def productRectangleContainmentContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (Q R : ∀ i, Box (Fin (d i))),
-    productBox Q ⊆ productBox R ↔ ∀ i, Q i ≤ R i
+    productRectangle Q ⊆ productRectangle R ↔ ∀ i, Q i ≤ R i
 
-def productBoxInjectivityContract : Prop :=
-  ∀ {m : ℕ} {d : Fin m → ℕ}, Function.Injective (productBox (d := d))
+def productRectangleInjectivityContract : Prop :=
+  ∀ {m : ℕ} {d : Fin m → ℕ}, Function.Injective (productRectangle (d := d))
 
 end ReyZygmundVerification

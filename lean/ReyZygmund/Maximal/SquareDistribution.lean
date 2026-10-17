@@ -20,21 +20,14 @@ open Geometry Projection
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-private theorem distribution_root_finite (I : ∀ i, Box (Fin (d i))) :
-    volume (productBox I) ≠ ∞ := by
-  change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) ≠ ∞
-  rw [Measure.pi_pi]
-  exact (ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)).ne
-
 /-- Finite sums of interior differences retain the localized input class. -/
 theorem productDifference_sum_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : H ⊆ productInterior I N) :
     ProductLeafConstant I N (∑ Q ∈ H, productDifferenceMap Finset.univ Q F).1 ∧
-      ∀ x, x ∉ productBox I →
+      ∀ x, x ∉ productRectangle I →
         (∑ Q ∈ H, productDifferenceMap Finset.univ Q F).1 x = 0 := by
   have hc Q (hQ : Q ∈ H) := productDifferenceMap_productStep_closure I N F hf hs
     Finset.univ Q (fun i _ => mem_productInterior.mp (hH hQ) i)
@@ -50,7 +43,7 @@ indices range over all integers. -/
 theorem summable_square_level_tail
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (n : ℤ) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (n : ℤ) :
     Summable (fun j : ℤ => if j < n then Real.rpow 2 (2 * (j : ℝ)) *
       volume.real (finiteSquareLevelSet I N F j) else 0) := by
   have ht := summable_dyadic_layerCake_integral I N
@@ -72,8 +65,8 @@ the dimensional coefficient used before layer cake. -/
 theorem finite_square_distribution
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (n : ℤ) :
-    volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) <
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (n : ℤ) :
+    volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) <
       finiteSignedProductMaximal I N
         (∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F) x} ≤
       (2 : ℝ) ^ (6 * (∑ i, d i) + 5) *
@@ -83,7 +76,7 @@ theorem finite_square_distribution
   let L := ∑ Q ∈ squareLowerIndices I N F n, productDifferenceMap Finset.univ Q F
   let G := ∑ Q ∈ productInterior I N, productDifferenceMap Finset.univ Q F
   let M := finiteFamilyMaximal (productDescendants I N) L
-  let E := {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) < M x}
+  let E := {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) < M x}
   let tail := ∑' j : ℤ, if j < n then Real.rpow 2 (2 * (j : ℝ)) *
     volume.real (finiteSquareLevelSet I N F j) else 0
   have htail : 0 ≤ tail := tsum_nonneg (fun j => by
@@ -96,11 +89,11 @@ theorem finite_square_distribution
   have hL := productDifference_sum_productStep_closure I N F hf hs (squareLowerIndices I N F n) hH
   have hM := productLeafConstant_finiteFamilyMaximal I N (productDescendants I N)
     (fun _ h => h) L
-  have hMi : IntegrableOn (fun x => (M x) ^ 2) (productBox I) volume := by
+  have hMi : IntegrableOn (fun x => (M x) ^ 2) (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     exact congrArg (fun z : ℝ => z ^ 2) (hM Q hQ x hx y hy)
-  have hlo : (∫ x in productBox I, (L.1 x) ^ 2) ≤
+  have hlo : (∫ x in productRectangle I, (L.1 x) ^ 2) ≤
       (2 : ℝ) ^ (4 * (∑ i, d i) + 5) * tail := by
     simpa only [L, Submodule.coe_sum, Finset.sum_apply, tail] using
       squareLower_energy_le_tsum I N hd F n
@@ -117,8 +110,8 @@ theorem finite_square_distribution
       Real.rpow_natCast]
   simp only [Real.rpow_eq_pow, show (2 : ℝ) - 1 = 1 by norm_num,
     div_one, Real.rpow_two, sq_abs] at hordinary
-  change (∫ x in productBox I, (M x) ^ 2) ≤
-    Real.rpow 2 (2 * (m : ℝ)) * (∫ x in productBox I, (L.1 x) ^ 2) at hordinary
+  change (∫ x in productRectangle I, (M x) ^ 2) ≤
+    Real.rpow 2 (2 * (m : ℝ)) * (∫ x in productRectangle I, (L.1 x) ^ 2) at hordinary
   rw [hpow] at hordinary
   have hcheb := product_root_strict_level_le_square_integral I M hMi
     (Real.rpow 2 (n : ℝ)) (Real.rpow_pos_of_pos (by norm_num) _)
@@ -132,7 +125,7 @@ theorem finite_square_distribution
   have he : volume.real E ≤ (2 : ℝ) ^ (2 * m) *
       (2 : ℝ) ^ (4 * (∑ i, d i) + 5) * Real.rpow 2 (-2 * (n : ℝ)) * tail := by
     calc
-      _ ≤ (∫ x in productBox I, (M x) ^ 2) / (Real.rpow 2 (n : ℝ)) ^ 2 := hcheb
+      _ ≤ (∫ x in productRectangle I, (M x) ^ 2) / (Real.rpow 2 (n : ℝ)) ^ 2 := hcheb
       _ ≤ ((2 : ℝ) ^ (2 * m) * ((2 : ℝ) ^ (4 * (∑ i, d i) + 5) * tail)) /
           (Real.rpow 2 (n : ℝ)) ^ 2 :=
         div_le_div_of_nonneg_right
@@ -143,7 +136,7 @@ theorem finite_square_distribution
           _ = ((2 : ℝ) ^ (2 * m) * (2 : ℝ) ^ (4 * (∑ i, d i) + 5) * tail) *
               ((Real.rpow 2 (n : ℝ)) ^ 2 * Real.rpow 2 (-2 * (n : ℝ))) := by rw [hinv, mul_one]; ring
           _ = _ := by simp only [Real.rpow_eq_pow]; ring
-  have hsubset : {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) <
+  have hsubset : {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) <
       finiteSignedProductMaximal I N G x} ⊆ finiteSquareHalo I N F n ∪ E := by
     intro x hx
     by_cases hb : x ∈ finiteSquareHalo I N F n
@@ -155,10 +148,10 @@ theorem finite_square_distribution
       have hx' := hx.2
       rw [heq] at hx'
       exact hx'.trans_le (finiteSignedProductMaximal_le_positive I N L x)
-  have hset : volume.real {x | x ∈ productBox I ∧ Real.rpow 2 (n : ℝ) <
+  have hset : volume.real {x | x ∈ productRectangle I ∧ Real.rpow 2 (n : ℝ) <
       finiteSignedProductMaximal I N G x} ≤ volume.real (finiteSquareHalo I N F n) + volume.real E :=
     (measureReal_mono hsubset (measure_ne_top_of_subset
-      (fun _ hx => hx.elim (fun h => h.1) (fun h => h.1)) (distribution_root_finite I))).trans
+      (fun _ hx => hx.elim (fun h => h.1) (fun h => h.1)) (productRectangle_volume_lt_top I).ne)).trans
       (measureReal_union_le _ _)
   have hm := parameter_count_le_total_dimension hd
   have hhalo := finiteSquareHalo_measure_le I N hd F hf hs n

@@ -7,162 +7,333 @@
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head><body><header><nav aria-label="Main navigation">
 <a href="index.html">Overview</a><a href="main-statements.html">Main theorems</a>
-<a href="consistency.html">Definitions and consistency</a>
+<a href="supporting-statements.html">Supporting results</a>
+<a href="mathlib-only.html">Specification and definitions</a>
 <a href="verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main><h1 id="independently-inspectable-mathematical-statements">Independently inspectable mathematical statements</h1>
 <p>This independent specification is rebuilt from Mathlib primitives.
-The six propositions in <a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">Statements.lean</a>
-use only Mathlib and the definitions in <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>.
-Neither file imports the proof library. The statements and all definitions
-needed to interpret them can therefore be inspected without reading that library.</p>
+<a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html">Statements.lean</a> gives the three main results;
+<a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html">SupportingStatements.lean</a> gives nineteen supporting
+and additional results. The geometric objects, rectangle families and maximal
+and overlap functions are defined in <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>.
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html">SquareFunctions.lean</a> defines the averages, martingale
+differences and square functions; <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html">Projections.lean</a> defines
+the finite projection and its averaging families.
+These five files import no proof-library module.</p>
+<p>To inspect one result, read its statement and the definitions listed below it.
+The correctness of the other specifications is not a prerequisite for that
+result.</p>
 <p>The results concern Henri Martikainen&#39;s <em>The Zygmund conjecture and Rey&#39;s
-exponential integrability conjecture</em>. The central statements are the
-weakly incomparable maximal estimate, the sparse weakly incomparable overlap
-estimate, and the continuous Zygmund endpoint. The overlap estimate proves
-Rey&#39;s conjecture. The rounded endpoint supports the continuous result; the
-other two statements concern overlap for sparse Φ-Zygmund families and
-sharpness for the classical dyadic Zygmund family.</p>
+exponential integrability conjecture</em>. Their mathematical statements appear
+in <a href="main-statements.html">Main theorems</a> and
+<a href="supporting-statements.html">Supporting and additional results</a>.</p>
+<p>The <a href="definitions.html">definition guide</a> explains how these familiar
+geometric objects and dyadic operators are represented in Lean, including the
+conventions for coordinates, boundaries and integrals.
+The <a href="verifying.html">verification guide</a> records the checking scope, results
+and reproduction instructions.</p>
+<h2 id="main-results">Main results</h2>
 <table>
 <thead>
 <tr>
 <th>Mathematical statement</th>
-<th>Proposition in <code>Statements.lean</code></th>
+<th>Independent statement</th>
 <th>Proof of the independent statement</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Weakly incomparable maximal estimate</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L33">WeaklyIncomparableMaximal</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L19">weakly_incomparable_maximal</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L34">WeaklyIncomparableMaximalEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L31">weakly_incomparable_maximal_estimate</a></td>
 </tr>
 <tr>
-<td>Sparse weakly incomparable overlap estimate</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L47">WeaklyIncomparableOverlap</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L31">weakly_incomparable_overlap</a></td>
+<td>Rey&#39;s conjecture for weakly incomparable families</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L48">WeaklyIncomparableReyConjecture</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L43">weakly_incomparable_rey_conjecture</a></td>
 </tr>
 <tr>
-<td>Continuous Zygmund endpoint</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L64">ContinuousEndpoint</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L49">continuous_endpoint</a></td>
-</tr>
-<tr>
-<td>Rounded dyadic endpoint</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L78">RoundedEndpoint</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L59">rounded_endpoint</a></td>
-</tr>
-<tr>
-<td>Sparse Φ-Zygmund overlap</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L92">PhiSparseOverlap</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L69">phi_sparse_overlap</a></td>
-</tr>
-<tr>
-<td>Sharpness for the classical dyadic Zygmund family</td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L109">PhiSparseSharpness</a></td>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L88">phi_sparse_sharpness</a></td>
+<td>Zygmund&#39;s conjecture</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Statements.lean.html#L66">ZygmundConjecture</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L59">zygmund_conjecture</a></td>
 </tr>
 </tbody></table>
-<p>The propositions and their proofs are in the namespace <code>ReyZygmund.MathlibOnly</code>.
-<a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html">Solutions.lean</a> derives the six statements from the proof
-library&#39;s theorems. The <a href="consistency.html">consistency guide</a> explains
-the connections between the specification&#39;s definitions and those used in the proofs.</p>
-<p>The maximal statement uses the paper&#39;s <code>1 &lt; p ≤ 2</code> range. The
-<a href="source/lean/ReyZygmund/Maximal/WeakerGlobal.lean.html#L140">underlying theorem</a> proves the same weakly
-incomparable estimate for every real <code>p &gt; 1</code>.</p>
-<p>The maximal function and overlap take values in <code>[0, ∞]</code>.
-The maximal and overlap bounds use these quantities directly.</p>
-<p>The sharpness result concerns the
-<a href="main-statements.html#sharpness-for-the-classical-dyadic-zygmund-family">classical dyadic Zygmund family</a>.
-Here <code>n = m - 1</code>, where <code>m</code> is the number of cube factors.
-For <code>n ≥ 2</code>, <code>0 &lt; eta &lt; 1</code> and any choice of dyadic grids in the <code>n + 1</code> cube
-factors, it gives a sequence of finite incomparable <code>eta</code>-sparse families <code>G_N</code>,
-<code>N ≥ 2</code>, whose unions have measure one.
-For every <code>c &gt; 0</code> and <code>beta &gt; 1/n</code>, the integrals of <code>exp(c h^beta)</code> over
-these unions tend to infinity, where <code>h</code> is the overlap function of the
-corresponding family. The same sequence works for all such <code>c</code> and <code>beta</code>.</p>
-<h2 id="definition-reference">Definition reference</h2>
-<p>The mathematical objects used in the six statements are defined in
-<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html">Definitions.lean</a>:</p>
+<h2 id="supporting-and-additional-results">Supporting and additional results</h2>
+<h3 id="square-function-estimates">Square-function estimates</h3>
 <table>
 <thead>
 <tr>
-<th>Definition</th>
-<th>Mathematical meaning</th>
+<th>Mathematical statement</th>
+<th>Independent statement</th>
+<th>Proof of the independent statement</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L36">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L40">Rectangle</a></td>
-<td>Euclidean points and tuples of box factors</td>
+<td>Maximal–square-function estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L34">MaximalSquareFunctionEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/MaximalSquareSolution.lean.html#L47">maximal_square_function_estimate</a></td>
 </tr>
 <tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L44">CubeGrid</a></td>
-<td>Dyadic cube grids with side length <code>2 ^ k</code> at scale <code>k</code>, partitions at each scale and nesting</td>
+<td>Scalar estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L47">ScalarEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/SquareSolutions.lean.html#L20">scalar_estimate</a></td>
 </tr>
 <tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L60">rectangle</a></td>
-<td>Products of box factors, expressed by Euclidean coordinate inequalities using <code>(lower, upper]</code></td>
+<td>One-coordinate weighted square-function estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L55">WeightedSquareFunctionEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/SquareSolutions.lean.html#L25">weighted_square_function_estimate</a></td>
 </tr>
 <tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L66">gridRectangles</a></td>
-<td>All products of cubes from the given grids</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L73">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L79">overlap</a></td>
-<td>Union of the rectangles and the number containing each point, allowing infinity</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L98">Sparse</a></td>
-<td>Pairwise disjoint Lebesgue-measurable subsets of the rectangles with the required volume fraction</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L84">Incomparable</a></td>
-<td>No two distinct rectangles contain one another</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L90">WeaklyIncomparable</a></td>
-<td>No strict containment in every cube factor</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L107">maximal</a></td>
-<td>Supremum of averages of the absolute value of the function over rectangles containing the point</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L153">rectangleIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L160">maximalIco</a></td>
-<td>Rectangles using <code>[lower, upper)</code> in each scalar coordinate and their maximal function</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L116">continuousRectangles</a></td>
-<td>Rectangles at all positions with arbitrary positive first side lengths and the last prescribed by <code>phi</code></td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L124">rounding</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L128">roundedScales</a></td>
-<td>The ceiling rule for rounding side lengths and every resulting tuple of scales</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L137">shiftedCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L146">roundedRectangles</a></td>
-<td>The explicitly defined shifted grids and their rounded rectangle families</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L169">phiRectangles</a></td>
-<td>Dyadic rectangles whose last side-length exponent is prescribed by <code>Phi</code> from the other exponents</td>
-</tr>
-<tr>
-<td><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L176">exp</a></td>
-<td>The exponential on <code>[0, ∞]</code>, with <code>exp ∞ = ∞</code></td>
+<td>Product weighted square-function estimate</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L72">ProductWeightedSquareFunctionEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProductSquareSolution.lean.html#L22">product_weighted_square_function_estimate</a></td>
 </tr>
 </tbody></table>
-<p>Boxes, finite coordinate products, Lebesgue measure, integrals, extended
-nonnegative numbers, powers and norms use Mathlib&#39;s definitions directly.
-The Lean source comments explain the notation used in these definitions and
-statements.</p>
-<p>A box <code>Q</code> has corner tuples <code>Q.lower</code> and <code>Q.upper</code>; the expression
-<code>(Q : Set (Fin d → ℝ))</code> denotes the product of the intervals
-<code>(Q.lower j, Q.upper j]</code>. In the sharpness statement,
-<code>Tendsto (fun N =&gt; a N) atTop atTop</code> means <code>a N → +∞</code> as <code>N → ∞</code>.</p>
-<h2 id="verification-and-mathematical-review">Verification and mathematical review</h2>
-<p>Mathematical review assesses whether the statements and their definitions
-faithfully represent the paper&#39;s results. Comparator checks that the supplied
-theorems match the independent specification, including its definitions.
-Lean&#39;s default kernel, Nanoda and con-ron check the exported proofs and their
-exported dependencies. The <a href="verifying.html">verification guide</a> records
-the checks, their scope and reproduction instructions.</p>
+<h3 id="projection-identities-and-estimates">Projection identities and estimates</h3>
+<table>
+<thead>
+<tr>
+<th>Mathematical statement</th>
+<th>Independent statement</th>
+<th>Proof of the independent statement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Preserved averages</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L94">ProjectionPreservesAverages</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProjectionAverageSolutions.lean.html#L21">projection_preserves_averages</a></td>
+</tr>
+<tr>
+<td>Averages in fewer coordinates</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L109">ProjectionPartialAverages</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProjectionAverageSolutions.lean.html#L57">projection_partial_averages</a></td>
+</tr>
+<tr>
+<td>Differences of the projected function</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L126">ProjectionDifferences</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProjectionDifferencesSolution.lean.html#L22">projection_differences</a></td>
+</tr>
+<tr>
+<td>Unchanged projection and weak incomparability</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L143">AveragingFamilyGeometry</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/AveragingFamilySolutions.lean.html#L21">averaging_family_geometry</a></td>
+</tr>
+<tr>
+<td>Representation of the averages</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L160">RepresentationOfAverages</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/AveragingFamilySolutions.lean.html#L64">representation_of_averages</a></td>
+</tr>
+<tr>
+<td>Reduction to square functions</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L179">MaximalSquareFunctionReduction</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProjectedSquareSolutions.lean.html#L28">maximal_square_function_reduction</a></td>
+</tr>
+<tr>
+<td>Square-function estimate for the projected function</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L200">ProjectedSquareFunctionEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/ProjectedSquareSolutions.lean.html#L135">projected_square_function_estimate</a></td>
+</tr>
+</tbody></table>
+<h3 id="covering-selection-and-slicing">Covering, selection and slicing</h3>
+<table>
+<thead>
+<tr>
+<th>Mathematical statement</th>
+<th>Independent statement</th>
+<th>Proof of the independent statement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Prescribed-scale covering</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L224">PrescribedScaleCovering</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/CoveringSolution.lean.html#L15">prescribed_scale_covering</a></td>
+</tr>
+<tr>
+<td>Córdoba–Fefferman selection</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L238">CordobaFeffermanSelection</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/SelectionSolution.lean.html#L19">cordoba_fefferman_selection</a></td>
+</tr>
+<tr>
+<td>Weak incomparability of slices</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L251">WeaklyIncomparableSlices</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/SliceSolutions.lean.html#L20">weakly_incomparable_slices</a></td>
+</tr>
+<tr>
+<td>Half-sparsity of slices</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L267">HalfSparseSlices</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/SliceSolutions.lean.html#L37">half_sparse_slices</a></td>
+</tr>
+</tbody></table>
+<h3 id="endpoint-overlap-and-sharpness-results">Endpoint, overlap and sharpness results</h3>
+<table>
+<thead>
+<tr>
+<th>Mathematical statement</th>
+<th>Independent statement</th>
+<th>Proof of the independent statement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rounded dyadic endpoint</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L281">RoundedDyadicEndpointEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L68">rounded_dyadic_endpoint_estimate</a></td>
+</tr>
+<tr>
+<td>Dyadic Zygmund conjecture</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L296">DyadicZygmundConjecture</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Proof/DyadicEndpointSolution.lean.html#L18">dyadic_zygmund_conjecture</a></td>
+</tr>
+<tr>
+<td>Sparse Φ-Zygmund overlap</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L308">SparsePhiZygmundOverlapEstimate</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L77">sparse_phi_zygmund_overlap_estimate</a></td>
+</tr>
+<tr>
+<td>Sharpness for the classical dyadic Zygmund family</td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/SupportingStatements.lean.html#L324">ClassicalDyadicZygmundSharpness</a></td>
+<td><a href="source/lean/ReyZygmund/MathlibOnly/Solutions.lean.html#L94">classical_dyadic_zygmund_sharpness</a></td>
+</tr>
+</tbody></table>
+<p>All propositions in the tables are in the namespace <code>ReyZygmund.MathlibOnly</code>.</p>
+<h2 id="definitions-for-each-result">Definitions for each result</h2>
+<p>Each list includes the definitions needed to understand the statement, including those used indirectly.
+Mathlib supplies boxes, finite products, Lebesgue measure, integrals, norms,
+orders, powers, finite sets, sums and suprema. The source comments explain the
+Lean notation and the conventions relevant to these statements.</p>
+<h3 id="weakly-incomparable-maximal-estimate">Weakly incomparable maximal estimate</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L80">gridRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L112">WeaklyIncomparable</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L130">maximal</a>.</p>
+<p><a id="sparse-weakly-incomparable-overlap-estimate"></a></p>
+<h3 id="reys-conjecture-for-weakly-incomparable-families">Rey&#39;s conjecture for weakly incomparable families</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L80">gridRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L87">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L93">overlap</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L112">WeaklyIncomparable</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L120">Sparse</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L221">exp</a>.</p>
+<h3 id="zygmunds-conjecture">Zygmund&#39;s conjecture</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L130">maximal</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L139">zygmundRectangles</a>.</p>
+<p><a id="maximal-square-function-estimate"></a></p>
+<h3 id="maximalsquare-function-estimate">Maximal–square-function estimate</h3>
+<ul>
+<li>Geometry: <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L80">gridRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L31">ProductPoint</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L34">productRectangle</a>.</li>
+<li>Martingale differences: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L39">cubeMean</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L44">cubeAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L50">cubeDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L61">coordinateDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L67">PartialRectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L85">partialDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L91">fullDifference</a>.</li>
+<li>Maximal and square functions: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L105">signedMaximal</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L112">squareFunction</a>.</li>
+</ul>
+<p>The maximal function takes the absolute value after the signed average.
+The square function and maximal function use the whole grid.</p>
+<h3 id="scalar-estimate">Scalar estimate</h3>
+<p>Only real numbers, their order, arithmetic and real powers are used.</p>
+<h3 id="one-coordinate-weighted-square-function-estimate">One-coordinate weighted square-function estimate</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L39">cubeMean</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L44">cubeAverage</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L50">cubeDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L117">bottomCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L124">interiorCubes</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L129">ConstantOnBottomCubes</a>.</p>
+<p>The smallest side length is <code>2^(-k)</code>. The sum excludes that bottom scale;
+the functions are constant on its cubes, and the weight is strictly positive.</p>
+<h3 id="product-weighted-square-function-estimate">Product weighted square-function estimate</h3>
+<ul>
+<li>Geometry: <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L31">ProductPoint</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L34">productRectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L67">PartialRectangle</a>.</li>
+<li>Coordinate operators: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L39">cubeMean</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L44">cubeAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L50">cubeDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L56">coordinateAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L61">coordinateDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L73">partialAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L85">partialDifference</a>.</li>
+<li>Finite grids and integration regions: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L117">bottomCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L124">interiorCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L135">ConstantOnBottomRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L142">partialInterior</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L166">partialRectangleRegion</a>.</li>
+</ul>
+<p>The same cutoff is used in every coordinate. <code>partialAverage</code> and
+<code>partialDifference</code> compose the coordinate operators in increasing index order.
+The integration region uses the selected cubes and the remaining top factors.
+The partial average in the denominator remains a function of the unselected
+coordinates.</p>
+<h3 id="common-projection-definitions">Common projection definitions</h3>
+<p>The projection identities and estimates use the following definitions:</p>
+<ul>
+<li>Geometry: <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L31">ProductPoint</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L34">productRectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L67">PartialRectangle</a>.</li>
+<li>Martingale differences: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L39">cubeMean</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L44">cubeAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L50">cubeDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L61">coordinateDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L85">partialDifference</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L91">fullDifference</a>.</li>
+<li>Finite grids and the input: <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L117">bottomCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L124">interiorCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L135">ConstantOnBottomRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L28">finiteCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L33">finiteRectangles</a>.</li>
+<li>Projection: <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L39">removedRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L46">projection</a>.</li>
+</ul>
+<p>The input function is positive on the top rectangle, zero outside it, and constant on
+products of smallest cubes. The projection subtracts each removed martingale
+difference once and does not need to be positive.</p>
+<h3 id="preserved-averages">Preserved averages</h3>
+<p>Read the <a href="#common-projection-definitions">common projection definitions</a>, together
+with <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L112">WeaklyIncomparable</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L56">coordinateAverage</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L73">partialAverage</a> and <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L79">fullAverage</a>.</p>
+<p>This identity preserves the full averages of the input on the specified family.</p>
+<h3 id="averages-in-fewer-coordinates">Averages in fewer coordinates</h3>
+<p>Read the <a href="#common-projection-definitions">common projection definitions</a>, together
+with <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L56">coordinateAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L73">partialAverage</a>
+and <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L79">fullAverage</a>.</p>
+<p><code>Finset.univ.ssubsets</code> lists the proper subsets of all
+coordinates. The empty subset is included; its averaging operator is the
+identity. The formula holds on each rectangle of the family, without an
+incomparability hypothesis.</p>
+<h3 id="differences-of-the-projected-function">Differences of the projected function</h3>
+<p>Read the <a href="#common-projection-definitions">common projection definitions</a>, together
+with <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L56">coordinateAverage</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L53">crossCandidates</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L62">crossPartition</a> and <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L70">crossAverage</a>.</p>
+<p><code>Finset.univ.erase j</code> selects all coordinates except <code>j</code>. The partial rectangle
+has exactly these factors, each of which may be a smallest cube. The cross
+average acts in the omitted coordinate. The identity is pointwise everywhere.</p>
+<h3 id="unchanged-projection-and-weak-incomparability">Unchanged projection and weak incomparability</h3>
+<p>Read the <a href="#common-projection-definitions">common projection definitions</a>, together
+with <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L112">WeaklyIncomparable</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L53">crossCandidates</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L62">crossPartition</a> and <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L80">averagingRectangles</a>.</p>
+<p>The enlarged family is the union of the original family and the averaging
+rectangles. The enlargement leaves the projection unchanged. If the original
+family is weakly incomparable, so is the enlarged family.</p>
+<h3 id="representation-of-the-averages">Representation of the averages</h3>
+<p>Read the definitions for <a href="#unchanged-projection-and-weak-incomparability">unchanged projection and weak incomparability</a>,
+together with <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L56">coordinateAverage</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L73">partialAverage</a> and <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L79">fullAverage</a>.</p>
+<p>The full average on the left acts on <code>f</code>; the partial averages on the right
+act on its projection. The identity holds on every rectangle of the enlarged
+family.</p>
+<h3 id="reduction-to-square-functions">Reduction to square functions</h3>
+<p>Read the definitions for <a href="#unchanged-projection-and-weak-incomparability">unchanged projection and weak incomparability</a>,
+together with <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L97">productMaximal</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L142">partialInterior</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L150">partialSquareFunction</a>
+and <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L158">combinedSquareFunction</a>.</p>
+<p><code>productMaximal</code> is the supremum of averages of <code>|f|</code> in grouped coordinates.
+<code>combinedSquareFunction</code> is <code>W F</code>: the square root of the sum of squares of
+the <code>m</code> partial square functions obtained by omitting one coordinate at a time.</p>
+<h3 id="square-function-estimate-for-the-projected-function">Square-function estimate for the projected function</h3>
+<p>Read the <a href="#common-projection-definitions">common projection definitions</a>, together
+with <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L53">crossCandidates</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L62">crossPartition</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Projections.lean.html#L80">averagingRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L97">productMaximal</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L142">partialInterior</a>, <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L150">partialSquareFunction</a>
+and <a href="source/lean/ReyZygmund/MathlibOnly/SquareFunctions.lean.html#L158">combinedSquareFunction</a>.</p>
+<p>The maximal function in the denominator uses only the averaging rectangles.
+This estimate does not require weak incomparability.</p>
+<h3 id="prescribed-scale-covering">Prescribed-scale covering</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L147">rounding</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L160">shiftedCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L182">cubeIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L186">IcoGrid</a>.</p>
+<p>The family of grids is indexed by <code>Fin d → Fin 3</code>, giving three choices
+in each of the <code>d</code> scalar coordinates. The grids are chosen before the cube
+to be covered. The covering cube belongs to scale <code>rounding s</code>, so its side
+is exactly <code>2 ^ rounding s</code>. The closed input cube is covered, including
+its boundary; <code>IcoGrid</code> records the grid properties for <code>[lower, upper)</code> cubes.</p>
+<p><a id="córdoba-fefferman-selection"></a></p>
+<h3 id="córdobafefferman-selection">Córdoba–Fefferman selection</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L80">gridRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L87">shadow</a>.</p>
+<p><code>F.Finite</code> says that the family is finite. <code>G \ {R}</code> removes <code>R</code> from
+the selected family. The constant depends only on the number of factors.</p>
+<h3 id="weak-incomparability-of-slices">Weak incomparability of slices</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L176">rectangleIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L182">cubeIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L76">initialProjection</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L69">appendLastPoint</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L193">overlapIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L198">sliceFamilyIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L147">rounding</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L151">roundedScales</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L160">shiftedCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L169">roundedRectangles</a>.</p>
+<p><code>appendLastPoint x t</code> is the point <code>(x,t)</code>. The slice is a set of projected
+rectangles. Incomparability and weak incomparability are written out using
+the same <code>[lower, upper)</code> sets as the slices and overlap. <code>∃! R</code> means that
+exactly one original rectangle has the stated properties.</p>
+<h3 id="half-sparsity-of-slices">Half-sparsity of slices</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L80">gridRectangles</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L87">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L76">initialProjection</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L100">sliceFamily</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L120">Sparse</a>.</p>
+<p>The family is finite and satisfies the displayed overlap condition.
+For each slice, <code>Sparse</code> asserts the existence of the required disjoint
+measurable sets.</p>
+<h3 id="rounded-dyadic-endpoint">Rounded dyadic endpoint</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L147">rounding</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L151">roundedScales</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L160">shiftedCubes</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L169">roundedRectangles</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L176">rectangleIco</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L205">maximalIco</a>.</p>
+<h3 id="dyadic-zygmund-conjecture">Dyadic Zygmund conjecture</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L130">maximal</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L214">dyadicZygmundRectangles</a>.</p>
+<h3 id="sparse-φ-zygmund-overlap">Sparse Φ-Zygmund overlap</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L87">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L93">overlap</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L120">Sparse</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L214">dyadicZygmundRectangles</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L221">exp</a>.</p>
+<h3 id="sharpness-for-the-classical-dyadic-zygmund-family">Sharpness for the classical dyadic Zygmund family</h3>
+<p><a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L37">Point</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L41">Rectangle</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L45">CubeGrid</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L61">rectangle</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L87">shadow</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L106">Incomparable</a>, <a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L120">Sparse</a>,
+<a href="source/lean/ReyZygmund/MathlibOnly/Definitions.lean.html#L214">dyadicZygmundRectangles</a>.</p>
 </main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>

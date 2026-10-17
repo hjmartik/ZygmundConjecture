@@ -5,6 +5,8 @@ import ReyZygmund.Continuous.Endpoint
 open BoxIntegral MeasureTheory ReyZygmund ReyZygmund.Geometry
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (zygmundRectangles)
+
 namespace ReyZygmundVerification
 
 def logDilationContract : Prop :=
@@ -27,7 +29,7 @@ def continuousLevelsetInclusionContract : Prop :=
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
     ∀ (lam : ℝ), 0 < lam →
-    {x | ENNReal.ofReal lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} ⊆
+    {x | ENNReal.ofReal lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x} ⊆
       ⋃ tau : (∀ i, Fin (d i) → Fin 3),
         {x | ENNReal.ofReal (lam / (8 : ℝ) ^ (∑ i, d i)) <
           euclideanFamilyMaximal

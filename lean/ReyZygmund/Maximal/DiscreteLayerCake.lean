@@ -87,8 +87,7 @@ private theorem hasSum_dyadic_zero (p : ℝ) :
   rw [hzero]
   exact hasSum_zero
 
-/-- The strict-threshold integer series converges for every
-positive real exponent, including the zero input. -/
+/-- The strict-threshold integer series converges for every positive real exponent. -/
 theorem summable_dyadic_layerCake (t p : ℝ) (ht : 0 ≤ t) (hp : 0 < p) :
     Summable (fun n : ℤ => if Real.rpow 2 (n : ℝ) < t then
       Real.rpow 2 (p * (n : ℝ)) else 0) := by
@@ -98,8 +97,7 @@ theorem summable_dyadic_layerCake (t p : ℝ) (ht : 0 ≤ t) (hp : 0 < p) :
   · subst t
     exact (hasSum_dyadic_zero p).summable
 
-/-- The exact pointwise dyadic comparison in Section 2 of the paper.
-The strict threshold and both endpoints of the exponent interval are retained. -/
+/-- The pointwise dyadic comparison for strict thresholds and `1 ≤ p ≤ 3/2`. -/
 theorem dyadic_layerCake_bounds (t p : ℝ) (ht : 0 ≤ t) (hp : 1 ≤ p)
     (hp3 : p ≤ (3 : ℝ) / 2) :
     Real.rpow t p / 4 ≤

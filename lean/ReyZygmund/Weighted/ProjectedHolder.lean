@@ -22,12 +22,11 @@ variable {m : ℕ} {d : Fin m → ℕ}
 
 namespace Geometry
 
-/-- The complement square function preserves constancy on the smallest cubes,
-including in zero-dimensional factors. -/
+/-- The complement square function preserves constancy on the smallest cubes. -/
 theorem productLeafConstant_finiteComplementSquareFunction
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteComplementSquareFunction I N F) := by
   intro P hP x hx y hy
   simp only [finiteComplementSquareFunction_eq_partial]
@@ -41,36 +40,35 @@ theorem productLeafConstant_finiteComplementSquareFunction
 end Geometry
 
 /-- The Hölder estimate in p-th-power integral form uses the projection, averaging
-family and weighted square constant. Incomparability and hypotheses outside the
-top rectangle are not required. -/
+family and weighted square constant. -/
 theorem projected_holder_integral
     (hm : 0 < m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
     let F := finiteInput I N f hf
     let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
     let M := finiteFamilyMaximal (averagingRectangles I N G) F
     let K := (m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1)
-    (∫ x in productBox I, Real.rpow (W x) p) ≤
-      Real.rpow (K * ∫ x in productBox I, Real.rpow (f x) p) (p / 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 - p / 2) := by
+    (∫ x in productRectangle I, Real.rpow (W x) p) ≤
+      Real.rpow (K * ∫ x in productRectangle I, Real.rpow (f x) p) (p / 2) *
+        Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 - p / 2) := by
   let F := finiteInput I N f hf
   let P := finiteProjectionMap I N G F
   let W := finiteComplementSquareFunction I N P
   let M := finiteFamilyMaximal (averagingRectangles I N G) F
   let K := (m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1)
-  change (∫ x in productBox I, Real.rpow (W x) p) ≤
-    Real.rpow (K * ∫ x in productBox I, Real.rpow (f x) p) (p / 2) *
-      Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 - p / 2)
+  change (∫ x in productRectangle I, Real.rpow (W x) p) ≤
+    Real.rpow (K * ∫ x in productRectangle I, Real.rpow (f x) p) (p / 2) *
+      Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 - p / 2)
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
-  have hFpos : ∀ x ∈ productBox I, 0 < F.1 x := by
+  have hFpos : ∀ x ∈ productRectangle I, 0 < F.1 x := by
     intro x hx
-    change 0 < (productBox I).indicator f x
+    change 0 < (productRectangle I).indicator f x
     rw [Set.indicator_of_mem hx]
     exact hfpos x hx
   have hP := finiteProjectionMap_productStep_closure I N G F hF hFs
@@ -79,18 +77,18 @@ theorem projected_holder_integral
   have hM : ProductLeafConstant I N M :=
     productLeafConstant_finiteFamilyMaximal I N (averagingRectangles I N G)
       (averagingRectangles_subset_productDescendants I N G) F
-  have hW0 : ∀ x ∈ productBox I, 0 ≤ W x :=
+  have hW0 : ∀ x ∈ productRectangle I, 0 ≤ W x :=
     fun x _ => Real.sqrt_nonneg _
-  have hMpos : ∀ x ∈ productBox I, 0 < M x :=
+  have hMpos : ∀ x ∈ productRectangle I, 0 < M x :=
     averagingFamilyMaximal_pos hm I N G hG F hFpos
-  have hE0 : 0 ≤ ∫ x in productBox I, (W x) ^ 2 / Real.rpow (M x) (2 - p) :=
+  have hE0 : 0 ≤ ∫ x in productRectangle I, (W x) ^ 2 / Real.rpow (M x) (2 - p) :=
     integral_nonneg (fun x => div_nonneg (sq_nonneg _)
       (Real.rpow_nonneg (finiteFamilyMaximal_nonneg _ F x) _))
-  have hMp0 : 0 ≤ ∫ x in productBox I, Real.rpow (M x) p :=
+  have hMp0 : 0 ≤ ∫ x in productRectangle I, Real.rpow (M x) p :=
     integral_nonneg (fun x => Real.rpow_nonneg (finiteFamilyMaximal_nonneg _ F x) p)
   calc
-    _ ≤ Real.rpow (∫ x in productBox I, (W x) ^ 2 / Real.rpow (M x) (2 - p))
-        (p / 2) * Real.rpow (∫ x in productBox I, Real.rpow (M x) p) (1 - p / 2) :=
+    _ ≤ Real.rpow (∫ x in productRectangle I, (W x) ^ 2 / Real.rpow (M x) (2 - p))
+        (p / 2) * Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) (1 - p / 2) :=
       Weighted.weighted_energy_holder I N W M hW hM hW0 hMpos p hp hp2
     _ ≤ _ := mul_le_mul_of_nonneg_right
       (Real.rpow_le_rpow hE0
@@ -122,28 +120,28 @@ theorem projected_holder_norm
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
     let F := finiteInput I N f hf
     let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
     let M := finiteFamilyMaximal (averagingRectangles I N G) F
     let K := (m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1)
-    Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
-      Real.sqrt K * Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / 2 : ℝ) *
-        Real.rpow (∫ x in productBox I, Real.rpow (M x) p) ((2 - p) / (2 * p)) := by
+    Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
+      Real.sqrt K * Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / 2 : ℝ) *
+        Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) ((2 - p) / (2 * p)) := by
   let F := finiteInput I N f hf
   let W := finiteComplementSquareFunction I N (finiteProjectionMap I N G F)
   let M := finiteFamilyMaximal (averagingRectangles I N G) F
   let K := (m : ℝ) * (2 : ℝ) ^ ((∑ i, d i) + (m - 1)) / (p - 1) ^ (m - 1)
-  change Real.rpow (∫ x in productBox I, Real.rpow (W x) p) (1 / p) ≤
-    Real.sqrt K * Real.rpow (∫ x in productBox I, Real.rpow (f x) p) (1 / 2 : ℝ) *
-      Real.rpow (∫ x in productBox I, Real.rpow (M x) p) ((2 - p) / (2 * p))
-  have hWp0 : 0 ≤ ∫ x in productBox I, Real.rpow (W x) p :=
+  change Real.rpow (∫ x in productRectangle I, Real.rpow (W x) p) (1 / p) ≤
+    Real.sqrt K * Real.rpow (∫ x in productRectangle I, Real.rpow (f x) p) (1 / 2 : ℝ) *
+      Real.rpow (∫ x in productRectangle I, Real.rpow (M x) p) ((2 - p) / (2 * p))
+  have hWp0 : 0 ≤ ∫ x in productRectangle I, Real.rpow (W x) p :=
     integral_nonneg (fun _ => Real.rpow_nonneg (Real.sqrt_nonneg _) p)
-  have hfp0 : 0 ≤ ∫ x in productBox I, Real.rpow (f x) p :=
-    integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productBox I)
+  have hfp0 : 0 ≤ ∫ x in productRectangle I, Real.rpow (f x) p :=
+    integral_nonneg_of_ae (ae_restrict_of_forall_mem (measurableSet_productRectangle I)
       (fun x hx => Real.rpow_nonneg (hfpos x hx).le p))
-  have hMp0 : 0 ≤ ∫ x in productBox I, Real.rpow (M x) p :=
+  have hMp0 : 0 ≤ ∫ x in productRectangle I, Real.rpow (M x) p :=
     integral_nonneg (fun x => Real.rpow_nonneg (finiteFamilyMaximal_nonneg _ F x) p)
   have hK0 : 0 ≤ K :=
     div_nonneg (mul_nonneg (Nat.cast_nonneg m) (pow_nonneg (by norm_num) _))

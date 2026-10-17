@@ -8,7 +8,7 @@ import ReyZygmund.Projection.CrossProjection
 The denominator is the positive maximal function of the averaging
 family. Its comparison with the cross-averaged weight is used only on the
 support cylinder, where that weight is positive. Elsewhere the numerator
-vanishes. No global positivity of a partially averaged weight is assumed.
+vanishes.
 -/
 
 open BoxIntegral MeasureTheory
@@ -33,17 +33,17 @@ private theorem difference_zero_off_selected (A : Finset (Fin m))
 private theorem averagedDenominator_pos_on_selected
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
-    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productBox I, 0 < F.1 y)
+    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productRectangle I, 0 < F.1 y)
     (j : Fin m) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i, i ≠ j → Q i ∈ descendants (I i) (N i))
-    (x : ProductPoint d) (hx : x ∈ productBox I)
+    (x : ProductPoint d) (hx : x ∈ productRectangle I)
     (hxQ : ∀ i ∈ Finset.univ.erase j, x i ∈ Q i) :
     0 < coordinateCrossAverage j (I j) (N j) (eligibleProjections j G Q)
       (productAverageMap (Finset.univ.erase j) Q F).1 x := by
   have he := eligibleProjections_subset_descendants I N j G Q
     (fun R hR i => mem_productDescendants.mp (hG hR) i)
   obtain ⟨P, hP, hxP⟩ := maximalPartition_isPartition (I j) (N j)
-    (eligibleProjections j G Q) he (x j) ((mem_productBox I x).mp hx j)
+    (eligibleProjections j G Q) he (x j) ((mem_productRectangle I x).mp hx j)
   rw [averagedDenominator_eq_productAverage I N G hG j Q P hP F x hxP]
   have hR := update_mem_averagingRectangles I N G hG j Q hQ P hP
   have hdesc := averagingRectangles_subset_productDescendants I N G hR
@@ -60,16 +60,16 @@ theorem projected_row_energy
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2)
     (j : Fin m) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i, i ≠ j → Q i ∈ interior (I i) (N i)) :
     let F := finiteInput I N f hf
     let A := Finset.univ.erase j
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       ((productDifferenceMap A Q (finiteProjectionMap I N G F)).1 x) ^ 2 /
         Real.rpow (finiteFamilyMaximal (averagingRectangles I N G) F x) (2 - p)) ≤
-      ∫ x in productBox I,
+      ∫ x in productRectangle I,
         ((productDifferenceMap A Q F).1 x) ^ 2 /
           Real.rpow ((productAverageMap A Q F).1 x) (2 - p) := by
   let F := finiteInput I N f hf
@@ -80,11 +80,11 @@ theorem projected_row_energy
   let Xv := coordinateCrossAverage j (I j) (N j) (eligibleProjections j G Q) v
   let M := finiteFamilyMaximal (averagingRectangles I N G) F
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
-  have hFpos : ∀ x ∈ productBox I, 0 < F.1 x := by
+  have hFpos : ∀ x ∈ productRectangle I, 0 < F.1 x := by
     intro x hx
-    change 0 < (productBox I).indicator f x
+    change 0 < (productRectangle I).indicator f x
     rw [Set.indicator_of_mem hx]
     exact hfpos x hx
   have hQd : ∀ i, i ≠ j → Q i ∈ descendants (I i) (N i) :=
@@ -105,13 +105,13 @@ theorem projected_row_energy
   change ProductLeafConstant I N Xv at hXv
   change ProductLeafConstant I N M at hM
   have hleft : IntegrableOn (fun x => (Xu x) ^ 2 / Real.rpow (M x) (2 - p))
-      (productBox I) volume := by
+      (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro P hP x hx y hy
     dsimp only
     rw [hXu P hP x hx y hy, hM P hP x hx y hy]
   have hmiddle : IntegrableOn (fun x => (Xu x) ^ 2 / Real.rpow (Xv x) (2 - p))
-      (productBox I) volume := by
+      (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro P hP x hx y hy
     dsimp only
@@ -120,20 +120,20 @@ theorem projected_row_energy
     finite_cross_projection_descendants I N hd G
       (fun R hR i => mem_productDescendants.mp (hG hR) i) f hf j Q
       (fun i hij => interior_subset_descendants (I i) (N i) (hQ i hij))
-  change (∫ x in productBox I,
+  change (∫ x in productRectangle I,
       ((productDifferenceMap A Q (finiteProjectionMap I N G F)).1 x) ^ 2 /
-        Real.rpow (M x) (2 - p)) ≤ ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p)
+        Real.rpow (M x) (2 - p)) ≤ ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p)
   rw [hcross]
   calc
-    (∫ x in productBox I, (Xu x) ^ 2 / Real.rpow (M x) (2 - p)) ≤
-        ∫ x in productBox I, (Xu x) ^ 2 / Real.rpow (Xv x) (2 - p) := by
-      apply setIntegral_mono_on hleft hmiddle (measurableSet_productBox I)
+    (∫ x in productRectangle I, (Xu x) ^ 2 / Real.rpow (M x) (2 - p)) ≤
+        ∫ x in productRectangle I, (Xu x) ^ 2 / Real.rpow (Xv x) (2 - p) := by
+      apply setIntegral_mono_on hleft hmiddle (measurableSet_productRectangle I)
       intro x hx
       by_cases hxQ : ∀ i ∈ A, x i ∈ Q i
       · have hpos : 0 < Xv x := averagedDenominator_pos_on_selected I N G hG F hFpos
           j Q hQd x hx hxQ
         have hbound : Xv x ≤ M x := averagedDenominator_le_familyMaximal I N G hG F
-          (fun y hy => (hFpos y hy).le) j Q hQd x ((mem_productBox I x).mp hx j)
+          (fun y hy => (hFpos y hy).le) j Q hQd x ((mem_productRectangle I x).mp hx j)
         exact div_le_div_of_nonneg_left (sq_nonneg _)
           (Real.rpow_pos_of_pos hpos _) (Real.rpow_le_rpow hpos.le hbound (by linarith))
       · have hz : Xu x = 0 := by

@@ -5,9 +5,7 @@ import ReyZygmund.Geometry.FinitePartition
 
 Each removed rectangle is counted once. Fixing all but one coordinate leaves
 exactly the coordinate cubes contained in an eligible projection, allowing
-equality. Interior indices exclude the smallest scale. Incomparability is not
-needed.
-
+equality. Interior indices exclude the smallest scale.
 -/
 
 noncomputable section
@@ -73,8 +71,8 @@ theorem selectedCoordinateIndices_eq_filter
     obtain ⟨J, hJ, rfl⟩ := Finset.mem_image.mp hQ
     exact ⟨hL, J, (Finset.mem_filter.mp hJ).1, hLQ, (Finset.mem_filter.mp hJ).2⟩
 
-/-- Fixing the other coordinates gives a bijection, not a sum over containing
-rectangles. The value of the unused placeholder `K j` is irrelevant. -/
+/-- Fixing the other coordinates gives a bijection with the selected coordinate
+indices, counting each removed rectangle once. The placeholder `K j` is unused. -/
 theorem removedIndices_fiber
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (j : Fin m) (G : Finset (∀ i, Box (Fin (d i)))) (K : ∀ i, Box (Fin (d i)))

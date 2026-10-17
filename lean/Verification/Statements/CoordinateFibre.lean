@@ -20,10 +20,10 @@ def coordinateFibreLeafContract : Prop :=
 def coordinateFibreSupportContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
     (I : ∀ i, Box (Fin (d i))) (f : ProductPoint d → ℝ),
-    (∀ x, x ∉ productBox I → f x = 0) →
+    (∀ x, x ∉ productRectangle I → f x = 0) →
   ∀ (j : Fin (n + 1)) (t : Fin (d j) → ℝ)
     (y : ProductPoint (fun i => d (j.succAbove i))),
-    y ∉ productBox (fun i => I (j.succAbove i)) → f (j.insertNth t y) = 0
+    y ∉ productRectangle (fun i => I (j.succAbove i)) → f (j.insertNth t y) = 0
 
 def coordinateFibreDifferenceSumContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
@@ -58,9 +58,9 @@ def coordinateFibreIntegralContract : Prop :=
     (I : ∀ i, Box (Fin (d i))) (N : Fin (n + 1) → ℕ)
     (H : ProductPoint d → ℝ), ProductLeafConstant I N H →
   ∀ (j : Fin (n + 1)),
-    (∫ x in productBox I, H x) =
+    (∫ x in productRectangle I, H x) =
       ∫ t in (I j : Set (Fin (d j) → ℝ)),
-        ∫ y in productBox (fun i => I (j.succAbove i)), H (j.insertNth t y)
+        ∫ y in productRectangle (fun i => I (j.succAbove i)), H (j.insertNth t y)
 
 def coordinateFibreIntegralIntegrabilityContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
@@ -68,7 +68,7 @@ def coordinateFibreIntegralIntegrabilityContract : Prop :=
     (H : ProductPoint d → ℝ), ProductLeafConstant I N H →
   ∀ (j : Fin (n + 1)),
     IntegrableOn
-      (fun t => ∫ y in productBox (fun i => I (j.succAbove i)), H (j.insertNth t y))
+      (fun t => ∫ y in productRectangle (fun i => I (j.succAbove i)), H (j.insertNth t y))
       (I j : Set (Fin (d j) → ℝ)) volume
 
 end ReyZygmundVerification

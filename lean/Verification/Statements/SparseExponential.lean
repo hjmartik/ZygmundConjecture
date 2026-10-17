@@ -5,6 +5,8 @@ import ReyZygmund.Overlap.Exponential
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry ReyZygmund.Overlap
@@ -13,12 +15,12 @@ def weakerSparseOverlapExponentialContract : Prop :=
     ∃ c B : ℕ → ℕ → ℝ,
       (∀ m D, 0 < c m D) ∧ (∀ m D, 0 < B m D) ∧
       ∀ (m : ℕ) (d : Fin m → ℕ), 2 ≤ m → (∀ i, 0 < d i) →
-      ∀ (D : ∀ i, DyadicGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
+      ∀ (D : ∀ i, CubeGrid (d i)) (G : Set (∀ i, Box (Fin (d i)))),
       G ⊆ gridRectangles D →
-      (∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i) →
+      (∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i) →
       ∀ eta : ℝ, 0 < eta →
       ∀ E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ),
-      (∀ R ∈ G, MeasurableSet (E R)) →
+      (∀ R ∈ G, NullMeasurableSet (E R) volume) →
       (∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
       Set.Pairwise G (fun R S => Disjoint (E R) (E S)) →
       (∀ R ∈ G, ENNReal.ofReal eta *

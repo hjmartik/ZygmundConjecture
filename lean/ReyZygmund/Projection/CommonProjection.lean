@@ -47,8 +47,7 @@ theorem crossAverageMap_apply
   funext x
   simp [crossAverageMap, Finset.sum_apply]
 
-/-- The exact operator sum before the one-coordinate telescope is applied.
-No finiteness condition on the unused factor `K j` is introduced. -/
+/-- The exact operator sum before the one-coordinate telescope is applied. -/
 theorem partialDifference_projectionMap
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (hd : ∀ i, 0 < d i) (G : Finset (∀ i, Box (Fin (d i))))
@@ -100,8 +99,7 @@ theorem partialDifference_projection_apply
   simpa only [Module.End.mul_apply, LinearMap.sub_apply, LinearMap.sum_apply] using ht
 
 /-- The cross-coordinate identity is a pointwise equality of functions after
-restricting the input to the top rectangle. Incomparability is not required.
--/
+restricting the input to the top rectangle. -/
 theorem finite_cross_projection
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (hd : ∀ i, 0 < d i) (G : Finset (∀ i, Box (Fin (d i))))
@@ -116,14 +114,14 @@ theorem finite_cross_projection
   let u := finiteInput I N f hf
   let g := productDifferenceMap (Finset.univ.erase j) K u
   have hu : ProductLeafConstant I N u.1 := productLeafConstant_indicator hf
-  have hus : ∀ x, x ∉ productBox I → u.1 x = 0 := by
+  have hus : ∀ x, x ∉ productRectangle I → u.1 x = 0 := by
     intro x hx
     exact Set.indicator_of_notMem hx f
   have hg := productDifferenceMap_productStep_closure I N u hu hus
     (Finset.univ.erase j) K (fun i hi => hK i (Finset.mem_erase.mp hi).1)
-  have hsupport : (productBox I).indicator g.1 = g.1 := by
+  have hsupport : (productRectangle I).indicator g.1 = g.1 := by
     funext x
-    by_cases hx : x ∈ productBox I
+    by_cases hx : x ∈ productRectangle I
     · exact Set.indicator_of_mem hx g.1
     · rw [Set.indicator_of_notMem hx, hg.2 x hx]
   have hc := coordinateCrossAverage_complement I N g.1 hg.1 j (hd j)

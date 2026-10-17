@@ -4,7 +4,7 @@ import ReyZygmund.Maximal.Countable
 import ReyZygmund.Geometry.ProductContainment
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 
-/-! # The weaker-containment estimate on the whole grid
+/-! # The weakly incomparable estimate on the whole grid
 
 The finite estimates are uniform in the top rectangles and smallest scales used
 for localization. Countable monotone convergence gives the extended power-integral
@@ -16,16 +16,17 @@ Lp norms.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund
 
 open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The countable supremum satisfies the uniform power-integral
-estimate, with no finite-family or bounded-input restriction. -/
+/-- The countable supremum satisfies the uniform power-integral estimate. -/
 theorem weaker_grid_family_maximal_lintegral
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
     (hweak : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i)
     (f : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p)
@@ -45,11 +46,9 @@ theorem weaker_grid_family_maximal_lintegral
     (fun Q hQ => hG (hHG Q hQ))
     (fun R hR S hS => hweak R (hHG R hR) S (hHG S hS)) f p hp hf
 
-/-- The global supremum is finite almost everywhere. This is established
-before taking a real representative; divergent suprema are not set to zero
-and then silently treated as the maximal function. -/
+/-- The global supremum is finite almost everywhere. -/
 theorem weaker_grid_family_maximal_ae_finite
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
     (hweak : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i)
     (f : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p)
@@ -72,7 +71,7 @@ theorem weaker_grid_family_maximal_ae_finite
 /-- Ordinary Lp form for the almost-everywhere finite representative, with
 the exact `(p')^(m-1)` factor outside the norm. -/
 theorem weaker_grid_family_maximal_eLpNorm
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
     (hweak : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → ∃ i, R i = S i)
     (f : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p)
@@ -102,31 +101,31 @@ theorem weaker_grid_family_maximal_eLpNorm
     ← ENNReal.rpow_mul, mul_one_div_cancel hp0.ne', ENNReal.rpow_one] at h
   exact h
 
-/-- The paper's weaker-containment premise uses product-set inclusion
+/-- The equal-factor form of weak incomparability uses product-set inclusion
 and equality of one coordinate cube. -/
 theorem weaker_containment_grid_maximal_eLpNorm
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (f : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p)
     (hf : MemLp f (ENNReal.ofReal p) volume) :
     eLpNorm (fun x => (familyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤
       ENNReal.ofReal ((maximalDimensionConstant d + 3) *
         (p / (p - 1)) ^ (m - 1)) * eLpNorm f (ENNReal.ofReal p) volume := by
   exact weaker_grid_family_maximal_eLpNorm hm hd D G hG
-    (fun R hR S hS hRS => hweak R hR S hS ((productBox_subset_iff R S).mpr hRS))
+    (fun R hR S hS hRS => hweak R hR S hS ((productRectangle_subset_iff R S).mpr hRS))
       f p hp hf
 
 /-- Almost-everywhere finiteness of the Euclidean supremum. -/
 theorem euclidean_weaker_grid_maximal_ae_finite
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ) (hp : 1 < p)
     (hf : MemLp f (ENNReal.ofReal p) volume) :
     ∀ᵐ x ∂volume, euclideanFamilyMaximal G f x < ∞ := by
   have hfin := weaker_grid_family_maximal_ae_finite hm hd D G hG
-    (fun R hR S hS hRS => hweak R hR S hS ((productBox_subset_iff R S).mpr hRS))
+    (fun R hR S hS hRS => hweak R hR S hS ((productRectangle_subset_iff R S).mpr hRS))
       (fun y => f (flattenCoordinates d y)) p hp (memLp_comp_flattenCoordinates f _ hf)
   have hmap := (volume_preserving_flattenCoordinates d).map_eq
   rw [← hmap]
@@ -136,11 +135,11 @@ theorem euclidean_weaker_grid_maximal_ae_finite
   simpa only [euclideanFamilyMaximal_flatten, Set.mem_Iio] using hfin
 
 /-- The main norm estimate in ordinary Euclidean coordinates, with the same
-dimension-only constant and no finite-family or bounded-input restriction. -/
+dimension-only constant. -/
 theorem euclidean_weaker_grid_maximal_eLpNorm
-    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hm : 2 ≤ m) (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G ⊆ gridRectangles D)
-    (hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ) (hp : 1 < p)
     (hf : MemLp f (ENNReal.ofReal p) volume) :
     eLpNorm (fun x => (euclideanFamilyMaximal G f x).toReal) (ENNReal.ofReal p) volume ≤

@@ -60,7 +60,7 @@ theorem averageMap_mul_finiteProjectionMap
   intro f
   simp
 
-/-- Every removed finite full difference is annihilated, with no multiplicity. -/
+/-- Every removed finite full difference is annihilated. -/
 theorem productDifferenceMap_mul_finiteProjectionMap
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (hd : ∀ i, 0 < d i) (G : Finset (∀ i, Box (Fin (d i))))
@@ -91,12 +91,12 @@ theorem finiteProjectionMap_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (f : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0) :
     ProductLeafConstant I N (finiteProjectionMap I N G f).1 ∧
-      ∀ x, x ∉ productBox I → (finiteProjectionMap I N G f).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (finiteProjectionMap I N G f).1 x = 0 := by
   have hterm : ∀ L ∈ removedIndices I N G,
       ProductLeafConstant I N (productDifferenceMap Finset.univ L f).1 ∧
-        ∀ x, x ∉ productBox I → (productDifferenceMap Finset.univ L f).1 x = 0 := by
+        ∀ x, x ∉ productRectangle I → (productDifferenceMap Finset.univ L f).1 x = 0 := by
     intro L hL
     exact productDifferenceMap_productStep_closure I N f hf hs Finset.univ L
       (fun i _ => (mem_productInterior.mp (Finset.mem_filter.mp hL).1) i)

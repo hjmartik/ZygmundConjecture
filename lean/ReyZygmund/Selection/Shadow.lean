@@ -6,12 +6,13 @@ import ReyZygmund.Maximal.OrdinaryGrid
 
 Insertion gives a weak half-density inequality. The finite ordinary
 maximal function is therefore at least one half on the original shadow.
-Its squared L2 bound gives exactly `4 ^ (m + 1)`; no strict halo threshold
-or incomparable maximal estimate is used.
+Its squared L2 bound gives exactly `4 ^ (m + 1)`.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmund.Selection
 
@@ -22,7 +23,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 /-- The analytic shadow comparison uses only the insertion densities and
 the ordinary finite-grid L2 estimate. -/
 theorem finite_density_shadow_bound
-    (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (F G : Finset (∀ i, Box (Fin (d i)))) (hF : ↑F ⊆ gridRectangles D)
     (hdensity : ∀ Q ∈ F,
       (1 / 2 : ℝ) * volume.real (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) ≤
@@ -43,7 +44,7 @@ theorem finite_density_shadow_bound
   have hAfin : volume A ≠ ∞ := hAvol.trans_ne (volume_finiteShadow_lt_top G).ne
   have hf : MemLp f 2 volume := memLp_indicator_const 2 hAmeas.nullMeasurableSet 1 (Or.inr hAfin)
   have havg (Q : ∀ i, Box (Fin (d i))) :
-      (∫ y in productBox Q, |f y|) =
+      (∫ y in productRectangle Q, |f y|) =
         volume.real ((flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) ∩ finiteShadow G) := by
     have heq : (fun y => |f y|) =
         (fun y => (finiteShadow G).indicator (fun _ => (1 : ℝ))
@@ -59,10 +60,10 @@ theorem finite_density_shadow_bound
       S.indicator (fun _ => (1 : ℝ)) x ≤ 4 * (finiteFunctionMaximal F f x) ^ 2 := by
     by_cases hx : x ∈ S
     · obtain ⟨Q, hQ, hxQ⟩ := Set.mem_iUnion₂.mp hx
-      have hxQ' : x ∈ productBox Q := (mem_flatProductBox Q x).mp hxQ
+      have hxQ' : x ∈ productRectangle Q := (mem_flatProductBox Q x).mp hxQ
       have havgHalf : (1 / 2 : ℝ) ≤
-          (∫ y in productBox Q, |f y|) / volume.real (productBox Q) := by
-        apply (le_div_iff₀ (productBox_volume_pos Q)).mpr
+          (∫ y in productRectangle Q, |f y|) / volume.real (productRectangle Q) := by
+        apply (le_div_iff₀ (productRectangle_volume_pos Q)).mpr
         rw [havg]
         simpa only [Measure.real, volume_flatProductBox] using hdensity Q hQ
       have hmax := positiveMean_le_finiteFunctionMaximal F f Q hQ x
@@ -108,22 +109,22 @@ theorem incomparable_of_half_overlap
     intro x hx
     obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
     apply (mem_flatProductBox S y).mpr
-    apply (mem_productBox S y).mpr
+    apply (mem_productRectangle S y).mpr
     intro i
-    exact hRS i ((mem_productBox R y).mp ((mem_flatProductBox R y).mp hx) i)
+    exact hRS i ((mem_productRectangle R y).mp ((mem_flatProductBox R y).mp hx) i)
   have hshadow : (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ⊆ finiteShadow (G.erase R) :=
     hsub.trans (flatProductBox_subset_finiteShadow (G.erase R) S
       (Finset.mem_erase.mpr ⟨Ne.symm hne, hS⟩))
   have h := hoverlap R hR
   rw [Set.inter_eq_left.mpr hshadow] at h
   have hv : 0 < volume.real (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) := by
-    simpa only [Measure.real, volume_flatProductBox] using productBox_volume_pos R
+    simpa only [Measure.real, volume_flatProductBox] using productRectangle_volume_pos R
   linarith
 
 /-- The paper's finite selection lemma with the stated explicit number of
 coordinate factors in its shadow constant. -/
 theorem finite_selection_with_comparable_shadow
-    (hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (F : Finset (∀ i, Box (Fin (d i)))) (hF : ↑F ⊆ gridRectangles D) :
     ∃ G : Finset (∀ i, Box (Fin (d i))), G ⊆ F ∧
       volume.real (finiteShadow F) ≤ (4 : ℝ) ^ (m + 1) * volume.real (finiteShadow G) ∧

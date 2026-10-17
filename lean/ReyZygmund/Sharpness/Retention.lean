@@ -43,7 +43,7 @@ theorem level_boxes_card {d : ℕ} (Q : Box (Fin d)) (s : ℕ) :
         simp [splitCenter_card, ih, Nat.add_mul, pow_add]
 
 /-- Retain exactly the paper's number of depth-s boxes, with fraction
-`2^(-s)` of the parent's measure. The valid s=0 case retains the whole box. -/
+`2^(-s)` of the parent's measure. -/
 theorem exists_retained_level {d : ℕ} (hd : 0 < d) (Q : Box (Fin d)) (s : ℕ) :
     ∃ F : Finset (Box (Fin d)),
       F ⊆ (level Q s).boxes ∧

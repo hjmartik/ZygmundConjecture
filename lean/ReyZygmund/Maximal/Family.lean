@@ -24,8 +24,8 @@ noncomputable def finiteFamilyMaximal
     (G : Finset (∀ i, Box (Fin (d i)))) (F : boundedMeasurableFunctions d)
     (x : ProductPoint d) : ℝ :=
   if h : G.Nonempty then G.sup' h (fun Q =>
-    (productBox Q).indicator
-      (fun _ => (∫ y in productBox Q, |F.1 y|) / volume.real (productBox Q)) x)
+    (productRectangle Q).indicator
+      (fun _ => (∫ y in productRectangle Q, |F.1 y|) / volume.real (productRectangle Q)) x)
   else 0
 
 theorem finiteFamilyMaximal_empty (F : boundedMeasurableFunctions d) :
@@ -40,8 +40,8 @@ theorem finiteFamilyMaximal_nonneg
   by_cases h : G.Nonempty
   · obtain ⟨Q, hQ⟩ := h
     rw [finiteFamilyMaximal, dite_eq_left ⟨Q, hQ⟩]
-    apply le_trans _ (Finset.le_sup' (fun R => (productBox R).indicator
-      (fun _ => (∫ y in productBox R, |F.1 y|) / volume.real (productBox R)) x) hQ)
+    apply le_trans _ (Finset.le_sup' (fun R => (productRectangle R).indicator
+      (fun _ => (∫ y in productRectangle R, |F.1 y|) / volume.real (productRectangle R)) x) hQ)
     exact Set.indicator_nonneg (fun _ _ =>
       div_nonneg (integral_nonneg (fun y => abs_nonneg (F.1 y))) measureReal_nonneg) x
   · simp [finiteFamilyMaximal, h]
@@ -53,8 +53,8 @@ theorem measurable_finiteFamilyMaximal
   by_cases h : G.Nonempty
   · have hm := Finset.measurable_sup' (s := G) h
       (fun Q _ => (measurable_const : Measurable (fun _ : ProductPoint d =>
-        (∫ y in productBox Q, |F.1 y|) / volume.real (productBox Q))).indicator
-          (measurableSet_productBox Q))
+        (∫ y in productRectangle Q, |F.1 y|) / volume.real (productRectangle Q))).indicator
+          (measurableSet_productRectangle Q))
     convert hm using 1
     funext x
     rw [finiteFamilyMaximal, dite_eq_left h, Finset.sup'_apply]
@@ -68,23 +68,34 @@ theorem measurable_finiteFamilyMaximal
 theorem positiveMean_le_finiteFamilyMaximal
     (G : Finset (∀ i, Box (Fin (d i)))) (F : boundedMeasurableFunctions d)
     (Q : ∀ i, Box (Fin (d i))) (hQ : Q ∈ G) (x : ProductPoint d) :
-    (productBox Q).indicator
-      (fun _ => (∫ y in productBox Q, |F.1 y|) / volume.real (productBox Q)) x ≤
+    (productRectangle Q).indicator
+      (fun _ => (∫ y in productRectangle Q, |F.1 y|) / volume.real (productRectangle Q)) x ≤
       finiteFamilyMaximal G F x := by
   rw [finiteFamilyMaximal, dite_eq_left ⟨Q, hQ⟩]
-  exact Finset.le_sup' (fun R => (productBox R).indicator
-    (fun _ => (∫ y in productBox R, |F.1 y|) / volume.real (productBox R)) x) hQ
+  exact Finset.le_sup' (fun R => (productRectangle R).indicator
+    (fun _ => (∫ y in productRectangle R, |F.1 y|) / volume.real (productRectangle R)) x) hQ
+
+/-- Enlarging the finite collection increases its positive maximal function. -/
+theorem finiteFamilyMaximal_mono
+    (G H : Finset (∀ i, Box (Fin (d i)))) (hGH : G ⊆ H)
+    (F : boundedMeasurableFunctions d) (x : ProductPoint d) :
+    finiteFamilyMaximal G F x ≤ finiteFamilyMaximal H F x := by
+  by_cases h : G.Nonempty
+  · rw [finiteFamilyMaximal, dite_eq_left h]
+    exact Finset.sup'_le _ _ (fun Q hQ =>
+      positiveMean_le_finiteFamilyMaximal H F Q (hGH hQ) x)
+  · simpa only [finiteFamilyMaximal, dite_eq_right h] using finiteFamilyMaximal_nonneg H F x
 
 /-- On a rectangle where the input is nonnegative, its signed product average
 is itself one of the positive means in the family maximum. -/
 theorem productAverageMap_le_finiteFamilyMaximal
     (G : Finset (∀ i, Box (Fin (d i)))) (F : boundedMeasurableFunctions d)
     (Q : ∀ i, Box (Fin (d i))) (hQ : Q ∈ G)
-    (hpos : ∀ y ∈ productBox Q, 0 ≤ F.1 y) (x : ProductPoint d) :
+    (hpos : ∀ y ∈ productRectangle Q, 0 ≤ F.1 y) (x : ProductPoint d) :
     (productAverageMap Finset.univ Q F).1 x ≤ finiteFamilyMaximal G F x := by
   rw [productAverageMap_univ_eq_integral]
-  have heq : (∫ y in productBox Q, F.1 y) = ∫ y in productBox Q, |F.1 y| := by
-    apply setIntegral_congr_fun (measurableSet_productBox Q)
+  have heq : (∫ y in productRectangle Q, F.1 y) = ∫ y in productRectangle Q, |F.1 y| := by
+    apply setIntegral_congr_fun (measurableSet_productRectangle Q)
     intro y hy
     exact (abs_of_nonneg (hpos y hy)).symm
   rw [heq]
@@ -101,36 +112,35 @@ theorem finiteFamilyMaximal_le_product
   · rw [finiteFamilyMaximal, dite_eq_left h, finiteProductMaximal_univ_eq_integral]
     apply Finset.sup'_le
     intro Q hQ
-    exact Finset.le_sup' (fun R => (productBox R).indicator
-      (fun _ => (∫ y in productBox R, |F.1 y|) / volume.real (productBox R)) x) (hG hQ)
+    exact Finset.le_sup' (fun R => (productRectangle R).indicator
+      (fun _ => (∫ y in productRectangle R, |F.1 y|) / volume.real (productRectangle R)) x) (hG hQ)
   · simpa [finiteFamilyMaximal, h] using
       finiteProductMaximal_nonneg I N Finset.univ F x
 
-/-- Positivity uses averaging-family coverage. A positive number of
-coordinate factors is essential; no incomparability is assumed. -/
+/-- Averaging-family coverage gives positivity when the number of coordinate
+factors is positive. -/
 theorem averagingFamilyMaximal_pos (hm : 0 < m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
-    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productBox I, 0 < F.1 y)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productRectangle I, 0 < F.1 y)
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     0 < finiteFamilyMaximal (averagingRectangles I N G) F x := by
   obtain ⟨Q, hQ, hxQ⟩ := averagingRectangles_cover hm I N G hG x hx
   have hdesc := averagingRectangles_subset_productDescendants I N G hQ
   have hQI : ∀ i, Q i ≤ I i := fun i =>
     le_of_mem_descendants (mem_productDescendants.mp hdesc i)
   have hp := productAverageMap_pos I F hpos Finset.univ Q
-    (fun i _ => hQI i) x hx (fun i _ => (mem_productBox Q x).mp hxQ i)
+    (fun i _ => hQI i) x hx (fun i _ => (mem_productRectangle Q x).mp hxQ i)
   apply hp.trans_le
   exact productAverageMap_le_finiteFamilyMaximal _ F Q hQ
     (fun y hy => (hpos y
-      (productBox_subset_root_of_mem_productDescendants hdesc hy)).le) x
+      (productRectangle_subset_root_of_mem_productDescendants hdesc hy)).le) x
 
-/-- The selected partition rectangle gives the paper's denominator
-comparison. This does not replace it by a larger ordinary maximal function. -/
+/-- The selected partition rectangle gives the denominator comparison. -/
 theorem averagedDenominator_le_familyMaximal
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (G : Finset (∀ i, Box (Fin (d i)))) (hG : G ⊆ productDescendants I N)
-    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productBox I, 0 ≤ F.1 y)
+    (F : boundedMeasurableFunctions d) (hpos : ∀ y ∈ productRectangle I, 0 ≤ F.1 y)
     (j : Fin m) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i, i ≠ j → Q i ∈ descendants (I i) (N i))
     (x : ProductPoint d) (hx : x j ∈ I j) :
@@ -145,7 +155,7 @@ theorem averagedDenominator_le_familyMaximal
   have hR := update_mem_averagingRectangles I N G hG j Q hQ P hP
   apply productAverageMap_le_finiteFamilyMaximal _ F _ hR
   intro y hy
-  exact hpos y (productBox_subset_root_of_mem_productDescendants
+  exact hpos y (productRectangle_subset_root_of_mem_productDescendants
     (averagingRectangles_subset_productDescendants I N G hR) hy)
 
 end ReyZygmund

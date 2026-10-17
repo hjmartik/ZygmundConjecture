@@ -6,9 +6,9 @@ import Mathlib.Algebra.Order.Archimedean.Basic
 /-!
 # Allocation of nonzero product differences by square-function density
 
-The density levels use the finite square function and product Lebesgue
-measure. The nonzero child gives a strict lower tail, while boundedness of the
-finite square function gives an upper tail. No last-level property is assumed.
+The density levels use the finite square function and product Lebesgue measure.
+The nonzero child gives a strict lower tail, while boundedness of the finite
+square function gives an upper tail.
 -/
 
 open BoxIntegral MeasureTheory
@@ -64,27 +64,13 @@ private theorem difference_abs_le_square
 
 private theorem product_interior_subset_root
     (I Q : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
-    (hQ : Q ∈ Projection.productInterior I N) : productBox Q ⊆ productBox I := by
+    (hQ : Q ∈ Projection.productInterior I N) : productRectangle Q ⊆ productRectangle I := by
   intro x hx
-  apply (mem_productBox I x).mpr
+  apply (mem_productRectangle I x).mpr
   intro i
   exact le_of_mem_descendants
     (interior_subset_descendants (I i) (N i) (Projection.mem_productInterior.mp hQ i))
-    ((mem_productBox Q x).mp hx i)
-
-private theorem product_volume_pos (Q : ∀ i, Box (Fin (d i))) :
-    0 < volume.real (productBox Q) := by
-  change 0 < (Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (Q i : Set (Fin (d i) → ℝ))))).toReal
-  rw [Measure.pi_pi, ENNReal.toReal_prod]
-  exact Finset.prod_pos (fun i _ => box_volume_pos (Q i))
-
-private theorem product_volume_lt_top (Q : ∀ i, Box (Fin (d i))) :
-    volume (productBox Q) < ∞ := by
-  change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (Q i : Set (Fin (d i) → ℝ)))) < ∞
-  rw [Measure.pi_pi]
-  exact ENNReal.prod_lt_top (fun i _ => (Q i).measure_coe_lt_top volume)
+    ((mem_productRectangle Q x).mp hx i)
 
 private theorem existsUnique_last_strict_level
     (a : ℤ → ℝ) (ha : Antitone a) (c : ℝ)
@@ -111,44 +97,44 @@ theorem existsUnique_square_density_level
     (hne : productDifferenceMap Finset.univ Q F ≠ 0) :
     let δ : ℝ := 1 / (2 : ℝ) ^ ((∑ i, d i) + 1)
     let Ω : ℤ → Set (ProductPoint d) := fun n =>
-      {x | x ∈ productBox I ∧
+      {x | x ∈ productRectangle I ∧
         Real.rpow 2 (n : ℝ) < finiteSquareFunction I N Finset.univ F x}
     ∃! n : ℤ,
-      δ * volume.real (productBox Q) < volume.real (productBox Q ∩ Ω n) ∧
-        volume.real (productBox Q ∩ Ω (n + 1)) ≤ δ * volume.real (productBox Q) := by
+      δ * volume.real (productRectangle Q) < volume.real (productRectangle Q ∩ Ω n) ∧
+        volume.real (productRectangle Q ∩ Ω (n + 1)) ≤ δ * volume.real (productRectangle Q) := by
   let δ : ℝ := 1 / (2 : ℝ) ^ ((∑ i, d i) + 1)
   let Ω : ℤ → Set (ProductPoint d) := fun n =>
-    {x | x ∈ productBox I ∧
+    {x | x ∈ productRectangle I ∧
       Real.rpow 2 (n : ℝ) < finiteSquareFunction I N Finset.univ F x}
   change ∃! n : ℤ,
-    δ * volume.real (productBox Q) < volume.real (productBox Q ∩ Ω n) ∧
-      volume.real (productBox Q ∩ Ω (n + 1)) ≤ δ * volume.real (productBox Q)
+    δ * volume.real (productRectangle Q) < volume.real (productRectangle Q ∩ Ω n) ∧
+      volume.real (productRectangle Q ∩ Ω (n + 1)) ≤ δ * volume.real (productRectangle Q)
   have hδ : 0 < δ := by dsimp only [δ]; positivity
-  have hthreshold : 0 < δ * volume.real (productBox Q) :=
-    mul_pos hδ (product_volume_pos Q)
-  have hregular (n : ℤ) : MeasurableSet (productBox Q ∩ Ω n) ∧
-      volume (productBox Q ∩ Ω n) < ∞ := by
+  have hthreshold : 0 < δ * volume.real (productRectangle Q) :=
+    mul_pos hδ (productRectangle_volume_pos Q)
+  have hregular (n : ℤ) : MeasurableSet (productRectangle Q ∩ Ω n) ∧
+      volume (productRectangle Q ∩ Ω n) < ∞ := by
     constructor
-    · exact (measurableSet_productBox Q).inter
-        ((measurableSet_productBox I).inter
+    · exact (measurableSet_productRectangle Q).inter
+        ((measurableSet_productRectangle I).inter
           (measurableSet_lt measurable_const (square_measurable I N F)))
-    · exact (measure_mono Set.inter_subset_left).trans_lt (product_volume_lt_top Q)
+    · exact (measure_mono Set.inter_subset_left).trans_lt (productRectangle_volume_lt_top Q)
   have hmono : Antitone Ω := by
     intro a b hab x hx
     refine ⟨hx.1, ?_⟩
     exact (Real.rpow_le_rpow_of_exponent_le (by norm_num : (1 : ℝ) ≤ 2)
       (show (a : ℝ) ≤ (b : ℝ) by exact_mod_cast hab)).trans_lt hx.2
-  have hdensity : Antitone (fun n : ℤ => volume.real (productBox Q ∩ Ω n)) := by
+  have hdensity : Antitone (fun n : ℤ => volume.real (productRectangle Q ∩ Ω n)) := by
     intro a b hab
     exact measureReal_mono (fun _ hx => ⟨hx.1, hmono hab hx.2⟩) (hregular a).2.ne
   have hlow : ∃ n : ℤ,
-      δ * volume.real (productBox Q) < volume.real (productBox Q ∩ Ω n) := by
+      δ * volume.real (productRectangle Q) < volume.real (productRectangle Q ∩ Ω n) := by
     obtain ⟨R, hR, c, hc, hcR⟩ := productDifference_exists_nonzero_child Q F hne
     obtain ⟨k, hk⟩ := exists_mem_Ioc_zpow (abs_pos.mpr hc)
       (by norm_num : (1 : ℝ) < 2)
     have hk' : Real.rpow 2 (k : ℝ) < |c| := by
       simpa only [Real.rpow_eq_pow, Real.rpow_intCast] using hk.1
-    have hRsub : productBox R ⊆ productBox Q ∩ Ω k := by
+    have hRsub : productRectangle R ⊆ productRectangle Q ∩ Ω k := by
       intro x hx
       have hxQ := productLeaves_subset hR hx
       refine ⟨hxQ, product_interior_subset_root I Q N hQ hxQ, ?_⟩
@@ -159,8 +145,8 @@ theorem existsUnique_square_density_level
         _ ≤ finiteSquareFunction I N Finset.univ F x :=
           difference_abs_le_square I N F Q hQ x
     have hRle := measureReal_mono hRsub (hregular k).2.ne
-    have hchild : volume.real (productBox R) =
-        2 * (δ * volume.real (productBox Q)) := by
+    have hchild : volume.real (productRectangle R) =
+        2 * (δ * volume.real (productRectangle Q)) := by
       rw [product_child_volume Q R hR]
       dsimp only [δ]
       rw [pow_succ]
@@ -170,7 +156,7 @@ theorem existsUnique_square_density_level
     rw [hchild] at hRle
     linarith
   have hhigh : ∃ b : ℤ, ∀ n : ℤ,
-      δ * volume.real (productBox Q) < volume.real (productBox Q ∩ Ω n) → n ≤ b := by
+      δ * volume.real (productRectangle Q) < volume.real (productRectangle Q ∩ Ω n) → n ≤ b := by
     obtain ⟨C, hC0, hC⟩ := square_bounded I N F
     obtain ⟨b, hb⟩ := exists_mem_Ioc_zpow (show 0 < C + 1 by linarith)
       (by norm_num : (1 : ℝ) < 2)

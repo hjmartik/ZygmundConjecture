@@ -1,3 +1,3 @@
-import ReyZygmund.MathlibOnly.Statements
+import ReyZygmund.MathlibOnly.SupportingStatements
 
-theorem ReyZygmund.MathlibOnly.phi_sparse_sharpness : ReyZygmund.MathlibOnly.PhiSparseSharpness := by sorry
+theorem ReyZygmund.MathlibOnly.classical_dyadic_zygmund_sharpness : ReyZygmund.MathlibOnly.ClassicalDyadicZygmundSharpness := by sorry

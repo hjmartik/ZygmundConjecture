@@ -17,21 +17,17 @@ variable {m : ℕ} {d : Fin m → ℕ}
 theorem integrableOn_productLeafConstant
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f) :
-    IntegrableOn f (productBox I) volume := by
-  have hvol : volume (productBox I) < ∞ := by
-    change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ∞
-    rw [Measure.pi_pi]
-    exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
+    IntegrableOn f (productRectangle I) volume := by
+  have hvol : volume (productRectangle I) < ∞ := productRectangle_volume_lt_top I
+  let : IsFiniteMeasure (volume.restrict (productRectangle I)) :=
     isFiniteMeasure_restrict.mpr hvol.ne
   obtain ⟨C, _, hC⟩ := bounded_product_localization I N f hf
-  have hl : IntegrableOn ((productBox I).indicator f) (productBox I) volume :=
+  have hl : IntegrableOn ((productRectangle I).indicator f) (productRectangle I) volume :=
     (integrable_const C).mono'
       (measurable_product_localization I N f hf).aestronglyMeasurable
       (Filter.Eventually.of_forall (fun x => by
         simpa only [Real.norm_eq_abs] using hC x))
   exact hl.congr_fun (fun x hx => Set.indicator_of_mem hx f)
-    (measurableSet_productBox I)
+    (measurableSet_productRectangle I)
 
 end ReyZygmund.Geometry

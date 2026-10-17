@@ -17,11 +17,14 @@ namespace ReyZygmund.Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
+/-- The square function in the selected coordinates, summed over interior cubes. -/
 noncomputable def finiteSquareFunction
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (A : Finset (Fin m))
     (F : boundedMeasurableFunctions d) (x : ProductPoint d) : ℝ :=
   Real.sqrt (∑ Q ∈ partialInterior I N A, ((productDifferenceMap A Q F).1 x) ^ 2)
 
+/-- The combined square function `W F`: the square root of the sum of
+the squared partial square functions, one for each omitted coordinate. -/
 noncomputable def finiteComplementSquareFunction
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (x : ProductPoint d) : ℝ :=
@@ -60,7 +63,7 @@ theorem finiteComplementSquareFunction_eq_partial
 theorem productLeafConstant_finiteSquareFunction
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (A : Finset (Fin m))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (finiteSquareFunction I N A F) := by
   intro P hP x hx y hy
   apply congrArg Real.sqrt

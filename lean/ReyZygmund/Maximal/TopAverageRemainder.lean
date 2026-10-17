@@ -120,8 +120,8 @@ theorem finiteSignedPartialMaximal_rootAverage_eq
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A B : Finset (Fin m)) (hBA : B ⊆ A)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     finiteSignedPartialMaximal I N A (productAverageMap B I F) x =
       finiteSignedPartialMaximal I N (A \ B) (productAverageMap B I F) x := by
   apply le_antisymm
@@ -135,28 +135,28 @@ private theorem signed_partial_maximal_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (A : Finset (Fin m)) (hd : ∀ i ∈ A, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (p : ℝ) (hp : 1 < p) :
-    (∫ x in productBox I, Real.rpow (finiteSignedPartialMaximal I N A F x) p) ≤
+    (∫ x in productRectangle I, Real.rpow (finiteSignedPartialMaximal I N A F x) p) ≤
       Real.rpow (p / (p - 1)) (p * (A.card : ℝ)) *
-        ∫ x in productBox I, Real.rpow |F.1 x| p := by
+        ∫ x in productRectangle I, Real.rpow |F.1 x| p := by
   let g := A.toList.foldr (fun i h => coordinateDyadicMaximal i (I i) (N i) h) F.1
   have hg : ProductLeafConstant I N g :=
     productLeafConstant_foldr_coordinateDyadicMaximal I N A.toList F.1 hf
   have hM := productLeafConstant_finiteSignedPartialMaximal I N A F hf hs
   have hMI : IntegrableOn
       (fun x => Real.rpow (finiteSignedPartialMaximal I N A F x) p)
-      (productBox I) volume := by
+      (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     exact congrArg (fun t => Real.rpow t p) (hM Q hQ x hx y hy)
-  have hgI : IntegrableOn (fun x => Real.rpow |g x| p) (productBox I) volume := by
+  have hgI : IntegrableOn (fun x => Real.rpow |g x| p) (productRectangle I) volume := by
     apply integrableOn_productLeafConstant I N
     intro Q hQ x hx y hy
     exact congrArg (fun t => Real.rpow |t| p) (hg Q hQ x hx y hy)
   calc
-    _ ≤ ∫ x in productBox I, Real.rpow |g x| p := by
-      apply setIntegral_mono_on hMI hgI (measurableSet_productBox I)
+    _ ≤ ∫ x in productRectangle I, Real.rpow |g x| p := by
+      apply setIntegral_mono_on hMI hgI (measurableSet_productRectangle I)
       intro x hx
       apply Real.rpow_le_rpow (finiteSignedPartialMaximal_nonneg I N A F x) _
         (le_trans zero_le_one hp.le)
@@ -179,51 +179,51 @@ theorem finiteSignedPartialMaximal_topAverage_integral
     (A B : Finset (Fin m)) (hBA : B ⊆ A)
     (hd : ∀ i ∈ A \ B, 0 < d i)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (p : ℝ) (hp : 1 < p) :
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       Real.rpow (finiteSignedPartialMaximal I N A (productAverageMap B I F) x) p) ≤
       Real.rpow (p / (p - 1)) (p * ((A \ B).card : ℝ)) *
-        ∫ x in productBox I, Real.rpow |F.1 x| p := by
+        ∫ x in productRectangle I, Real.rpow |F.1 x| p := by
   have hc := productAverageMap_productStep_closure I N F hf hs B I
     (fun i _ => mem_productDescendants.mp (root_mem_productDescendants I N) i)
   have hp0 : 0 < p := lt_trans zero_lt_one hp
   have hcoeff : 0 ≤ Real.rpow (p / (p - 1)) (p * ((A \ B).card : ℝ)) :=
     Real.rpow_nonneg (div_nonneg hp0.le (sub_pos.mpr hp).le) _
   calc
-    _ = ∫ x in productBox I,
+    _ = ∫ x in productRectangle I,
         Real.rpow (finiteSignedPartialMaximal I N (A \ B)
           (productAverageMap B I F) x) p := by
-      apply setIntegral_congr_fun (measurableSet_productBox I)
+      apply setIntegral_congr_fun (measurableSet_productRectangle I)
       intro x hx
       exact congrArg (fun t => Real.rpow t p)
         (finiteSignedPartialMaximal_rootAverage_eq I N A B hBA F hf hs x hx)
     _ ≤ Real.rpow (p / (p - 1)) (p * ((A \ B).card : ℝ)) *
-        ∫ x in productBox I, Real.rpow |(productAverageMap B I F).1 x| p :=
+        ∫ x in productRectangle I, Real.rpow |(productAverageMap B I F).1 x| p :=
       signed_partial_maximal_integral I N (A \ B) hd (productAverageMap B I F)
         hc.1 hc.2 p hp
     _ ≤ _ := mul_le_mul_of_nonneg_left
       (productRootAverage_integral_rpow I N F hf B p hp.le) hcoeff
 
-/-- Source top-average remainder bound for each nonempty subset of the
-coordinates complementary to j. All real exponents p > 1 are allowed. -/
+/-- The top-average remainder bound for each nonempty subset of the
+coordinates complementary to `j`, for every real `p > 1`. -/
 theorem finiteSignedPartialMaximal_topAverage_norm
     (hm : 2 ≤ m)
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (j : Fin m) (B : Finset (Fin m))
     (hBA : B ⊆ Finset.univ.erase j) (hB : B.Nonempty)
     (f : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N f.1)
-    (hs : ∀ x, x ∉ productBox I → f.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → f.1 x = 0)
     (p : ℝ) (hp : 1 < p) :
-    Real.rpow (∫ x in productBox I,
+    Real.rpow (∫ x in productRectangle I,
       Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j)
         (productAverageMap B I f) x) p) (1 / p) ≤
       (p / (p - 1)) ^ (m - 2) *
-        Real.rpow (∫ x in productBox I, Real.rpow |f.1 x| p) (1 / p) := by
+        Real.rpow (∫ x in productRectangle I, Real.rpow |f.1 x| p) (1 / p) := by
   let c := p / (p - 1)
   let k := ((Finset.univ.erase j) \ B).card
-  let Y := ∫ x in productBox I, Real.rpow |f.1 x| p
-  let L := ∫ x in productBox I,
+  let Y := ∫ x in productRectangle I, Real.rpow |f.1 x| p
+  let L := ∫ x in productRectangle I,
     Real.rpow (finiteSignedPartialMaximal I N (Finset.univ.erase j)
       (productAverageMap B I f) x) p
   change Real.rpow L (1 / p) ≤ c ^ (m - 2) * Real.rpow Y (1 / p)

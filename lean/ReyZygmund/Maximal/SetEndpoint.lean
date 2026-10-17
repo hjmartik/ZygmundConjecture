@@ -5,9 +5,9 @@ import Mathlib.Topology.MetricSpace.Bounded
 
 /-! # Endpoint interpolation on measurable sets
 
-The sets need only have positive finite measure; they may be unbounded. Means
-remain extended-valued until finiteness is proved. This module treats bounded
-tests; `SetEndpointLimit.lean` passes to increasing input limits.
+The sets have positive finite measure. Means remain extended-valued until
+finiteness is proved. This module treats bounded tests;
+`SetEndpointLimit.lean` passes to increasing input limits.
 -/
 
 open MeasureTheory
@@ -67,8 +67,7 @@ theorem set_lintegral_mean_eq_integral {d : ℕ}
       (Filter.Eventually.of_forall (fun y => abs_nonneg (f y))),
     Measure.real, ENNReal.ofReal_toReal hfin.ne]
 
-/-- The halved-level truncation works for extended means, even when
-the original input is not integrable on a member of the family. -/
+/-- The halved-level truncation inequality for extended means. -/
 theorem setFamilyMaximal_truncation_levelset {d : ℕ}
     (E : Set (Set (Fin d → ℝ)))
     (hpos : ∀ I ∈ E, 0 < volume I) (hfin : ∀ I ∈ E, volume I < ∞)

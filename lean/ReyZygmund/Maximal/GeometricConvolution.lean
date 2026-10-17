@@ -6,9 +6,8 @@ import Mathlib.Topology.Algebra.InfiniteSum.Ring
 /-!
 # The geometric convolution in the signed-square argument
 
-The series are real, summable, and indexed over all integers. The
-natural kernel index starts at one through `j + 1`, matching the strict range
-`n < N` in the paper. No finite-support hypothesis is imposed.
+The series are real, summable, and indexed over all integers. The natural kernel
+index starts at one through `j + 1`, matching the strict range `n < N`.
 -/
 
 open scoped BigOperators Classical
@@ -79,8 +78,7 @@ private theorem hasSum_int_sub (b : ℤ → ℝ) (hb : Summable b) (r : ℤ) :
         omega }
   exact e.hasSum_iff.mpr hb.hasSum
 
-/-- The two-index kernel is summable, including its infinite integer
-tails. This is the convergence evidence for changing the order of summation. -/
+/-- Summability of the two-index kernel justifies changing the order of summation. -/
 theorem summable_geometric_convolution
     (p : ℝ) (_hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2)
     (b : ℤ → ℝ) (hb0 : ∀ n, 0 ≤ b n) (hb : Summable b) :
@@ -107,8 +105,8 @@ theorem summable_geometric_convolution
     ⟨fun j => (hcol j).summable, hcols⟩
   exact hprod.prod_symm
 
-/-- The outer series has the exact geometric coefficient from the
-source, bounded by three throughout the closed exponent interval. -/
+/-- The outer series has an explicit geometric coefficient, bounded by three
+throughout the closed exponent interval. -/
 theorem geometric_convolution_sum
     (p : ℝ) (hp : 1 ≤ p) (hp3 : p ≤ (3 : ℝ) / 2)
     (b : ℤ → ℝ) (hb0 : ∀ n, 0 ≤ b n) (hb : Summable b) :

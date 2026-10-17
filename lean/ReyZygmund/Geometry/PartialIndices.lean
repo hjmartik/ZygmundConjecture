@@ -2,10 +2,8 @@ import ReyZygmund.Geometry.ProductSteps
 
 /-! # Finite cube indices in selected coordinates
 
-Fix each unselected coordinate at its top cube. Each partial tuple is then counted
-once, including for the empty coordinate set. A zero depth in an unused coordinate
-causes no empty index set.
-
+Fix each unselected coordinate at its top cube, so each partial tuple is counted
+once.
 -/
 
 noncomputable section

@@ -4,10 +4,9 @@ import ReyZygmund.Geometry.FiniteDifferenceAlgebra
 /-!
 # Difference orthogonality on the product space
 
-The one-coordinate identities are lifted through coordinate slices.
-Finite products then select exactly the matching coordinate indices. These
-identities apply to the concrete bounded measurable functions; no operator
-algebra is assumed as part of their definition.
+The one-coordinate identities are lifted through coordinate slices of bounded
+measurable functions. Finite products then select exactly the matching coordinate
+indices.
 -/
 
 open BoxIntegral MeasureTheory
@@ -27,7 +26,7 @@ theorem coordinateDifference_same
       if L = Q then coordinateDifference i Q f else 0 := by
   funext x
   have hs : (fun y => coordinateDifference i Q f (Function.update x i y)) =
-      boxDifference Q (fun y => f (Function.update x i y)) := by
+      cubeDifference Q (fun y => f (Function.update x i y)) := by
     funext y
     simp [coordinateDifference_slice]
   rw [coordinateDifference_slice, hs]
@@ -50,8 +49,7 @@ theorem differenceMap_mul_same
     simpa only [Module.End.mul_apply, differenceMap_apply, h, ite_true, ite_false,
       LinearMap.zero_apply, ZeroMemClass.coe_zero] using ht
 
-/-- Extract one coordinate factor, with the remaining order justified by the
-already proved distinct-coordinate commutation. -/
+/-- Extract one coordinate factor using distinct-coordinate commutation. -/
 theorem productDifferenceMap_eq_mul_erase (B : Finset (Fin m)) (i : Fin m)
     (hi : i ∈ B) (L : ∀ i, Box (Fin (d i))) :
     productDifferenceMap B L =

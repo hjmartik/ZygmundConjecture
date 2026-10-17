@@ -19,7 +19,7 @@ open scoped BigOperators
 
 namespace ReyZygmund.Sharpness
 
-/-- The exact source value `(2*N + m - 2)*(N - 1)`, for `m = n + 3`. -/
+/-- The value `(2*N + m - 2)*(N - 1)`, with `m = n + 3`. -/
 def sharpL (n N : ℕ) : ℤ :=
   (2 * (N : ℤ) + ((n + 1 : ℕ) : ℤ)) * ((N : ℤ) - 1)
 
@@ -34,12 +34,12 @@ def generationUnits {n : ℕ} (N : ℕ) (a : Fin (n + 2) → Fin N) :
       (Fin.snoc (fun j : Fin n => (a j.castSucc.succ : ℤ))
         (sharpL n N + (a (Fin.last (n + 1)) : ℤ))))
 
-/-- Source `n_i(a)`, with the exact common integer factor `s`. -/
+/-- The generations `n_i(a)`, with common integer factor `s`. -/
 def sharpGeneration {n N : ℕ} (s : ℕ) (a : Fin (n + 2) → Fin N)
     (i : Fin (n + 3)) : ℤ := (s : ℤ) * generationUnits N a i
 
-/-- Source `b_i(k)` for coordinates `i = 2,…,m`; in particular the last
-coordinate has `b_m(0) = L`, not zero. -/
+/-- The selection scales `b_i(k)` for coordinates `i = 2,…,m`; the last
+coordinate starts at `b_m(0) = L`. -/
 def selectionScale {n : ℕ} (N : ℕ) (i : Fin (n + 2)) (k : ℕ) : ℤ :=
   (Fin.cons (2 * (N : ℤ) * (k : ℤ))
     (Fin.snoc (fun _ : Fin n => (k : ℤ)) (sharpL n N + (k : ℤ))) :
@@ -85,8 +85,7 @@ private theorem generationUnits_nonneg {n N : ℕ} (hN : 2 ≤ N)
       · simpa only [generationUnits, Fin.cons_succ, Fin.snoc_castSucc] using
           (index_bounds a l.castSucc.succ).1
 
-/-- All integer generations are nonnegative, with no truncation in
-the defining first-coordinate subtraction. -/
+/-- All integer generations are nonnegative. -/
 theorem sharpGeneration_nonneg {n N : ℕ} (hN : 2 ≤ N) (s : ℕ)
     (a : Fin (n + 2) → Fin N) (i : Fin (n + 3)) :
     0 ≤ sharpGeneration s a i :=
@@ -209,7 +208,7 @@ private theorem generationUnits_selection {n N : ℕ}
       omega
     · simp [selectionScale, generationUnits]
 
-/-- Division-free selection scales, ready for dyadic refinements. -/
+/-- The selection inequalities after multiplication by the common integer `s`. -/
 theorem sharpGeneration_selection_scaled {n N : ℕ} (s : ℕ)
     (a : Fin (n + 2) → Fin N) (i : Fin (n + 2)) :
     (s : ℤ) * selectionScale N i (a i).val ≤ sharpGeneration s a i.succ ∧

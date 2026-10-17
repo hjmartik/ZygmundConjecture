@@ -4,12 +4,14 @@ import ReyZygmund.Overlap.FiniteIdentification
 /-! # Finite slices, shadows and overlap
 
 The finite slice is the image of exactly those rectangles whose last cube
-contains the slicing point. Incomparability is used only to justify the
-overlap reindexing, not the union or measure identities.
+contains the slicing point. Incomparability makes this projection injective,
+allowing the overlap sum to be reindexed.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
 
 namespace ReyZygmund.Geometry
 
@@ -55,7 +57,7 @@ theorem mem_finiteShadow_splitLast_symm (G : Finset (∀ i, Box (Fin (d i))))
 
 /-- No multiplicity is lost by the projected image of an incomparable slice. -/
 theorem finiteOverlap_splitLast_symm
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i))))
     (hG : (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D)
     (hinc : ∀ R ∈ G, ∀ S ∈ G, (∀ i, R i ≤ S i) → R = S)
     (y : Fin (∑ i : Fin n, d i.castSucc) → ℝ) (t : Fin (d (Fin.last n)) → ℝ) :

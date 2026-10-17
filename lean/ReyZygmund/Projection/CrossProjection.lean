@@ -20,12 +20,11 @@ open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- A selected cube at the smallest scale makes the product difference vanish.
-The other factors are unrestricted. -/
+/-- A selected cube at the smallest scale makes the product difference vanish. -/
 theorem productDifferenceMap_eq_zero_of_leaf
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (A : Finset (Fin m)) (K : ∀ i, Box (Fin (d i)))
     (i : Fin m) (hi : i ∈ A) (hKi : K i ∈ level (I i) (N i)) :
     productDifferenceMap A K F = 0 := by
@@ -42,8 +41,7 @@ theorem productDifferenceMap_eq_zero_of_leaf
 
 /-- The cross-coordinate identity for every selected descendant,
 including cubes of the smallest size. This is a global equality of functions
-with the input localized to the top rectangle. No incomparability is required, and
-the unused factor `K j` has no finite-depth restriction. -/
+with the input localized to the top rectangle. -/
 theorem finite_cross_projection_descendants
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (hd : ∀ i, 0 < d i) (G : Finset (∀ i, Box (Fin (d i))))
@@ -66,7 +64,7 @@ theorem finite_cross_projection_descendants
       simpa only [hkN] using hKk
     let F := finiteInput I N f hf
     have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-    have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+    have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
       fun x hx => Set.indicator_of_notMem hx f
     have hprojection := finiteProjectionMap_productStep_closure I N G F hF hFs
     have hi : i ∈ (Finset.univ.erase j : Finset (Fin m)) :=

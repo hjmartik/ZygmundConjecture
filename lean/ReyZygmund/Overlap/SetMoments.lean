@@ -3,8 +3,8 @@ import Mathlib.Tactic.FieldSimp
 
 /-! # Exact finite sparse moments from measurable-set maximal growth
 
-The test overlap^(q-1) has finite-measure support, not necessarily bounded
-spatial support. Holder duality keeps the exact conjugate factor (q-1)^k.
+The test `overlap^(q-1)` has finite-measure support. Hölder duality keeps the
+conjugate factor `(q-1)^k`.
 -/
 
 open MeasureTheory
@@ -201,7 +201,7 @@ private theorem sparse_pairing_power_bound
     (hpos : ∀ I ∈ H, 0 < volume I) (hfin : ∀ I ∈ H, volume I < ∞)
     (eta : ℝ) (heta : 0 < eta)
     (E : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hEmeas : ∀ I ∈ H, MeasurableSet (E I)) (hEsub : ∀ I ∈ H, E I ⊆ I)
+    (hEmeas : ∀ I ∈ H, NullMeasurableSet (E I) volume) (hEsub : ∀ I ∈ H, E I ⊆ I)
     (hEdis : Set.Pairwise (H : Set (Set (Fin d → ℝ)))
       (fun I J => Disjoint (E I) (E J)))
     (hEmass : ∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I))
@@ -231,7 +231,7 @@ theorem finite_set_sparse_overlap_integral
     (hpos : ∀ I ∈ H, 0 < volume I) (hfin : ∀ I ∈ H, volume I < ∞)
     (eta : ℝ) (heta : 0 < eta)
     (E : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hEmeas : ∀ I ∈ H, MeasurableSet (E I)) (hEsub : ∀ I ∈ H, E I ⊆ I)
+    (hEmeas : ∀ I ∈ H, NullMeasurableSet (E I) volume) (hEsub : ∀ I ∈ H, E I ⊆ I)
     (hEdis : Set.Pairwise (H : Set (Set (Fin d → ℝ)))
       (fun I J => Disjoint (E I) (E J)))
     (hEmass : ∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I))
@@ -276,7 +276,7 @@ theorem finite_set_sparse_overlap_lintegral
     (hpos : ∀ I ∈ H, 0 < volume I) (hfin : ∀ I ∈ H, volume I < ∞)
     (eta : ℝ) (heta : 0 < eta)
     (E : Set (Fin d → ℝ) → Set (Fin d → ℝ))
-    (hEmeas : ∀ I ∈ H, MeasurableSet (E I)) (hEsub : ∀ I ∈ H, E I ⊆ I)
+    (hEmeas : ∀ I ∈ H, NullMeasurableSet (E I) volume) (hEsub : ∀ I ∈ H, E I ⊆ I)
     (hEdis : Set.Pairwise (H : Set (Set (Fin d → ℝ)))
       (fun I J => Disjoint (E I) (E J)))
     (hEmass : ∀ I ∈ H, ENNReal.ofReal eta * volume I ≤ volume (E I))

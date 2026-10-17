@@ -15,8 +15,8 @@ def weakerRepresentationContract : Prop :=
     (∀ R ∈ G, ∀ J ∈ G, (∀ i, R i ≤ J i) → ∃ i, R i = J i) →
   ∀ (R : ∀ i, Box (Fin (d i))), R ∈ G ∪ averagingRectangles I N G →
   ∀ (F : boundedMeasurableFunctions d), ProductLeafConstant I N F.1 →
-    (∀ x, x ∉ productBox I → F.1 x = 0) →
-  ∀ (x : ProductPoint d), x ∈ productBox R →
+    (∀ x, x ∉ productRectangle I → F.1 x = 0) →
+  ∀ (x : ProductPoint d), x ∈ productRectangle R →
     (productAverageMap Finset.univ R F).1 x =
       ∑ A ∈ ((Finset.univ : Finset (Fin m)).powerset.erase Finset.univ),
         (-1 : ℝ) ^ (m + 1 + A.card) *
@@ -28,9 +28,9 @@ def weakerRepresentationMaximalContract : Prop :=
   ∀ (G : Finset (∀ i, Box (Fin (d i)))), G ⊆ productDescendants I N →
     (∀ R ∈ G, ∀ J ∈ G, (∀ i, R i ≤ J i) → ∃ i, R i = J i) →
   ∀ (f : boundedMeasurableFunctions d), ProductLeafConstant I N f.1 →
-    (∀ x, x ∉ productBox I → f.1 x = 0) →
-    (∀ x ∈ productBox I, 0 ≤ f.1 x) →
-  ∀ (x : ProductPoint d), x ∈ productBox I →
+    (∀ x, x ∉ productRectangle I → f.1 x = 0) →
+    (∀ x ∈ productRectangle I, 0 ≤ f.1 x) →
+  ∀ (x : ProductPoint d), x ∈ productRectangle I →
     finiteFamilyMaximal (G ∪ averagingRectangles I N G) f x ≤
       (2 : ℝ) ^ m * ∑ j,
         finiteSignedPartialMaximal I N (Finset.univ.erase j)

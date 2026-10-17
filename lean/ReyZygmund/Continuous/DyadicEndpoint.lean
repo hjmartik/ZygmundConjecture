@@ -1,15 +1,16 @@
 import ReyZygmund.Continuous.Endpoint
 import ReyZygmund.Continuous.DyadicExtension
 
-/-! # The original dyadic endpoint consequence
+/-! # The dyadic endpoint consequence
 
 The integer-scale family is contained in the all-position continuous
-family for the explicitly constructed extension. No restriction on the given
-grids or on the finite/infinite family is introduced by this passage.
+family for the explicitly constructed extension.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid dyadicZygmundRectangles)
 
 namespace ReyZygmund.Continuous
 
@@ -21,11 +22,11 @@ theorem dyadic_phi_endpoint_theorem :
     ∀ (n totalDim : ℕ), 2 ≤ n →
     ∃ C : ℝ, 0 < C ∧
     ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
+    ∀ (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ), Monotone Phi →
     ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
     ∀ (lam : ℝ), 0 < lam →
       volume {x | ENNReal.ofReal lam <
-        euclideanFamilyMaximal (dyadicPhiRectangles D Phi) f x} ≤
+        euclideanFamilyMaximal (dyadicZygmundRectangles D Phi) f x} ≤
       ENNReal.ofReal C * ∫⁻ x, ENNReal.ofReal
         (|f x| / lam * (Real.log (Real.exp 1 + |f x| / lam)) ^ ((n + 1) - 2)) := by
   intro n totalDim hn

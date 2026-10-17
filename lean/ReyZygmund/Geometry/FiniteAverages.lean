@@ -1,12 +1,13 @@
 import Mathlib.Analysis.BoxIntegral.Partition.Measure
 import Mathlib.Analysis.BoxIntegral.Partition.SubboxInduction
-import Mathlib.MeasureTheory.Integral.Bochner.Set
+import ReyZygmund.ToMathlib.BoxIntegral.Integrable
 import ReyZygmund.Geometry.FiniteCubes
+import ReyZygmund.MathlibOnly.SquareFunctions
 
 /-! # Lebesgue averages on finite dyadic cubes
 
-The averaging operator integrates over a half-open cube. We prove its partition
-and telescoping identities from this definition.
+The averaging operator integrates over a half-open cube. We use the definitions
+in `MathlibOnly.SquareFunctions` and prove their partition and telescoping identities.
 
 -/
 
@@ -15,18 +16,9 @@ open scoped BigOperators Classical
 
 namespace ReyZygmund.Geometry
 
+export ReyZygmund.MathlibOnly (cubeMean cubeAverage cubeDifference)
+
 variable {d : ℕ}
-
-/-- Local average, extended by zero outside the box. -/
-noncomputable def boxAverage (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ) :
-    (Fin d → ℝ) → ℝ :=
-  (Q : Set (Fin d → ℝ)).indicator
-    (fun _ => (∫ x in (Q : Set (Fin d → ℝ)), g x) / volume.real (Q : Set (Fin d → ℝ)))
-
-/-- One-coordinate martingale difference: child averages minus parent average. -/
-noncomputable def boxDifference (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ) :
-    (Fin d → ℝ) → ℝ :=
-  (∑ R ∈ (Prepartition.splitCenter Q).boxes, boxAverage R g) - boxAverage Q g
 
 theorem box_volume_pos (Q : Box (Fin d)) :
     0 < volume.real (Q : Set (Fin d → ℝ)) := by
@@ -50,7 +42,7 @@ theorem finite_cube_realization (d : ℕ) (lower : Fin d → ℝ) (a : ℤ) (N :
 
 theorem boxAverage_of_constant (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
     (hg : ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) :
-    boxAverage Q g = (Q : Set (Fin d → ℝ)).indicator g := by
+    cubeAverage Q g = (Q : Set (Fin d → ℝ)).indicator g := by
   funext x
   by_cases hx : x ∈ Q
   · have hi : (∫ y in (Q : Set (Fin d → ℝ)), g y) =
@@ -59,9 +51,10 @@ theorem boxAverage_of_constant (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
         _ = ∫ _ in (Q : Set (Fin d → ℝ)), g x :=
           setIntegral_congr_fun Q.measurableSet_coe (fun y hy => hg y hy x hx)
         _ = _ := by rw [setIntegral_const, smul_eq_mul]
-    simp only [boxAverage, Set.indicator_of_mem (show x ∈ (Q : Set (Fin d → ℝ)) from hx), hi]
+    simp only [cubeAverage, cubeMean,
+      Set.indicator_of_mem (show x ∈ (Q : Set (Fin d → ℝ)) from hx), hi]
     exact mul_div_cancel_left₀ (g x) (ne_of_gt (box_volume_pos Q))
-  · simp [boxAverage, hx]
+  · simp [cubeAverage, hx]
 
 /-- The sum of partition indicators equals the indicator of the top cube, pointwise. -/
 theorem sum_box_indicators {I : Box (Fin d)} (π : Prepartition I)
@@ -88,7 +81,7 @@ theorem sum_box_indicators {I : Box (Fin d)} (π : Prepartition I)
 theorem sum_boxAverage_of_constant {I : Box (Fin d)} (π : Prepartition I)
     (hπ : π.IsPartition) (g : (Fin d → ℝ) → ℝ)
     (hg : ∀ Q ∈ π.boxes, ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) :
-    (∑ Q ∈ π.boxes, boxAverage Q g) = (I : Set (Fin d → ℝ)).indicator g := by
+    (∑ Q ∈ π.boxes, cubeAverage Q g) = (I : Set (Fin d → ℝ)).indicator g := by
   calc
     _ = ∑ Q ∈ π.boxes, (Q : Set (Fin d → ℝ)).indicator g := by
       apply Finset.sum_congr rfl
@@ -102,37 +95,76 @@ theorem integrableOn_of_leafConstant (I : Box (Fin d)) (N : ℕ)
     (g : (Fin d → ℝ) → ℝ)
     (hg : ∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) :
     IntegrableOn g (I : Set (Fin d → ℝ)) volume := by
-  rw [← (level_isPartition I N).iUnion_eq, Prepartition.iUnion_def]
-  apply integrableOn_finset_iUnion.mpr
-  intro Q hQ
-  have hc : IntegrableOn (fun _ : Fin d → ℝ => g Q.upper)
-      (Q : Set (Fin d → ℝ)) volume :=
-    integrableOn_const (Q.measure_coe_lt_top volume).ne
-  exact hc.congr_fun (fun x hx => hg Q hQ Q.upper Q.upper_mem x hx) Q.measurableSet_coe
+  exact (level_isPartition I N).integrableOn_of_constant g hg
+
+/-- A strictly positive integrable function has a positive cube average. -/
+theorem cubeMean_pos (Q : Box (Fin d)) (g : (Fin d → ℝ) → ℝ)
+    (hg : IntegrableOn g (Q : Set (Fin d → ℝ)) volume)
+    (hpos : ∀ x ∈ Q, 0 < g x) : 0 < cubeMean Q g := by
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Q : Set (Fin d → ℝ))] g :=
+    (ae_restrict_iff' Q.measurableSet_coe).mpr
+      (Filter.Eventually.of_forall fun x hx => (hpos x hx).le)
+  have hsupp : Function.support g ∩ (Q : Set (Fin d → ℝ)) = Q := by
+    ext x
+    constructor
+    · exact And.right
+    · intro hx
+      exact ⟨ne_of_gt (hpos x hx), hx⟩
+  unfold cubeMean
+  apply div_pos ?_ (box_volume_pos Q)
+  apply (setIntegral_pos_iff_support_of_nonneg_ae hnonneg hg).mpr
+  rw [hsupp]
+  exact (ENNReal.toReal_pos_iff.mp (box_volume_pos Q)).1
+
+/-- On each child, the difference is the child average minus the parent average. -/
+theorem cubeDifference_apply_child {Q R : Box (Fin d)}
+    (hR : R ∈ Prepartition.splitCenter Q) (g : (Fin d → ℝ) → ℝ)
+    {x : Fin d → ℝ} (hx : x ∈ R) :
+    cubeDifference Q g x = cubeMean R g - cubeMean Q g := by
+  classical
+  have hxQ : x ∈ Q := (Prepartition.splitCenter Q).le_of_mem hR hx
+  simp only [cubeDifference, Pi.sub_apply, Finset.sum_apply]
+  rw [Finset.sum_eq_single R]
+  · simp [cubeAverage, hx, hxQ]
+  · intro S hS hSR
+    have hxS : x ∉ S := fun h =>
+      hSR ((Prepartition.splitCenter Q).eq_of_mem_of_mem hS hR h hx)
+    simp [cubeAverage, hxS]
+  · simp [hR]
+
+/-- Any real function of a cube difference is integrable on its parent cube:
+the difference is constant on each member of the finite child partition. -/
+theorem integrableOn_comp_cubeDifference (Q : Box (Fin d))
+    (u : (Fin d → ℝ) → ℝ) (φ : ℝ → ℝ) :
+    IntegrableOn (fun x => φ (cubeDifference Q u x))
+      (Q : Set (Fin d → ℝ)) volume := by
+  apply (Prepartition.isPartition_splitCenter Q).integrableOn_of_constant
+  intro R hR x hx y hy
+  rw [cubeDifference_apply_child hR u hx, cubeDifference_apply_child hR u hy]
 
 /-- Cancellation between successive dyadic levels. -/
 theorem sum_level_difference (I : Box (Fin d)) (n : ℕ) (g : (Fin d → ℝ) → ℝ) :
-    (∑ Q ∈ (level I n).boxes, boxDifference Q g) =
-      (∑ Q ∈ (level I (n + 1)).boxes, boxAverage Q g) -
-        ∑ Q ∈ (level I n).boxes, boxAverage Q g := by
+    (∑ Q ∈ (level I n).boxes, cubeDifference Q g) =
+      (∑ Q ∈ (level I (n + 1)).boxes, cubeAverage Q g) -
+        ∑ Q ∈ (level I n).boxes, cubeAverage Q g := by
   classical
-  simp only [boxDifference, Finset.sum_sub_distrib, level_succ,
+  simp only [cubeDifference, Finset.sum_sub_distrib, level_succ,
     Prepartition.biUnion, Prepartition.sum_biUnion_boxes]
 
 /-- The finite telescope with levels shown explicitly. -/
 theorem sum_levels_difference (I : Box (Fin d)) (N : ℕ) (g : (Fin d → ℝ) → ℝ) :
-    (∑ n ∈ Finset.range N, ∑ Q ∈ (level I n).boxes, boxDifference Q g) =
-      (∑ Q ∈ leaves I N, boxAverage Q g) - boxAverage I g := by
+    (∑ n ∈ Finset.range N, ∑ Q ∈ (level I n).boxes, cubeDifference Q g) =
+      (∑ Q ∈ leaves I N, cubeAverage Q g) - cubeAverage I g := by
   simp_rw [sum_level_difference]
   convert Finset.sum_range_sub (fun n : ℕ =>
-    ∑ Q ∈ (level I n).boxes, boxAverage Q g) N using 1
+    ∑ Q ∈ (level I n).boxes, cubeAverage Q g) N using 1
   simp [leaves]
 
 /-- The telescope with each interior cube appearing once. -/
 theorem sum_interior_difference [Nonempty (Fin d)] (I : Box (Fin d)) (N : ℕ)
     (g : (Fin d → ℝ) → ℝ) :
-    (∑ Q ∈ interior I N, boxDifference Q g) =
-      (∑ Q ∈ leaves I N, boxAverage Q g) - boxAverage I g := by
+    (∑ Q ∈ interior I N, cubeDifference Q g) =
+      (∑ Q ∈ leaves I N, cubeAverage Q g) - cubeAverage I g := by
   rw [sum_interior]
   exact sum_levels_difference I N g
 
@@ -145,10 +177,10 @@ theorem one_coordinate_telescope (d : ℕ) (hd : 0 < d)
     (I : Box (Fin d)) (N : ℕ) (P : Box (Fin d)) (hP : P ∈ descendants I N)
     (g : (Fin d → ℝ) → ℝ)
     (hg : ∀ Q ∈ leaves I N, ∀ x ∈ Q, ∀ y ∈ Q, g x = g y) :
-    (∑ L ∈ (interior I N).filter (fun L => L ≤ P), boxDifference L g) =
-      (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), boxAverage Q g) - boxAverage P g ∧
-    (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), boxAverage Q g) - boxAverage P g =
-      (P : Set (Fin d → ℝ)).indicator g - boxAverage P g := by
+    (∑ L ∈ (interior I N).filter (fun L => L ≤ P), cubeDifference L g) =
+      (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), cubeAverage Q g) - cubeAverage P g ∧
+    (∑ Q ∈ (leaves I N).filter (fun Q => Q ≤ P), cubeAverage Q g) - cubeAverage P g =
+      (P : Set (Fin d → ℝ)).indicator g - cubeAverage P g := by
   classical
   let : Nonempty (Fin d) := ⟨⟨0, hd⟩⟩
   obtain ⟨n, hn, hPn⟩ := mem_descendants.mp hP

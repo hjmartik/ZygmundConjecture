@@ -6,9 +6,7 @@ import Mathlib.MeasureTheory.Measure.Continuity
 
 The strict level set is the union of rectangles whose coefficient in
 `euclideanFamilyMaximal` exceeds the threshold. Finite unions exhaust this set for
-a countable family. The set identity is algebraic and permits arbitrary input; its
-use for averages in the endpoint theorem requires local integrability.
-
+a countable family. Local integrability gives the interpretation as averages.
 -/
 
 open BoxIntegral MeasureTheory
@@ -21,8 +19,7 @@ open Geometry Overlap
 variable {m : ℕ} {d : Fin m → ℕ}
 
 /-- The strict level set is the union of rectangles whose normalized integral of `|f|`
-exceeds the positive threshold. This pointwise identity does not require
-countability. -/
+exceeds the positive threshold. -/
 theorem euclidean_levelset_eq_iUnion
     (G : Set (∀ i, Box (Fin (d i))))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (lam : ℝ) (hlam : 0 < lam) :
@@ -51,8 +48,7 @@ theorem euclidean_levelset_eq_iUnion
     exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg hlam.le).mpr hmean
 
 /-- A uniform estimate for all finite high-average shadows bounds the countable
-family's strict level set. No finite total shadow, nonemptiness, grid or common
-top rectangle is needed. -/
+family's strict level set. -/
 theorem euclidean_levelset_measure_le_of_finite_shadows
     (G : Set (∀ i, Box (Fin (d i)))) (hG : G.Countable)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (lam : ℝ) (hlam : 0 < lam) (C : ℝ≥0∞)

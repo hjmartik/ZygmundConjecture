@@ -2,7 +2,7 @@
   "challenge_module": "Challenge3",
   "solution_module": "Solution",
   "theorem_names": [
-    "ReyZygmund.MathlibOnly.continuous_endpoint"
+    "ReyZygmund.MathlibOnly.zygmund_conjecture"
   ],
   "permitted_axioms": [
     "propext",

@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge18",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.prescribed_scale_covering"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

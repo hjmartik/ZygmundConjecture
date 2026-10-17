@@ -4,8 +4,7 @@ import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 
 /-! # Countable overlaps as increasing limits of finite overlaps
 
-The overlap is an extended nonnegative sum. No finiteness or integrability
-is imposed through the definition, and no infinite real sum is totalized.
+The overlap is an extended nonnegative sum.
 -/
 
 open BoxIntegral MeasureTheory
@@ -17,9 +16,13 @@ open Geometry
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
+/-- The union of flattened product boxes. `shadow_eq` in `Proof/OverlapBridge.lean`
+identifies it with the specification's union of coordinate rectangles. -/
 def shadow (G : Set (∀ i, Box (Fin (d i)))) : Set (Fin (∑ i, d i) → ℝ) :=
   ⋃ R ∈ G, (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))
 
+/-- The number of flattened product boxes containing a point, allowing infinity.
+`overlap_eq` in `Proof/OverlapBridge.lean` identifies the two rectangle representations. -/
 noncomputable def overlap (G : Set (∀ i, Box (Fin (d i))))
     (x : Fin (∑ i, d i) → ℝ) : ℝ≥0∞ :=
   ∑' R : G, (flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)).indicator

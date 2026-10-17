@@ -11,7 +11,7 @@ def finiteSparsePairingContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}
     (G : Finset (∀ i, Box (Fin (d i)))) (eta : ℝ), 0 < eta →
   ∀ (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ)),
-    (∀ R ∈ G, MeasurableSet (E R)) →
+    (∀ R ∈ G, NullMeasurableSet (E R) volume) →
     (∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) →
     Set.Pairwise (G : Set (∀ i, Box (Fin (d i))))
       (fun R S => Disjoint (E R) (E S)) →

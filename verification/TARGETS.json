@@ -572,38 +572,38 @@
     },
     {
       "name": "ReyZygmund.finiteFamilyMaximal_mono",
-      "module": "ReyZygmund.Maximal.Represented",
+      "module": "ReyZygmund.Maximal.Family",
       "contract": "ReyZygmundVerification.finiteFamilyMonotonicityContract",
       "contract_module": "Verification.Statements.FiniteRepresented"
     },
     {
       "name": "ReyZygmund.finite_incomparable_maximal_norm",
-      "module": "ReyZygmund.Maximal.Represented",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteIncomparableMaximalNormContract",
       "contract_module": "Verification.Statements.FiniteRepresented"
     },
     {
       "name": "ReyZygmund.finite_incomparable_maximal_norm_nonneg",
-      "module": "ReyZygmund.Maximal.Nonnegative",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteNonnegativeMaximalNormContract",
       "contract_module": "Verification.Statements.FiniteNonnegative"
     },
     {
-      "name": "ReyZygmund.Geometry.productBox_volume_pos",
-      "module": "ReyZygmund.Geometry.ProductJensen",
-      "contract": "ReyZygmundVerification.productBoxVolumePositiveContract",
+      "name": "ReyZygmund.Geometry.productRectangle_volume_pos",
+      "module": "ReyZygmund.Geometry.ProductSteps",
+      "contract": "ReyZygmundVerification.productRectangleVolumePositiveContract",
       "contract_module": "Verification.Statements.ProductJensen"
     },
     {
-      "name": "ReyZygmund.Geometry.productBox_volume_lt_top",
-      "module": "ReyZygmund.Geometry.ProductJensen",
-      "contract": "ReyZygmundVerification.productBoxVolumeFiniteContract",
+      "name": "ReyZygmund.Geometry.productRectangle_volume_lt_top",
+      "module": "ReyZygmund.Geometry.ProductSteps",
+      "contract": "ReyZygmundVerification.productRectangleVolumeFiniteContract",
       "contract_module": "Verification.Statements.ProductJensen"
     },
     {
-      "name": "ReyZygmund.Geometry.productBox_average_abs_rpow",
+      "name": "ReyZygmund.Geometry.productRectangle_average_abs_rpow",
       "module": "ReyZygmund.Geometry.ProductJensen",
-      "contract": "ReyZygmundVerification.productBoxAverageJensenContract",
+      "contract": "ReyZygmundVerification.productRectangleAverageJensenContract",
       "contract_module": "Verification.Statements.ProductJensen"
     },
     {
@@ -644,24 +644,24 @@
     },
     {
       "name": "ReyZygmund.finite_incomparable_general_input_norm",
-      "module": "ReyZygmund.Maximal.GeneralInput",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteGeneralInputNormContract",
       "contract_module": "Verification.Statements.GeneralInput"
     },
     {
-      "name": "ReyZygmund.Geometry.DyadicGrid.countable_all_cubes",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.countable_all_cubes",
       "module": "ReyZygmund.Geometry.GridDescendants",
       "contract": "ReyZygmundVerification.gridAllCubesCountableContract",
       "contract_module": "Verification.Statements.GridGeometry"
     },
     {
-      "name": "ReyZygmund.Geometry.DyadicGrid.mem_level_iff",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.mem_level_iff",
       "module": "ReyZygmund.Geometry.GridDescendants",
       "contract": "ReyZygmundVerification.gridLocalDescendantsContract",
       "contract_module": "Verification.Statements.GridGeometry"
     },
     {
-      "name": "ReyZygmund.Geometry.DyadicGrid.exists_ancestor",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.exists_ancestor",
       "module": "ReyZygmund.Geometry.GridDescendants",
       "contract": "ReyZygmundVerification.gridAncestorContract",
       "contract_module": "Verification.Statements.GridGeometry"
@@ -715,32 +715,32 @@
       "contract_module": "Verification.Statements.Forest"
     },
     {
-      "name": "ReyZygmund.Geometry.productBox_subset_iff",
+      "name": "ReyZygmund.Geometry.productRectangle_subset_iff",
       "module": "ReyZygmund.Geometry.ProductContainment",
-      "contract": "ReyZygmundVerification.productBoxContainmentContract",
+      "contract": "ReyZygmundVerification.productRectangleContainmentContract",
       "contract_module": "Verification.Statements.ProductContainment"
     },
     {
-      "name": "ReyZygmund.Geometry.productBox_injective",
+      "name": "ReyZygmund.Geometry.productRectangle_injective",
       "module": "ReyZygmund.Geometry.ProductContainment",
-      "contract": "ReyZygmundVerification.productBoxInjectivityContract",
+      "contract": "ReyZygmundVerification.productRectangleInjectivityContract",
       "contract_module": "Verification.Statements.ProductContainment"
     },
     {
       "name": "ReyZygmund.finite_grid_maximal_integral",
-      "module": "ReyZygmund.Maximal.FiniteGrid",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteGridMaximalIntegralContract",
       "contract_module": "Verification.Statements.FiniteGrid"
     },
     {
       "name": "ReyZygmund.finite_grid_maximal_norm",
-      "module": "ReyZygmund.Maximal.FiniteGrid",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteGridMaximalNormContract",
       "contract_module": "Verification.Statements.FiniteGrid"
     },
     {
       "name": "ReyZygmund.finite_grid_maximal_lintegral",
-      "module": "ReyZygmund.Maximal.FiniteExtended",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.finiteGridMaximalExtendedContract",
       "contract_module": "Verification.Statements.FiniteExtended"
     },
@@ -770,25 +770,25 @@
     },
     {
       "name": "ReyZygmund.grid_family_maximal_lintegral",
-      "module": "ReyZygmund.Maximal.Global",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.globalMaximalIntegralContract",
       "contract_module": "Verification.Statements.Global"
     },
     {
       "name": "ReyZygmund.grid_family_maximal_ae_finite",
-      "module": "ReyZygmund.Maximal.Global",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.globalMaximalFiniteAEContract",
       "contract_module": "Verification.Statements.Global"
     },
     {
       "name": "ReyZygmund.grid_family_maximal_eLpNorm",
-      "module": "ReyZygmund.Maximal.Global",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.globalMaximalNormContract",
       "contract_module": "Verification.Statements.Global"
     },
     {
       "name": "ReyZygmund.incomparable_grid_maximal_eLpNorm",
-      "module": "ReyZygmund.Maximal.Global",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.globalSetIncomparableNormContract",
       "contract_module": "Verification.Statements.Global"
     },
@@ -866,21 +866,21 @@
     },
     {
       "name": "ReyZygmund.euclidean_grid_maximal_ae_finite",
-      "module": "ReyZygmund.Maximal.Euclidean",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.euclideanMaximalFiniteAEContract",
       "contract_module": "Verification.Statements.Euclidean"
     },
     {
       "name": "ReyZygmund.euclidean_grid_maximal_eLpNorm",
-      "module": "ReyZygmund.Maximal.Euclidean",
+      "module": "ReyZygmund.Maximal.Incomparable",
       "contract": "ReyZygmundVerification.euclideanMaximalNormContract",
       "contract_module": "Verification.Statements.Euclidean"
     },
     {
       "name": "ReyZygmund.Main.incomparable_maximal_theorem",
       "module": "ReyZygmund.Main.Maximal",
-      "contract": "ReyZygmundVerification.Challenges.incomparableMaximalStatement",
-      "contract_module": "Verification.Challenges.Maximal"
+      "contract": "ReyZygmundVerification.incomparableMaximalStatement",
+      "contract_module": "Verification.Statements.MainMaximal"
     },
     {
       "name": "ReyZygmund.Projection.finite_weaker_representation",
@@ -1053,35 +1053,35 @@
     {
       "name": "ReyZygmund.Main.weaker_containment_theorem",
       "module": "ReyZygmund.Main.Overlap",
-      "contract": "ReyZygmundVerification.Challenges.weakerContainmentStatement",
-      "contract_module": "Verification.Challenges.Overlap"
+      "contract": "ReyZygmundVerification.weakerContainmentStatement",
+      "contract_module": "Verification.Statements.MainOverlap"
     },
     {
       "name": "ReyZygmund.Main.incomparable_overlap_theorem",
       "module": "ReyZygmund.Main.Overlap",
-      "contract": "ReyZygmundVerification.Challenges.incomparableOverlapStatement",
-      "contract_module": "Verification.Challenges.Overlap"
+      "contract": "ReyZygmundVerification.incomparableOverlapStatement",
+      "contract_module": "Verification.Statements.MainOverlap"
     },
     {
-      "name": "ReyZygmund.Geometry.roundedScale_eq_iff",
+      "name": "ReyZygmund.Geometry.rounding_eq_iff",
       "module": "ReyZygmund.Geometry.Rounding",
       "contract": "ReyZygmundVerification.roundedScaleBinsContract",
       "contract_module": "Verification.Statements.Rounding"
     },
     {
-      "name": "ReyZygmund.Geometry.roundedScale_bounds",
+      "name": "ReyZygmund.Geometry.rounding_bounds",
       "module": "ReyZygmund.Geometry.Rounding",
       "contract": "ReyZygmundVerification.roundedScaleBoundsContract",
       "contract_module": "Verification.Statements.Rounding"
     },
     {
-      "name": "ReyZygmund.Geometry.roundedScale_mono",
+      "name": "ReyZygmund.Geometry.rounding_mono",
       "module": "ReyZygmund.Geometry.Rounding",
       "contract": "ReyZygmundVerification.roundedScaleMonotonicityContract",
       "contract_module": "Verification.Statements.Rounding"
     },
     {
-      "name": "ReyZygmund.Geometry.lt_of_roundedScale_lt",
+      "name": "ReyZygmund.Geometry.lt_of_rounding_lt",
       "module": "ReyZygmund.Geometry.Rounding",
       "contract": "ReyZygmundVerification.roundedScaleStrictOrderContract",
       "contract_module": "Verification.Statements.Rounding"
@@ -1123,13 +1123,13 @@
       "contract_module": "Verification.Statements.PrescribedCover"
     },
     {
-      "name": "ReyZygmund.Geometry.DyadicGrid.le_of_generation_le",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.le_of_generation_le",
       "module": "ReyZygmund.Geometry.GridOrder",
       "contract": "ReyZygmundVerification.gridContainmentOrderContract",
       "contract_module": "Verification.Statements.RoundedSlices"
     },
     {
-      "name": "ReyZygmund.Geometry.DyadicGrid.generation_lt_of_containment_ne",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.generation_lt_of_containment_ne",
       "module": "ReyZygmund.Geometry.GridOrder",
       "contract": "ReyZygmundVerification.gridStrictGenerationContract",
       "contract_module": "Verification.Statements.RoundedSlices"
@@ -1383,20 +1383,20 @@
     {
       "name": "ReyZygmund.Main.rounded_endpoint_theorem",
       "module": "ReyZygmund.Main.Endpoints",
-      "contract": "ReyZygmundVerification.Challenges.roundedEndpointStatement",
-      "contract_module": "Verification.Challenges.Endpoints"
+      "contract": "ReyZygmundVerification.roundedEndpointStatement",
+      "contract_module": "Verification.Statements.Endpoints"
     },
     {
       "name": "ReyZygmund.Continuous.isOpen_continuous_maximal_levelset",
       "module": "ReyZygmund.Continuous.Measurability",
-      "contract": "ReyZygmundVerification.Challenges.continuousMaximalOpenLevelStatement",
-      "contract_module": "Verification.Challenges.ContinuousMeasurability"
+      "contract": "ReyZygmundVerification.continuousMaximalOpenLevelStatement",
+      "contract_module": "Verification.Statements.ContinuousMeasurability"
     },
     {
       "name": "ReyZygmund.Continuous.measurable_continuous_maximal",
       "module": "ReyZygmund.Continuous.Measurability",
-      "contract": "ReyZygmundVerification.Challenges.continuousMaximalMeasurableStatement",
-      "contract_module": "Verification.Challenges.ContinuousMeasurability"
+      "contract": "ReyZygmundVerification.continuousMaximalMeasurableStatement",
+      "contract_module": "Verification.Statements.ContinuousMeasurability"
     },
     {
       "name": "ReyZygmund.Continuous.continuous_rectangle_cover",
@@ -1461,8 +1461,8 @@
     {
       "name": "ReyZygmund.Continuous.continuous_endpoint_theorem",
       "module": "ReyZygmund.Continuous.Endpoint",
-      "contract": "ReyZygmundVerification.Challenges.continuousEndpointStatement",
-      "contract_module": "Verification.Challenges.Endpoints"
+      "contract": "ReyZygmundVerification.continuousEndpointStatement",
+      "contract_module": "Verification.Statements.Endpoints"
     },
     {
       "name": "ReyZygmund.Sharpness.sharpGeneration_nonneg",
@@ -1525,7 +1525,7 @@
       "contract_module": "Verification.Statements.DyadicExtension"
     },
     {
-      "name": "ReyZygmund.Continuous.dyadicPhiRectangles_subset_continuous",
+      "name": "ReyZygmund.Continuous.phiRectangles_subset_continuous",
       "module": "ReyZygmund.Continuous.DyadicExtension",
       "contract": "ReyZygmundVerification.dyadicContinuousInclusionContract",
       "contract_module": "Verification.Statements.DyadicExtension"
@@ -1659,8 +1659,8 @@
     {
       "name": "ReyZygmund.Main.phi_sparse_overlap_theorem",
       "module": "ReyZygmund.Main.PhiSparse",
-      "contract": "ReyZygmundVerification.Challenges.phiSparseOverlapStatement",
-      "contract_module": "Verification.Challenges.PhiSparse"
+      "contract": "ReyZygmundVerification.phiSparseOverlapStatement",
+      "contract_module": "Verification.Statements.PhiSparse"
     },
     {
       "name": "ReyZygmund.Sharpness.level_box_volume",
@@ -1851,8 +1851,8 @@
     {
       "name": "ReyZygmund.Main.phi_sparse_sharpness_theorem",
       "module": "ReyZygmund.Main.Sharpness",
-      "contract": "ReyZygmundVerification.Challenges.phiSparseSharpnessStatement",
-      "contract_module": "Verification.Challenges.PhiSparse"
+      "contract": "ReyZygmundVerification.phiSparseSharpnessStatement",
+      "contract_module": "Verification.Statements.PhiSparse"
     },
     {
       "name": "ReyZygmund.Geometry.source_productDescendants_iff",
@@ -2365,12 +2365,6 @@
       "contract_module": "Verification.Statements.GlobalSquare"
     },
     {
-      "name": "ReyZygmund.Main.product_square_theorem",
-      "module": "ReyZygmund.Main.Square",
-      "contract": "ReyZygmundVerification.Challenges.productSquareStatement",
-      "contract_module": "Verification.Challenges.Square"
-    },
-    {
       "name": "ReyZygmund.measurable_setFamilyMaximal",
       "module": "ReyZygmund.Maximal.SetEndpoint",
       "contract": "ReyZygmundVerification.setFamilyMaximalMeasurableContract",
@@ -2629,25 +2623,25 @@
       "contract_module": "Verification.Statements.SourceFiniteAssembly"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.Proof.CubeGrid.child_mem",
-      "module": "ReyZygmund.MathlibOnly.Proof.GridBridge",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.child_mem",
+      "module": "ReyZygmund.Geometry.CubeGridChildren",
       "contract": "ReyZygmundVerification.MathlibOnlyBridges.midpointChildren",
       "contract_module": "Verification.Statements.MathlibOnly"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.Proof.of_toDyadicGrid",
-      "module": "ReyZygmund.MathlibOnly.Proof.GridBridge",
-      "contract": "ReyZygmundVerification.MathlibOnlyBridges.independentGridRoundTrip",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.cubesAtGeneration_neg",
+      "module": "ReyZygmund.Geometry.Grids",
+      "contract": "ReyZygmundVerification.MathlibOnlyBridges.generationIndex",
       "contract_module": "Verification.Statements.MathlibOnly"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.Proof.to_ofDyadicGrid",
-      "module": "ReyZygmund.MathlibOnly.Proof.GridBridge",
-      "contract": "ReyZygmundVerification.MathlibOnlyBridges.implementationGridRoundTrip",
+      "name": "ReyZygmund.MathlibOnly.CubeGrid.mem_all_generations_iff",
+      "module": "ReyZygmund.Geometry.Grids",
+      "contract": "ReyZygmundVerification.MathlibOnlyBridges.allGenerations",
       "contract_module": "Verification.Statements.MathlibOnly"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.Proof.maximal_eq_endpoint",
+      "name": "ReyZygmund.MathlibOnly.Proof.maximal_eq_euclidean_of_locallyIntegrable",
       "module": "ReyZygmund.MathlibOnly.Proof.OperatorBridge",
       "contract": "ReyZygmundVerification.MathlibOnlyBridges.extendedAverage",
       "contract_module": "Verification.Statements.MathlibOnly"
@@ -2675,48 +2669,6 @@
       "module": "ReyZygmund.MathlibOnly.Proof.BoundaryBridge",
       "contract": "ReyZygmundVerification.MathlibOnlyBridges.roundedConvention",
       "contract_module": "Verification.Statements.MathlibOnly"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.incomparable_maximal",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionMaximal",
-      "contract": "ReyZygmund.MathlibOnly.Proof.IncomparableMaximal",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.incomparable_overlap",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionOverlap",
-      "contract": "ReyZygmund.MathlibOnly.Proof.IncomparableOverlap",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.weaker_containment",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionWeaker",
-      "contract": "ReyZygmund.MathlibOnly.Proof.WeakerContainment",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.rounded_endpoint",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionRounded",
-      "contract": "ReyZygmund.MathlibOnly.Proof.RoundedEndpoint",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.continuous_endpoint",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionContinuous",
-      "contract": "ReyZygmund.MathlibOnly.Proof.ContinuousEndpoint",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.phi_sparse_overlap",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionPhiSparse",
-      "contract": "ReyZygmund.MathlibOnly.Proof.PhiSparseOverlap",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
-    },
-    {
-      "name": "ReyZygmund.MathlibOnly.Proof.phi_sparse_sharpness",
-      "module": "ReyZygmund.MathlibOnly.Proof.SolutionSharpness",
-      "contract": "ReyZygmund.MathlibOnly.Proof.PhiSparseSharpness",
-      "contract_module": "ReyZygmund.MathlibOnly.Proof.Statements"
     },
     {
       "name": "ReyZygmund.MathlibOnly.Proof.Estimates.weakly_incomparable_maximal",
@@ -2768,55 +2720,55 @@
     },
     {
       "name": "ReyZygmund.Projection.weaklyIncomparable_preserves_averages",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_weaklyIncomparable_preserves_averagesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.finite_lower_coordinate_averages",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_finite_lower_coordinate_averagesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.removedIndices_union_averagingRectangles",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_removedIndices_union_averagingRectanglesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.finiteProjectionMap_union_averagingRectangles",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_finiteProjectionMap_union_averagingRectanglesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.averagingRectangle_interior_below_original",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_averagingRectangle_interior_below_originalContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.averagingRectangle_equal_factor_of_le",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_averagingRectangle_equal_factor_of_leContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.weaklyIncomparable_union_averagingRectangles",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_weaklyIncomparable_union_averagingRectanglesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.weaklyIncomparable_union_preserves_averages",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_weaklyIncomparable_union_preserves_averagesContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
       "name": "ReyZygmund.Projection.finite_weakly_incomparable_representation",
-      "module": "ReyZygmund.Maximal.WeakIncomparability",
+      "module": "ReyZygmund.Projection.AveragingGeometry",
       "contract": "ReyZygmundVerification.MainProofs.Projection_finite_weakly_incomparable_representationContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
@@ -2887,15 +2839,15 @@
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
-      "name": "ReyZygmund.Projection.common_cutoff_leaves_iff",
-      "module": "ReyZygmund.Projection.CommonCutoff",
-      "contract": "ReyZygmundVerification.MainProofs.Projection_common_cutoff_leaves_iffContract",
+      "name": "ReyZygmund.Geometry.common_cutoff_leaves_iff",
+      "module": "ReyZygmund.Geometry.FiniteSetting",
+      "contract": "ReyZygmundVerification.MainProofs.Geometry_common_cutoff_leaves_iffContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
-      "name": "ReyZygmund.Projection.common_cutoff_productLeaves_iff",
-      "module": "ReyZygmund.Projection.CommonCutoff",
-      "contract": "ReyZygmundVerification.MainProofs.Projection_common_cutoff_productLeaves_iffContract",
+      "name": "ReyZygmund.Geometry.common_cutoff_productLeaves_iff",
+      "module": "ReyZygmund.Geometry.ProductFiniteSetting",
+      "contract": "ReyZygmundVerification.MainProofs.Geometry_common_cutoff_productLeaves_iffContract",
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
@@ -2929,9 +2881,9 @@
       "contract_module": "Verification.Statements.MainProofs"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.Proof.Estimates.sparse_iff_borel",
-      "module": "ReyZygmund.MathlibOnly.Proof.MeasureBridge",
-      "contract": "ReyZygmundVerification.MeasureBridge.sparse_iff_borelContract",
+      "name": "ReyZygmund.MathlibOnly.sparse_iff_exists_measurable",
+      "module": "ReyZygmund.Overlap.Sparse",
+      "contract": "ReyZygmundVerification.MeasureBridge.sparse_iff_exists_measurableContract",
       "contract_module": "Verification.Statements.MeasureBridge"
     },
     {
@@ -2954,13 +2906,13 @@
     },
     {
       "name": "ReyZygmund.MathlibOnly.Proof.Estimates.shadow_eq",
-      "module": "ReyZygmund.MathlibOnly.Proof.MeasureBridge",
+      "module": "ReyZygmund.MathlibOnly.Proof.OverlapBridge",
       "contract": "ReyZygmundVerification.MeasureBridge.shadow_eqContract",
       "contract_module": "Verification.Statements.MeasureBridge"
     },
     {
       "name": "ReyZygmund.MathlibOnly.Proof.Estimates.overlap_eq",
-      "module": "ReyZygmund.MathlibOnly.Proof.MeasureBridge",
+      "module": "ReyZygmund.MathlibOnly.Proof.OverlapBridge",
       "contract": "ReyZygmundVerification.MeasureBridge.overlap_eqContract",
       "contract_module": "Verification.Statements.MeasureBridge"
     },
@@ -2983,50 +2935,50 @@
       "contract_module": "Verification.Statements.MeasureBridge"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.weakly_incomparable_maximal",
+      "name": "ReyZygmund.MathlibOnly.weakly_incomparable_maximal_estimate",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.WeaklyIncomparableMaximal",
+      "contract": "ReyZygmund.MathlibOnly.WeaklyIncomparableMaximalEstimate",
       "contract_module": "ReyZygmund.MathlibOnly.Statements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.weakly_incomparable_overlap",
+      "name": "ReyZygmund.MathlibOnly.weakly_incomparable_rey_conjecture",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.WeaklyIncomparableOverlap",
+      "contract": "ReyZygmund.MathlibOnly.WeaklyIncomparableReyConjecture",
       "contract_module": "ReyZygmund.MathlibOnly.Statements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.continuous_endpoint",
+      "name": "ReyZygmund.MathlibOnly.zygmund_conjecture",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.ContinuousEndpoint",
+      "contract": "ReyZygmund.MathlibOnly.ZygmundConjecture",
       "contract_module": "ReyZygmund.MathlibOnly.Statements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.rounded_endpoint",
+      "name": "ReyZygmund.MathlibOnly.rounded_dyadic_endpoint_estimate",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.RoundedEndpoint",
-      "contract_module": "ReyZygmund.MathlibOnly.Statements"
+      "contract": "ReyZygmund.MathlibOnly.RoundedDyadicEndpointEstimate",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.phi_sparse_overlap",
+      "name": "ReyZygmund.MathlibOnly.sparse_phi_zygmund_overlap_estimate",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.PhiSparseOverlap",
-      "contract_module": "ReyZygmund.MathlibOnly.Statements"
+      "contract": "ReyZygmund.MathlibOnly.SparsePhiZygmundOverlapEstimate",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.phi_sparse_sharpness",
+      "name": "ReyZygmund.MathlibOnly.classical_dyadic_zygmund_sharpness",
       "module": "ReyZygmund.MathlibOnly.Solutions",
-      "contract": "ReyZygmund.MathlibOnly.PhiSparseSharpness",
-      "contract_module": "ReyZygmund.MathlibOnly.Statements"
+      "contract": "ReyZygmund.MathlibOnly.ClassicalDyadicZygmundSharpness",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.maximal_eq_proof",
-      "module": "ReyZygmund.MathlibOnly.Representation",
+      "name": "ReyZygmund.MathlibOnly.maximal_eq_iSup_indicator",
+      "module": "ReyZygmund.MathlibOnly.Proof.MaximalFormulas",
       "contract": "ReyZygmundVerification.Representation.maximal",
       "contract_module": "Verification.Statements.Representation"
     },
     {
-      "name": "ReyZygmund.MathlibOnly.maximalIco_eq_proof",
-      "module": "ReyZygmund.MathlibOnly.Representation",
+      "name": "ReyZygmund.MathlibOnly.maximalIco_eq_iSup_indicator",
+      "module": "ReyZygmund.MathlibOnly.Proof.MaximalFormulas",
       "contract": "ReyZygmundVerification.Representation.maximalIco",
       "contract_module": "Verification.Statements.Representation"
     },
@@ -3047,6 +2999,102 @@
       "module": "ReyZygmund.MathlibOnly.Representation",
       "contract": "ReyZygmundVerification.Representation.finiteOverlap",
       "contract_module": "Verification.Statements.Representation"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.weighted_square_function_estimate",
+      "module": "ReyZygmund.MathlibOnly.Proof.SquareSolutions",
+      "contract": "ReyZygmund.MathlibOnly.WeightedSquareFunctionEstimate",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.maximal_square_function_estimate",
+      "module": "ReyZygmund.MathlibOnly.Proof.MaximalSquareSolution",
+      "contract": "ReyZygmund.MathlibOnly.MaximalSquareFunctionEstimate",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.product_weighted_square_function_estimate",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProductSquareSolution",
+      "contract": "ReyZygmund.MathlibOnly.ProductWeightedSquareFunctionEstimate",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.projection_preserves_averages",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProjectionAverageSolutions",
+      "contract": "ReyZygmund.MathlibOnly.ProjectionPreservesAverages",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.projection_partial_averages",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProjectionAverageSolutions",
+      "contract": "ReyZygmund.MathlibOnly.ProjectionPartialAverages",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.projection_differences",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProjectionDifferencesSolution",
+      "contract": "ReyZygmund.MathlibOnly.ProjectionDifferences",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.averaging_family_geometry",
+      "contract": "ReyZygmund.MathlibOnly.AveragingFamilyGeometry",
+      "module": "ReyZygmund.MathlibOnly.Proof.AveragingFamilySolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.representation_of_averages",
+      "contract": "ReyZygmund.MathlibOnly.RepresentationOfAverages",
+      "module": "ReyZygmund.MathlibOnly.Proof.AveragingFamilySolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.maximal_square_function_reduction",
+      "contract": "ReyZygmund.MathlibOnly.MaximalSquareFunctionReduction",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProjectedSquareSolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.projected_square_function_estimate",
+      "contract": "ReyZygmund.MathlibOnly.ProjectedSquareFunctionEstimate",
+      "module": "ReyZygmund.MathlibOnly.Proof.ProjectedSquareSolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.scalar_estimate",
+      "contract": "ReyZygmund.MathlibOnly.ScalarEstimate",
+      "module": "ReyZygmund.MathlibOnly.Proof.SquareSolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.prescribed_scale_covering",
+      "contract": "ReyZygmund.MathlibOnly.PrescribedScaleCovering",
+      "module": "ReyZygmund.MathlibOnly.Proof.CoveringSolution",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.cordoba_fefferman_selection",
+      "contract": "ReyZygmund.MathlibOnly.CordobaFeffermanSelection",
+      "module": "ReyZygmund.MathlibOnly.Proof.SelectionSolution",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.weakly_incomparable_slices",
+      "contract": "ReyZygmund.MathlibOnly.WeaklyIncomparableSlices",
+      "module": "ReyZygmund.MathlibOnly.Proof.SliceSolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.half_sparse_slices",
+      "contract": "ReyZygmund.MathlibOnly.HalfSparseSlices",
+      "module": "ReyZygmund.MathlibOnly.Proof.SliceSolutions",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
+    },
+    {
+      "name": "ReyZygmund.MathlibOnly.dyadic_zygmund_conjecture",
+      "contract": "ReyZygmund.MathlibOnly.DyadicZygmundConjecture",
+      "module": "ReyZygmund.MathlibOnly.Proof.DyadicEndpointSolution",
+      "contract_module": "ReyZygmund.MathlibOnly.SupportingStatements"
     }
   ]
 }

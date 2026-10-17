@@ -19,7 +19,7 @@ variable {m : ℕ} {d : Fin m → ℕ}
 variable {I : ∀ i, Box (Fin (d i))} {N : Fin m → ℕ} {f : ProductPoint d → ℝ}
 
 theorem productLeafConstant_indicator (hf : ProductLeafConstant I N f) :
-    ProductLeafConstant I N ((productBox I).indicator f) := by
+    ProductLeafConstant I N ((productRectangle I).indicator f) := by
   intro P hP x hx y hy
   rw [Set.indicator_of_mem (productLeaves_subset hP hx),
     Set.indicator_of_mem (productLeaves_subset hP hy)]
@@ -45,7 +45,7 @@ namespace ProductClosure
 values on a smallest product cube. -/
 theorem update_eq (hf : ProductLeafConstant I N f)
     {P : ∀ i, Box (Fin (d i))} (hP : P ∈ productLeaves I N)
-    {x y : ProductPoint d} (hx : x ∈ productBox P) (hy : y ∈ productBox P)
+    {x y : ProductPoint d} (hx : x ∈ productRectangle P) (hy : y ∈ productRectangle P)
     (i : Fin m) {z : Fin (d i) → ℝ} (hz : z ∈ I i) :
     f (Function.update x i z) = f (Function.update y i z) := by
   obtain ⟨R, hR, hzR⟩ := level_isPartition (I i) (N i) z hz
@@ -56,15 +56,15 @@ theorem update_eq (hf : ProductLeafConstant I N f)
     · subst j
       simpa using hR
     · simpa [hji] using Fintype.mem_piFinset.mp hP j
-  have hmem : ∀ w ∈ productBox P,
-      Function.update w i z ∈ productBox (Function.update P i R) := by
+  have hmem : ∀ w ∈ productRectangle P,
+      Function.update w i z ∈ productRectangle (Function.update P i R) := by
     intro w hw
-    apply (mem_productBox _ _).mpr
+    apply (mem_productRectangle _ _).mpr
     intro j
     by_cases hji : j = i
     · subst j
       simpa using hzR
-    · simpa [hji] using (mem_productBox P w).mp hw j
+    · simpa [hji] using (mem_productRectangle P w).mp hw j
   exact hf _ hPR _ (hmem x hx) _ (hmem y hy)
 
 end ProductClosure
@@ -75,8 +75,8 @@ theorem productLeafConstant_coordinateAverage (hf : ProductLeafConstant I N f)
     ProductLeafConstant I N (coordinateAverage i Q f) := by
   obtain ⟨n, hn, hQn⟩ := mem_descendants.mp hQ
   intro P hP x hx y hy
-  have hxP := (mem_productBox P x).mp hx i
-  have hyP := (mem_productBox P y).mp hy i
+  have hxP := (mem_productRectangle P x).mp hx i
+  have hyP := (mem_productRectangle P y).mp hy i
   rcases level_le_or_disjoint hn (Fintype.mem_piFinset.mp hP i) hQn with hPQ | hdis
   · rw [coordinateAverage_of_mem i Q f x (hPQ hxP),
       coordinateAverage_of_mem i Q f y (hPQ hyP)]
@@ -88,23 +88,23 @@ theorem productLeafConstant_coordinateAverage (hf : ProductLeafConstant I N f)
       coordinateAverage_of_notMem i Q f y
         (fun hyQ => Set.disjoint_left.mp hdis hyP hyQ)]
 
-/-- Support follows from containment in the top rectangle, without constancy or positivity assumptions. -/
-theorem coordinateAverage_eq_zero_of_notMem_productBox
-    (hs : ∀ x, x ∉ productBox I → f x = 0)
+/-- Containment in the top rectangle preserves support under coordinate averaging. -/
+theorem coordinateAverage_eq_zero_of_notMem_productRectangle
+    (hs : ∀ x, x ∉ productRectangle I → f x = 0)
     (i : Fin m) (Q : Box (Fin (d i))) (hQI : Q ≤ I i)
-    {x : ProductPoint d} (hx : x ∉ productBox I) : coordinateAverage i Q f x = 0 := by
+    {x : ProductPoint d} (hx : x ∉ productRectangle I) : coordinateAverage i Q f x = 0 := by
   by_cases hxQ : x i ∈ Q
   · have hzero : ∀ z, f (Function.update x i z) = 0 := by
       intro z
       apply hs
       intro hzx
       apply hx
-      apply (mem_productBox I x).mpr
+      apply (mem_productRectangle I x).mpr
       intro j
       by_cases hji : j = i
       · subst j
         exact hQI hxQ
-      · simpa [hji] using (mem_productBox I _).mp hzx j
+      · simpa [hji] using (mem_productRectangle I _).mp hzx j
     rw [coordinateAverage_of_mem i Q f x hxQ]
     simp [hzero]
   · exact coordinateAverage_of_notMem i Q f x hxQ
@@ -125,7 +125,7 @@ end ProductClosure
 theorem productLeafConstant_coordinateDifference (hf : ProductLeafConstant I N f)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ interior (I i) (N i)) :
     ProductLeafConstant I N (coordinateDifference i Q f) := by
-  unfold coordinateDifference
+  simp only [coordinateDifference_eq_sum]
   apply productLeafConstant_sub
   · apply productLeafConstant_finsetSum
     intro R hR
@@ -134,15 +134,15 @@ theorem productLeafConstant_coordinateDifference (hf : ProductLeafConstant I N f
   · exact productLeafConstant_coordinateAverage hf i Q
       (interior_subset_descendants (I i) (N i) hQ)
 
-theorem coordinateDifference_eq_zero_of_notMem_productBox
-    (hs : ∀ x, x ∉ productBox I → f x = 0)
+theorem coordinateDifference_eq_zero_of_notMem_productRectangle
+    (hs : ∀ x, x ∉ productRectangle I → f x = 0)
     (i : Fin m) (Q : Box (Fin (d i))) (hQI : Q ≤ I i)
-    {x : ProductPoint d} (hx : x ∉ productBox I) : coordinateDifference i Q f x = 0 := by
-  simp only [coordinateDifference, Pi.sub_apply, Finset.sum_apply]
-  rw [coordinateAverage_eq_zero_of_notMem_productBox hs i Q hQI hx, sub_zero]
+    {x : ProductPoint d} (hx : x ∉ productRectangle I) : coordinateDifference i Q f x = 0 := by
+  simp only [coordinateDifference_eq_sum, Pi.sub_apply, Finset.sum_apply]
+  rw [coordinateAverage_eq_zero_of_notMem_productRectangle hs i Q hQI hx, sub_zero]
   apply Finset.sum_eq_zero
   intro R hR
-  exact coordinateAverage_eq_zero_of_notMem_productBox hs i R
+  exact coordinateAverage_eq_zero_of_notMem_productRectangle hs i R
     (((Prepartition.splitCenter Q).le_of_mem hR).trans hQI) hx
 
 /-- Coordinate averaging preserves the zero-extended finite input class. -/
@@ -150,63 +150,63 @@ theorem coordinateAverage_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ descendants (I i) (N i)) :
-    ProductLeafConstant I N (coordinateAverage i Q ((productBox I).indicator f)) ∧
-      ∀ x, x ∉ productBox I → coordinateAverage i Q ((productBox I).indicator f) x = 0 := by
+    ProductLeafConstant I N (coordinateAverage i Q ((productRectangle I).indicator f)) ∧
+      ∀ x, x ∉ productRectangle I → coordinateAverage i Q ((productRectangle I).indicator f) x = 0 := by
   refine ⟨productLeafConstant_coordinateAverage (productLeafConstant_indicator hf) i Q hQ, ?_⟩
   intro x hx
-  exact coordinateAverage_eq_zero_of_notMem_productBox
+  exact coordinateAverage_eq_zero_of_notMem_productRectangle
     (fun y hy => Set.indicator_of_notMem hy f) i Q (le_of_mem_descendants hQ) hx
 
-/-- Coordinate differences preserve the finite input class for interior indices.
-No positivity or dimension assumption is needed for this closure statement. -/
+/-- Coordinate differences preserve the finite input class for interior indices. -/
 theorem coordinateDifference_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ interior (I i) (N i)) :
-    ProductLeafConstant I N (coordinateDifference i Q ((productBox I).indicator f)) ∧
-      ∀ x, x ∉ productBox I → coordinateDifference i Q ((productBox I).indicator f) x = 0 := by
+    ProductLeafConstant I N (coordinateDifference i Q ((productRectangle I).indicator f)) ∧
+      ∀ x, x ∉ productRectangle I → coordinateDifference i Q ((productRectangle I).indicator f) x = 0 := by
   refine ⟨productLeafConstant_coordinateDifference (productLeafConstant_indicator hf) i Q hQ, ?_⟩
   intro x hx
-  exact coordinateDifference_eq_zero_of_notMem_productBox
+  exact coordinateDifference_eq_zero_of_notMem_productRectangle
     (fun y hy => Set.indicator_of_notMem hy f) i Q
       (le_of_mem_descendants (interior_subset_descendants (I i) (N i) hQ)) hx
 
-/-- The existing average map retains both properties needed for another iteration. -/
+/-- The average map preserves constancy on the smallest cubes and support in the
+top rectangle. -/
 theorem averageMap_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ descendants (I i) (N i)) :
     ProductLeafConstant I N (averageMap i Q F).1 ∧
-      ∀ x, x ∉ productBox I → (averageMap i Q F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (averageMap i Q F).1 x = 0 := by
   simpa only [averageMap_apply] using
     And.intro (productLeafConstant_coordinateAverage hf i Q hQ)
-      (fun x hx => coordinateAverage_eq_zero_of_notMem_productBox hs i Q
+      (fun x hx => coordinateAverage_eq_zero_of_notMem_productRectangle hs i Q
         (le_of_mem_descendants hQ) (x := x) hx)
 
-/-- The existing difference map retains both properties for every interior index. -/
+/-- The difference map preserves constancy on the smallest cubes and support in
+the top rectangle for every interior index. -/
 theorem differenceMap_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (i : Fin m) (Q : Box (Fin (d i))) (hQ : Q ∈ interior (I i) (N i)) :
     ProductLeafConstant I N (differenceMap i Q F).1 ∧
-      ∀ x, x ∉ productBox I → (differenceMap i Q F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (differenceMap i Q F).1 x = 0 := by
   simpa only [differenceMap_apply] using
     And.intro (productLeafConstant_coordinateDifference hf i Q hQ)
-      (fun x hx => coordinateDifference_eq_zero_of_notMem_productBox hs i Q
+      (fun x hx => coordinateDifference_eq_zero_of_notMem_productRectangle hs i Q
         (le_of_mem_descendants (interior_subset_descendants (I i) (N i) hQ)) (x := x) hx)
 
-/-- Iterating the difference maps preserves the finite source class.
-The empty coordinate product acts as the identity, with no exceptional case. -/
+/-- Iterating the difference maps preserves the finite input class. -/
 theorem productDifferenceMap_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (A : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i ∈ A, Q i ∈ interior (I i) (N i)) :
     ProductLeafConstant I N (productDifferenceMap A Q F).1 ∧
-      ∀ x, x ∉ productBox I → (productDifferenceMap A Q F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (productDifferenceMap A Q F).1 x = 0 := by
   revert hQ
   induction A using Finset.induction_on with
   | empty =>

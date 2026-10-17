@@ -1,4 +1,4 @@
-import ReyZygmund.Geometry.PhiRectangles
+import ReyZygmund.Geometry.FlatRectangles
 import ReyZygmund.Maximal.Euclidean
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
@@ -9,11 +9,12 @@ import Mathlib.Topology.Semicontinuity.Basic
 Local integrability makes the integral over a rectangle continuous under
 translation. A rectangle with average above a threshold can therefore be moved
 slightly to put the point in its interior without changing its side lengths or
-losing the inequality. This proves openness of the strict level sets without
-regularity of the side function. -/
+losing the inequality. This proves openness of the strict level sets. -/
 
 open BoxIntegral MeasureTheory Filter
 open scoped BigOperators Classical ENNReal Topology
+
+open ReyZygmund.MathlibOnly (zygmundRectangles)
 
 namespace ReyZygmund.Continuous
 
@@ -69,7 +70,7 @@ private theorem eventually_notMem_shiftBox {k : ℕ} (Q : Box (Fin k))
     exact fun hm => (not_lt_of_ge (hm j).2) ht
 
 /-- The translated box integral is continuous at zero for every locally
-integrable signed function, including zero-dimensional boxes. -/
+integrable signed function. -/
 theorem continuousAt_integral_shiftBox {k : ℕ} (Q : Box (Fin k))
     (f : (Fin k → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
     ContinuousAt (fun t : ℝ => ∫ y in (shiftBox Q t : Set (Fin k → ℝ)), f y) 0 := by
@@ -131,10 +132,10 @@ theorem flatProductBox_shiftBox {m : ℕ} {d : Fin m → ℕ}
   obtain ⟨⟨i, a⟩, rfl⟩ := (finSigmaFinEquiv (n := d)).surjective j
   simp only [flatProductBox, shiftBox, flattenCoordinates_apply]
 
-theorem shiftBox_mem_continuousPhiRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
+theorem shiftBox_mem_continuousRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
-    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ continuousPhiRectangles d phi) (t : ℝ) :
-    (fun i => shiftBox (R i) t) ∈ continuousPhiRectangles d phi := by
+    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ zygmundRectangles d phi) (t : ℝ) :
+    (fun i => shiftBox (R i) t) ∈ zygmundRectangles d phi := by
   obtain ⟨s, hs⟩ := hR
   refine ⟨s, fun i a => ?_⟩
   dsimp [shiftBox]
@@ -147,10 +148,10 @@ theorem isOpen_continuous_maximal_levelset {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (lam : ℝ≥0∞) :
-    IsOpen {x | lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x} := by
+    IsOpen {x | lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x} := by
   rw [isOpen_iff_mem_nhds]
   intro x hx
-  change lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f x at hx
+  change lam < euclideanFamilyMaximal (zygmundRectangles d phi) f x at hx
   unfold euclideanFamilyMaximal at hx
   obtain ⟨R, hR⟩ := lt_iSup_iff.mp hx
   have hxR : x ∈ (flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)) := by
@@ -180,8 +181,8 @@ theorem isOpen_continuous_maximal_levelset {n : ℕ} {d : Fin (n + 1) → ℕ}
   obtain ⟨t, ⟨ht, hlow⟩, htpos⟩ :=
     (((hlarge.and hlower).filter_mono nhdsWithin_le_nhds).and hpos).exists
   let R' := fun i => shiftBox (R.1 i) t
-  have hR' : R' ∈ continuousPhiRectangles d phi :=
-    shiftBox_mem_continuousPhiRectangles phi R.1 R.2 t
+  have hR' : R' ∈ zygmundRectangles d phi :=
+    shiftBox_mem_continuousRectangles phi R.1 R.2 t
   have hopen : IsOpen (flatProductBox R').Ioo :=
     isOpen_set_pi Set.finite_univ (fun _ _ => isOpen_Ioo)
   have hxopen : x ∈ (flatProductBox R').Ioo := by
@@ -191,19 +192,18 @@ theorem isOpen_continuous_maximal_levelset {n : ℕ} {d : Fin (n + 1) → ℕ}
   apply Filter.mem_of_superset (hopen.mem_nhds hxopen)
   intro y hy
   have hyR' := (flatProductBox R').Ioo_subset_coe hy
-  change lam < euclideanFamilyMaximal (continuousPhiRectangles d phi) f y
+  change lam < euclideanFamilyMaximal (zygmundRectangles d phi) f y
   unfold euclideanFamilyMaximal
   apply lt_iSup_iff.mpr
   refine ⟨⟨R', hR'⟩, ?_⟩
   rw [Set.indicator_of_mem hyR', flatProductBox_shiftBox, volumeReal_shiftBox]
   exact ht
 
-/-- Borel measurability of the all-position operator; no countable
-replacement family or measurable representative is substituted. -/
+/-- Borel measurability of the all-position maximal function. -/
 theorem measurable_continuous_maximal {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume) :
-    Measurable (euclideanFamilyMaximal (continuousPhiRectangles d phi) f) :=
+    Measurable (euclideanFamilyMaximal (zygmundRectangles d phi) f) :=
   measurable_of_Ioi (fun lam => (isOpen_continuous_maximal_levelset phi f hf lam).measurableSet)
 
 end ReyZygmund.Continuous

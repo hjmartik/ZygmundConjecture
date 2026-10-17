@@ -18,8 +18,9 @@ const out = path.join(root, 'docs');
 fs.mkdirSync(out, {recursive:true});
 const pages = new Map([
   ['README.md', 'index.html'], ['MAIN-STATEMENTS.md', 'main-statements.html'],
-  ['CONSISTENCY.md', 'consistency.html'],
+  ['SUPPORTING-STATEMENTS.md', 'supporting-statements.html'],
   ['lean/ReyZygmund/MathlibOnly/README.md', 'mathlib-only.html'],
+  ['lean/ReyZygmund/MathlibOnly/DEFINITIONS.md', 'definitions.html'],
   ['VERIFYING.md', 'verifying.html'], ['verification/LINUX-SETUP.md', 'linux-setup.html'],
   ['verification/PACKAGING-TESTS.md', 'packaging-tests.html'],
   ['lean/THIRD_PARTY.md', 'third-party.html'], ['SITE.md', 'site.html']
@@ -49,7 +50,8 @@ const shell = (title, content, prefix='') => `<!doctype html>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head><body><header><nav aria-label="Main navigation">
 <a href="${prefix}index.html">Overview</a><a href="${prefix}main-statements.html">Main theorems</a>
-<a href="${prefix}consistency.html">Definitions and consistency</a>
+<a href="${prefix}supporting-statements.html">Supporting results</a>
+<a href="${prefix}mathlib-only.html">Specification and definitions</a>
 <a href="${prefix}verifying.html">Verification</a><a href="https://arxiv.org/abs/2609.23895">Paper ↗</a>
 </nav></header><main>${content}</main><footer>Henri Martikainen · Lean 4 and Mathlib · <a href="${prefix}third-party.html">Apache-2.0 &amp; acknowledgments</a></footer></body></html>\n`;
 

@@ -15,6 +15,8 @@ indices.
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmund
 
 open Geometry Projection
@@ -22,7 +24,7 @@ open Geometry Projection
 variable {m : ℕ} {d : Fin m → ℕ}
 
 theorem finite_signed_grid_square_lintegral
-    (D : ∀ i, DyadicGrid (d i)) (hd : ∀ i, 0 < d i)
+    (D : ∀ i, CubeGrid (d i)) (hd : ∀ i, 0 < d i)
     (H : Finset (∀ i, Box (Fin (d i)))) (hH : (↑H : Set _) ⊆ gridRectangles D)
     (F : boundedMeasurableFunctions d)
     (hex : F.1 = fun x => ∑ Q ∈ H, rawProductDifference Q F.1 x)
@@ -64,16 +66,16 @@ theorem finite_signed_grid_square_lintegral
     obtain ⟨n, hn, hlev⟩ := mem_descendants.mp (mem_productDescendants.mp hdesc i)
     exact mem_descendants.mpr ⟨n, hn.trans (Nat.le_succ N), hlev⟩
   have heq (R : ∀ i, Box (Fin (d i))) (hR : R ∈ T) (x : ProductPoint d)
-      (hx : x ∈ productBox R) : F.1 x = (S R).1 x := by
+      (hx : x ∈ productRectangle R) : F.1 x = (S R).1 x := by
     rw [congrFun hex x]
     exact (difference_forest_local_eq T H hdis hcH F R hR x hx).symm
   let C : ℝ := (2 : ℝ) ^ (6 * (∑ i, d i) + 10)
   have hC : 0 ≤ C := by positivity
   have hlocal (R : ∀ i, Box (Fin (d i))) (hR : R ∈ T) :
-      (∫⁻ x in productBox R,
+      (∫⁻ x in productRectangle R,
         (ENNReal.ofReal (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x)) ^ p) ≤
       ENNReal.ofReal C * ENNReal.ofReal
-        (∫ x in productBox R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) := by
+        (∫ x in productRectangle R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) := by
     have hstep := finite_difference_sum_productStep R (fun _ => N + 1) (HR R) (hHR R hR) F
     have hrec := finite_difference_sum_reexpansion R (fun _ => N + 1) hd (HR R) (hHR R hR) F
     have hsq (x : ProductPoint d) :
@@ -90,36 +92,36 @@ theorem finite_signed_grid_square_lintegral
     have hconst := productLeafConstant_finiteSignedProductMaximal R (fun _ => N + 1)
       (S R) hstep.1 hstep.2
     have hi : IntegrableOn (fun x => Real.rpow
-        (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x) p) (productBox R) volume := by
+        (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x) p) (productRectangle R) volume := by
       apply integrableOn_productLeafConstant R (fun _ => N + 1)
       intro P hP x hx y hy
       exact congrArg (fun z : ℝ => Real.rpow z p) (hconst P hP x hx y hy)
     calc
-      _ = ∫⁻ x in productBox R, ENNReal.ofReal (Real.rpow
+      _ = ∫⁻ x in productRectangle R, ENNReal.ofReal (Real.rpow
           (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x) p) := by
         apply lintegral_congr
         intro x
         exact ENNReal.ofReal_rpow_of_nonneg
           (finiteSignedProductMaximal_nonneg R (fun _ => N + 1) (S R) x) hp0.le
-      _ = ENNReal.ofReal (∫ x in productBox R, Real.rpow
+      _ = ENNReal.ofReal (∫ x in productRectangle R, Real.rpow
           (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x) p) :=
         (ofReal_integral_eq_lintegral_ofReal hi (Filter.Eventually.of_forall (fun x =>
           Real.rpow_nonneg (finiteSignedProductMaximal_nonneg R (fun _ => N + 1) (S R) x) p))).symm
-      _ ≤ ENNReal.ofReal (C * ∫ x in productBox R,
+      _ ≤ ENNReal.ofReal (C * ∫ x in productRectangle R,
           Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) :=
         ENNReal.ofReal_le_ofReal hbound
       _ = _ := ENNReal.ofReal_mul hC
   calc
-    _ ≤ ∑ R ∈ T, ∫⁻ x in productBox R,
+    _ ≤ ∑ R ∈ T, ∫⁻ x in productRectangle R,
         (ENNReal.ofReal (finiteSignedProductMaximal R (fun _ => N + 1) (S R) x)) ^ p :=
       lintegral_finiteSignedGridMaximal_forest_le T A hdis hcA (fun _ => N + 1) hAc F.1 S heq p hp0
     _ ≤ ∑ R ∈ T, ENNReal.ofReal C * ENNReal.ofReal
-        (∫ x in productBox R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) :=
+        (∫ x in productRectangle R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) :=
       Finset.sum_le_sum hlocal
     _ = ENNReal.ofReal C * ENNReal.ofReal
-        (∑ R ∈ T, ∫ x in productBox R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) := by
+        (∑ R ∈ T, ∫ x in productRectangle R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p) := by
       have hn (R : ∀ i, Box (Fin (d i))) : 0 ≤
-          ∫ x in productBox R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p :=
+          ∫ x in productRectangle R, Real.rpow (finiteDifferenceSquare (HR R) F.1 x) p :=
         integral_nonneg (fun _ => Real.rpow_nonneg (Real.sqrt_nonneg _) p)
       rw [ENNReal.ofReal_sum_of_nonneg (fun R _ => hn R), Finset.mul_sum]
     _ ≤ _ := mul_le_mul_right (ENNReal.ofReal_le_ofReal

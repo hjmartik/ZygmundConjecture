@@ -3,10 +3,10 @@ import ReyZygmund.Geometry.ProductSteps
 /-!
 # Coordinate algebra on bounded measurable functions
 
-The finite inputs in the paper belong to this class after zero extension.
-All slice integrability used in linearity and Fubini is derived, not assumed as
-an operator law. The estimates for a difference use the unique child containing
-the point and therefore do not lose a factor equal to the number of children.
+Bounded measurable inputs are integrable on the coordinate boxes used here, so
+linearity and Fubini apply. The estimates for a difference use the unique child
+containing the point and therefore do not lose a factor equal to the number of
+children.
 -/
 
 open BoxIntegral MeasureTheory
@@ -42,7 +42,7 @@ theorem coordinateDifference_measurable (i : Fin m) (Q : Box (Fin (d i)))
     Finset.measurable_sum _ (fun R _ => coordinateAverage_measurable i R f hf)
   convert hs.sub (coordinateAverage_measurable i Q f hf) using 1
   ext x
-  simp only [coordinateDifference, Pi.sub_apply, Finset.sum_apply]
+  simp only [coordinateDifference_eq_sum, Pi.sub_apply, Finset.sum_apply]
 
 theorem coordinateDifference_abs_le (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (C : ℝ) (hC : 0 ≤ C) (hf : ∀ x, |f x| ≤ C)
@@ -59,7 +59,7 @@ theorem coordinateDifference_abs_le (i : Fin m) (Q : Box (Fin (d i)))
     · rw [Finset.sum_eq_zero (fun R hR => coordinateAverage_of_notMem i R f x
         (fun hxR => hx ((Prepartition.splitCenter Q).le_of_mem hR hxR))), abs_zero]
       exact hC
-  simp only [coordinateDifference, Pi.sub_apply, Finset.sum_apply]
+  simp only [coordinateDifference_eq_sum, Pi.sub_apply, Finset.sum_apply]
   calc
     _ ≤ |∑ R ∈ (Prepartition.splitCenter Q).boxes, coordinateAverage i R f x| +
         |coordinateAverage i Q f x| := abs_sub _ _
@@ -87,7 +87,7 @@ theorem coordinateAverage_difference_commute (i j : Fin m) (hij : i ≠ j)
         coordinateAverage j S (coordinateAverage i Q f) :=
     coordinateAverage_commute i j hij Q S f
       (fun x => integrable_twoCoordinateSlice f hf C hbound i j Q S x)
-  unfold coordinateDifference
+  simp only [coordinateDifference_eq_sum]
   rw [coordinateAverage_sub i Q _ _ hs (hi R),
     coordinateAverage_finsetSum (Prepartition.splitCenter R).boxes i Q _
       (fun S _ => hi S), hc R]
@@ -111,21 +111,17 @@ theorem coordinateDifference_commute (i j : Fin m) (hij : i ≠ j)
     _ = (∑ S ∈ (Prepartition.splitCenter Q).boxes,
           coordinateDifference j R (coordinateAverage i S f)) -
         coordinateDifference j R (coordinateAverage i Q f) := by
-      change (∑ S ∈ (Prepartition.splitCenter Q).boxes,
-        coordinateAverage i S (coordinateDifference j R f)) -
-          coordinateAverage i Q (coordinateDifference j R f) = _
+      rw [coordinateDifference_eq_sum i Q]
       simp_rw [hleft]
     _ = (∑ T ∈ (Prepartition.splitCenter R).boxes,
           coordinateDifference i Q (coordinateAverage j T f)) -
         coordinateDifference i Q (coordinateAverage j R f) := by
-      simp only [coordinateDifference, Finset.sum_sub_distrib]
+      simp only [coordinateDifference_eq_sum, Finset.sum_sub_distrib]
       simp_rw [← hc]
       rw [Finset.sum_comm]
       abel
     _ = _ := by
-      change _ = (∑ T ∈ (Prepartition.splitCenter R).boxes,
-        coordinateAverage j T (coordinateDifference i Q f)) -
-          coordinateAverage j R (coordinateDifference i Q f)
+      rw [coordinateDifference_eq_sum j R]
       simp_rw [hright]
 
 end ReyZygmund.Geometry

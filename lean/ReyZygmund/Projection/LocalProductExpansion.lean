@@ -4,9 +4,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 /-! # The local product expansion
 
 The indices vary only in the selected coordinates. Fixing every other coordinate
-at its top cube avoids multiplicity and includes the case of zero depth in an
-unused coordinate.
-
+at its top cube avoids multiplicity.
 -/
 
 noncomputable section
@@ -135,12 +133,12 @@ private theorem localDifferenceSum_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (R : ∀ i, Box (Fin (d i))) (A : Finset (Fin m))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) :
     ProductLeafConstant I N (localDifferenceSum I N R A F).1 ∧
-      ∀ x, x ∉ productBox I → (localDifferenceSum I N R A F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (localDifferenceSum I N R A F).1 x = 0 := by
   have hterm : ∀ L ∈ localIndices I N R A,
       ProductLeafConstant I N (productDifferenceMap A L F).1 ∧
-        ∀ x, x ∉ productBox I → (productDifferenceMap A L F).1 x = 0 := by
+        ∀ x, x ∉ productRectangle I → (productDifferenceMap A L F).1 x = 0 := by
     intro L hL
     apply productDifferenceMap_productStep_closure I N F hf hs A L
     intro i hi
@@ -157,13 +155,13 @@ private theorem coordinate_local_telescope
     (j : Fin m) (hd : 0 < d j) (R : Box (Fin (d j)))
     (hR : R ∈ descendants (I j) (N j)) (F : boundedMeasurableFunctions d)
     (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (x : ProductPoint d) (hx : x j ∈ R) :
     ((∑ Q ∈ (interior (I j) (N j)).filter (fun Q => Q ≤ R), differenceMap j Q) F).1 x =
       F.1 x - (averageMap j R F).1 x := by
-  have hind : (productBox I).indicator F.1 = F.1 := by
+  have hind : (productRectangle I).indicator F.1 = F.1 := by
     funext y
-    by_cases hy : y ∈ productBox I
+    by_cases hy : y ∈ productRectangle I
     · exact Set.indicator_of_mem hy F.1
     · simp [hy, hs y hy]
   have hleaf := productStep_coordinate_leafConstant I N F.1 hf j x
@@ -206,28 +204,28 @@ private theorem signedAverageSum_insert
 
 private theorem average_congr_on_rectangle
     (R : ∀ i, Box (Fin (d i))) (F G : boundedMeasurableFunctions d)
-    (hFG : ∀ y ∈ productBox R, F.1 y = G.1 y)
-    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productBox R) :
+    (hFG : ∀ y ∈ productRectangle R, F.1 y = G.1 y)
+    (j : Fin m) (x : ProductPoint d) (hx : x ∈ productRectangle R) :
     (averageMap j (R j) F).1 x = (averageMap j (R j) G).1 x := by
   simp only [averageMap_apply, coordinateAverage_of_mem j (R j) _ x
-    ((mem_productBox R x).mp hx j)]
+    ((mem_productRectangle R x).mp hx j)]
   congr 1
   apply setIntegral_congr_fun (R j).measurableSet_coe
   intro y hy
   apply hFG
-  apply (mem_productBox R _).mpr
+  apply (mem_productRectangle R _).mpr
   intro i
   by_cases hij : i = j
   · subst i
     simpa using hy
-  · simpa [hij] using (mem_productBox R x).mp hx i
+  · simpa [hij] using (mem_productRectangle R x).mp hx i
 
 private theorem localDifferenceSum_eq_signedAverageSum_on_rectangle
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (R : ∀ i, Box (Fin (d i))) (hR : ∀ i, R i ∈ descendants (I i) (N i))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0) (A : Finset (Fin m)) :
-    ∀ x ∈ productBox R,
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0) (A : Finset (Fin m)) :
+    ∀ x ∈ productRectangle R,
       (localDifferenceSum I N R A F).1 x = (signedAverageSum R A F).1 x := by
   induction A using Finset.induction_on with
   | empty =>
@@ -237,7 +235,7 @@ private theorem localDifferenceSum_eq_signedAverageSum_on_rectangle
     intro x hx
     have hc := localDifferenceSum_closure I N R A F hf hs
     have ht := coordinate_local_telescope I N j (hd j) (R j) (hR j)
-      (localDifferenceSum I N R A F) hc.1 hc.2 x ((mem_productBox R x).mp hx j)
+      (localDifferenceSum I N R A F) hc.1 hc.2 x ((mem_productRectangle R x).mp hx j)
     rw [localDifferenceSum_insert I N R A j hj, Module.End.mul_apply, ht]
     rw [signedAverageSum_insert R A j hj]
     change _ = (signedAverageSum R A F).1 x -
@@ -250,8 +248,8 @@ theorem local_product_expansion
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (R : ∀ i, Box (Fin (d i))) (hR : ∀ i, R i ∈ descendants (I i) (N i))
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
-    (x : ProductPoint d) (hx : x ∈ productBox R) :
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
+    (x : ProductPoint d) (hx : x ∈ productRectangle R) :
     (∑ L ∈ (productInterior I N).filter (fun L => ∀ i, L i ≤ R i),
       (productDifferenceMap Finset.univ L F).1 x) =
       ∑ B ∈ (Finset.univ : Finset (Fin m)).powerset,

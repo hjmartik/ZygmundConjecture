@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge20",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.weakly_incomparable_slices"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}

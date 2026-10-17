@@ -23,7 +23,7 @@ import Mathlib.MeasureTheory.Integral.Prod
 
 The coordinate maps act on bounded measurable functions. The proof uses
 finite-product Fubini for the Lebesgue measures restricted to the coordinate
-boxes. Empty products and zero-dimensional coordinate boxes are included.
+boxes.
 -/
 
 open BoxIntegral MeasureTheory
@@ -115,7 +115,7 @@ private theorem partialIntegral_insert (R : ∀ i, Box (Fin (d i)))
 
 private theorem partialIntegral_univ (R : ∀ i, Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (x : ProductPoint d) :
-    partialIntegral R Finset.univ f x = ∫ y in productBox R, f y := by
+    partialIntegral R Finset.univ f x = ∫ y in productRectangle R, f y := by
   let μ : ∀ i : Fin m, Measure (Fin (d i) → ℝ) :=
     fun i => volume.restrict (R i : Set (Fin (d i) → ℝ))
   let : ∀ i, IsFiniteMeasure (μ i) := fun i =>
@@ -130,9 +130,8 @@ private theorem partialIntegral_univ (R : ∀ i, Box (Fin (d i)))
     exact (MeasurableEquiv.piCongrLeft_apply_apply
       (β := fun i : Fin m => Fin (d i) → ℝ) e y
       ⟨i, Finset.mem_univ i⟩).symm
-  have hrestrict : volume.restrict (productBox R) = Measure.pi μ :=
-    Measure.restrict_pi_pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (fun i => (R i : Set (Fin (d i) → ℝ)))
+  have hrestrict : volume.restrict (productRectangle R) = Measure.pi μ :=
+    restrict_volume_productRectangle R
   calc
     partialIntegral R Finset.univ f x =
         ∫ y : ∀ i : (Finset.univ : Finset (Fin m)), Fin (d i) → ℝ,
@@ -142,15 +141,7 @@ private theorem partialIntegral_univ (R : ∀ i, Box (Fin (d i)))
       exact Filter.Eventually.of_forall (fun y => congrArg f (hupdate y))
     _ = ∫ y, f y ∂Measure.pi μ :=
       (measurePreserving_piCongrLeft μ e).integral_comp' f
-    _ = ∫ y in productBox R, f y := by rw [hrestrict]
-
-private theorem productBox_volume_real (R : ∀ i, Box (Fin (d i))) :
-    volume.real (productBox R) =
-      ∏ i, volume.real (R i : Set (Fin (d i) → ℝ)) := by
-  change (Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-    (Set.pi Set.univ (fun i => (R i : Set (Fin (d i) → ℝ))))).toReal =
-      ∏ i, (volume (R i : Set (Fin (d i) → ℝ))).toReal
-  rw [Measure.pi_pi, ENNReal.toReal_prod]
+    _ = ∫ y in productRectangle R, f y := by rw [hrestrict]
 
 private theorem productAverageMap_eq_partialIntegral
     (R : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
@@ -208,17 +199,17 @@ integral over the product rectangle, for arbitrary signed bounded measurable inp
 theorem productAverageMap_univ_eq_integral (R : ∀ i, Box (Fin (d i)))
     (F : boundedMeasurableFunctions d) (x : ProductPoint d) :
     (productAverageMap Finset.univ R F).1 x =
-      (productBox R).indicator
-        (fun _ => (∫ y in productBox R, F.1 y) / volume.real (productBox R)) x := by
+      (productRectangle R).indicator
+        (fun _ => (∫ y in productRectangle R, F.1 y) / volume.real (productRectangle R)) x := by
   rw [productAverageMap_eq_partialIntegral, partialIntegral_univ,
-    ← productBox_volume_real]
-  by_cases hx : x ∈ productBox R
+    ← productRectangle_volume_real]
+  by_cases hx : x ∈ productRectangle R
   · have hfull : ∀ i ∈ (Finset.univ : Finset (Fin m)), x i ∈ R i :=
-      fun i _ => (mem_productBox R x).mp hx i
+      fun i _ => (mem_productRectangle R x).mp hx i
     rw [ite_eq_left hfull, Set.indicator_of_mem hx]
   · have hfull : ¬∀ i ∈ (Finset.univ : Finset (Fin m)), x i ∈ R i := by
       intro h
-      exact hx ((mem_productBox R x).mpr (fun i => h i (Finset.mem_univ i)))
+      exact hx ((mem_productRectangle R x).mpr (fun i => h i (Finset.mem_univ i)))
     rw [ite_eq_right hfull, Set.indicator_of_notMem hx]
 
 end ReyZygmund.Geometry

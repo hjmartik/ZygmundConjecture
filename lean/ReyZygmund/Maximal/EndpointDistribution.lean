@@ -5,8 +5,7 @@ import Mathlib.MeasureTheory.Integral.Prod
 
 Remove the bounded part of the input before applying the weak logarithmic
 estimate. Local integrability justifies the rectangle averages; the logarithmic
-expression on the right is integrated as a nonnegative extended-valued function
-and need not be integrable.
+expression on the right is integrated as a nonnegative extended-valued function.
 -/
 
 open BoxIntegral MeasureTheory

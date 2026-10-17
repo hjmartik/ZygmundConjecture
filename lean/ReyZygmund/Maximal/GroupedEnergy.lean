@@ -60,19 +60,19 @@ indices. The orthogonality is derived for the product differences. -/
 theorem squareLower_energy_eq_sum
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (n : ℤ) :
-    (∫ x in productBox I, (∑ Q ∈ squareLowerIndices I N F n,
+    (∫ x in productRectangle I, (∑ Q ∈ squareLowerIndices I N F n,
       (productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
       ∑ j ∈ (squareLowerIndices I N F n).image (squareDensityIndex I N F),
-        ∫ x in productBox I, (∑ Q ∈ squarePieceIndices I N F j,
+        ∫ x in productRectangle I, (∑ Q ∈ squarePieceIndices I N F j,
           (productDifferenceMap Finset.univ Q F).1 x) ^ 2 := by
   rw [productDifference_integral_sum_sq I N hd F (squareLowerIndices I N F n)
     (lower_subset_productInterior I N F n)]
   have hreindex :
       (∑ j ∈ (squareLowerIndices I N F n).image (squareDensityIndex I N F),
         ∑ Q ∈ (squareLowerIndices I N F n).filter (fun Q => squareDensityIndex I N F Q = j),
-          ∫ x in productBox I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
+          ∫ x in productRectangle I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2) =
         ∑ Q ∈ squareLowerIndices I N F n,
-          ∫ x in productBox I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 :=
+          ∫ x in productRectangle I, ((productDifferenceMap Finset.univ Q F).1 x) ^ 2 :=
     Finset.sum_fiberwise_of_maps_to
       (fun Q hQ => Finset.mem_image.mpr ⟨Q, hQ, rfl⟩) _
   rw [← hreindex]
@@ -83,16 +83,16 @@ theorem squareLower_energy_eq_sum
     (piece_subset_productInterior I N F j)).symm
 
 /-- Per-piece energy bounds control the lower sum by a convergent
-strict level tail. No summability outside `j < n` is required. -/
+strict level tail over `j < n`. -/
 theorem squareLower_energy_le_tsum
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (hd : ∀ i, 0 < d i)
     (F : boundedMeasurableFunctions d) (n : ℤ)
     (B : ℝ) (hB : 0 ≤ B) (b : ℤ → ℝ) (hb0 : ∀ j, 0 ≤ b j)
     (htail : Summable (fun j : ℤ => if j < n then b j else 0))
     (hpiece : ∀ j < n,
-      (∫ x in productBox I, (∑ Q ∈ squarePieceIndices I N F j,
+      (∫ x in productRectangle I, (∑ Q ∈ squarePieceIndices I N F j,
         (productDifferenceMap Finset.univ Q F).1 x) ^ 2) ≤ B * b j) :
-    (∫ x in productBox I, (∑ Q ∈ squareLowerIndices I N F n,
+    (∫ x in productRectangle I, (∑ Q ∈ squareLowerIndices I N F n,
       (productDifferenceMap Finset.univ Q F).1 x) ^ 2) ≤
       B * (∑' j : ℤ, if j < n then b j else 0) := by
   have hfinite : (∑ j ∈ (squareLowerIndices I N F n).image (squareDensityIndex I N F), b j) ≤

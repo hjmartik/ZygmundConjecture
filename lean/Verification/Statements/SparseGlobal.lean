@@ -5,18 +5,20 @@ import ReyZygmund.Overlap.Global
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund ReyZygmund.Geometry ReyZygmund.Overlap
 
 def weakerSparseOverlapIntegralContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}
-    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (_hG : G ⊆ gridRectangles D)
-    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (_heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (_hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (_hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (_hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (_hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (_hEmass : ∀ R ∈ G, ENNReal.ofReal eta *
@@ -28,12 +30,12 @@ def weakerSparseOverlapIntegralContract : Prop :=
 
 def weakerSparseOverlapFiniteAEContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}
-    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (_hG : G ⊆ gridRectangles D)
-    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (_heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (_hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (_hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (_hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (_hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (_hEmass : ∀ R ∈ G, ENNReal.ofReal eta *
@@ -43,12 +45,12 @@ def weakerSparseOverlapFiniteAEContract : Prop :=
 
 def weakerSparseOverlapNormContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}
-    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, DyadicGrid (d i))
+    (_hm : 2 ≤ m) (_hd : ∀ i, 0 < d i) (D : ∀ i, CubeGrid (d i))
     (G : Set (∀ i, Box (Fin (d i)))) (_hG : G ⊆ gridRectangles D)
-    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productBox R ⊆ productBox S → ∃ i, R i = S i)
+    (_hweak : ∀ R ∈ G, ∀ S ∈ G, productRectangle R ⊆ productRectangle S → ∃ i, R i = S i)
     (eta : ℝ) (_heta : 0 < eta)
     (E : (∀ i, Box (Fin (d i))) → Set (Fin (∑ i, d i) → ℝ))
-    (_hEmeas : ∀ R ∈ G, MeasurableSet (E R))
+    (_hEmeas : ∀ R ∈ G, NullMeasurableSet (E R) volume)
     (_hEsub : ∀ R ∈ G, E R ⊆ (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)))
     (_hEdis : Set.Pairwise G (fun R S => Disjoint (E R) (E S)))
     (_hEmass : ∀ R ∈ G, ENNReal.ofReal eta *

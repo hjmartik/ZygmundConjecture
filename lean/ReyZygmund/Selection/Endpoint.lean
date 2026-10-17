@@ -6,12 +6,13 @@ import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
 Selection, the overlap pairing and the logarithmic Young inequality
 give a bound for every finite high-average shadow. The right-hand integral
-is extended-valued; no global integrability or finite-Orlicz assumption is
-added to the locally integrable input.
+is extended-valued.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid)
 
 namespace ReyZygmund.Selection
 
@@ -64,7 +65,7 @@ integrable input and arbitrary positive level. -/
 theorem finite_rounded_endpoint_shadow
     (n : ℕ) (d : Fin (n + 1) → ℕ) (hn : 2 ≤ n) (hd : ∀ i, 0 < d i) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ (D : ∀ i, DyadicGrid (d i))
+      ∀ (D : ∀ i, CubeGrid (d i))
         (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
       ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
       ∀ (lam : ℝ), 0 < lam → ∀ F : Finset (∀ i, Box (Fin (d i))),
@@ -100,7 +101,7 @@ theorem finite_rounded_endpoint_shadow
   have havg (R) (hR : R ∈ G) : volume (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ≤
       ∫⁻ x in (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)), ENNReal.ofReal (a x) := by
     have hv : 0 < volume.real (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) := by
-      simpa only [Measure.real, volume_flatProductBox] using productBox_volume_pos R
+      simpa only [Measure.real, volume_flatProductBox] using productRectangle_volume_pos R
     have hmean := (lt_div_iff₀ hv).mp (hlevel R (hGF hR))
     have hreal : volume.real (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ≤
         ∫ x in (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)), a x := by

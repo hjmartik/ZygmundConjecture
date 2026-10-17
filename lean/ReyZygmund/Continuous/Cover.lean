@@ -1,4 +1,4 @@
-import ReyZygmund.Geometry.PhiRectangles
+import ReyZygmund.Geometry.FlatRectangles
 import ReyZygmund.Geometry.PrescribedCover
 import ReyZygmund.Geometry.RoundedScales
 import ReyZygmund.Maximal.Euclidean
@@ -9,13 +9,13 @@ import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
 Each rectangle is covered at the prescribed rounded side lengths in one of the
 shifted product grids. Comparing Lebesgue volumes and averages gives pointwise
-maximal domination for locally integrable inputs. Positivity of the side function
-suffices here; monotonicity and regularity are not needed.
-
+maximal domination for locally integrable inputs.
 -/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (zygmundRectangles rounding)
 
 namespace ReyZygmund.Continuous
 
@@ -36,10 +36,10 @@ private theorem box_volume_le_of_width_le {k : ℕ} (R I : Box (Fin k))
       simp
 
 /-- Every continuous rectangle has a rounded-grid cover with the
-paper's dimensional volume factor. Zero-dimensional blocks are allowed. -/
+paper's dimensional volume factor. -/
 theorem continuous_rectangle_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
-    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ continuousPhiRectangles d phi) :
+    (R : ∀ i, Box (Fin (d i))) (hR : R ∈ zygmundRectangles d phi) :
     ∃ (τ : ∀ i, Fin (d i) → Fin 3) (I : ∀ i, Box (Fin (d i))),
       I ∈ roundedGridRectangles (fun i => shiftedDyadicGrid (d i) (τ i)) phi ∧
       (flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ⊆ flatProductBox I ∧
@@ -55,7 +55,7 @@ theorem continuous_rectangle_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     prescribed_dyadic_cover (R i) (side i) (hside i) (hwidth i)
   choose τ I hgrid hsub hwidthI using hcover
   refine ⟨τ, I, ?_, ?_, ?_⟩
-  · refine ⟨fun i => roundedScale (side i), ?_, hgrid⟩
+  · refine ⟨fun i => rounding (side i), ?_, hgrid⟩
     refine ⟨s, ?_⟩
     funext i
     exact Fin.lastCases (by simp [side]) (fun j => by simp [side]) i
@@ -63,7 +63,7 @@ theorem continuous_rectangle_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
     change flattenCoordinates d y ∈ flatProductBox R at hx
     change flattenCoordinates d y ∈ flatProductBox I
-    rw [mem_flatProductBox, mem_productBox] at hx ⊢
+    rw [mem_flatProductBox, mem_productRectangle] at hx ⊢
     exact fun i => hsub i (Box.coe_subset_Icc (hx i))
   · apply (div_le_iff₀ (box_volume_pos (flatProductBox R))).mpr
     apply box_volume_le_of_width_le (flatProductBox R) (flatProductBox I)
@@ -71,7 +71,7 @@ theorem continuous_rectangle_cover {n : ℕ} {d : Fin (n + 1) → ℕ}
     obtain ⟨⟨i, a⟩, rfl⟩ := (finSigmaFinEquiv (n := d)).surjective j
     simp only [flatProductBox, flattenCoordinates_apply]
     rw [hwidthI i a, hwidth i a]
-    exact (roundedScale_bounds (hside i)).2.le
+    exact (rounding_bounds (hside i)).2.le
 
 private theorem integrableOn_abs_box {k : ℕ} (f : (Fin k → ℝ) → ℝ)
     (hf : LocallyIntegrable f volume) (Q : Box (Fin k)) :
@@ -106,13 +106,13 @@ private theorem average_abs_le_of_cover {k : ℕ} (R I : Box (Fin k))
       (div_mul_div_cancel₀' (ne_of_gt (box_volume_pos I)) _ _).symm
     _ ≤ _ := mul_le_mul_of_nonneg_right hvol havg
 
-/-- Pointwise domination by the finite collection of rounded
-families. The maxima remain extended-valued; no finiteness is assumed. -/
+/-- Pointwise domination by the finite collection of extended-valued rounded
+maximal functions. -/
 theorem continuous_maximal_le_rounded {n : ℕ} {d : Fin (n + 1) → ℕ}
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ))
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (hf : LocallyIntegrable f volume)
     (x : Fin (∑ i, d i) → ℝ) :
-    euclideanFamilyMaximal (continuousPhiRectangles d phi) f x ≤
+    euclideanFamilyMaximal (zygmundRectangles d phi) f x ≤
       ENNReal.ofReal ((8 : ℝ) ^ (∑ i, d i)) *
         ⨆ τ : (∀ i, Fin (d i) → Fin 3),
           euclideanFamilyMaximal

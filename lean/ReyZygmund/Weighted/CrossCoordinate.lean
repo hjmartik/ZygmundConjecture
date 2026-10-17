@@ -6,8 +6,7 @@ import ReyZygmund.Geometry.ProductIntegration
 
 Fix all coordinates except the averaging coordinate and apply the one-coordinate
 partition inequality. The functions remain constant on the smallest product cubes,
-so the integrals on slices and on the top rectangle are finite. Values outside
-that rectangle are unrestricted.
+so the integrals on slices and on the top rectangle are finite.
 -/
 
 open BoxIntegral MeasureTheory
@@ -20,19 +19,19 @@ open Geometry
 variable {m : ℕ} {d : Fin m → ℕ}
 
 private theorem update_mem_root (I : ∀ i, Box (Fin (d i)))
-    {x : ProductPoint d} (hx : x ∈ productBox I) (j : Fin m)
+    {x : ProductPoint d} (hx : x ∈ productRectangle I) (j : Fin m)
     {y : Fin (d j) → ℝ} (hy : y ∈ I j) :
-    Function.update x j y ∈ productBox I := by
-  apply (mem_productBox I _).mpr
+    Function.update x j y ∈ productRectangle I := by
+  apply (mem_productRectangle I _).mpr
   intro i
   by_cases hij : i = j
   · subst i
     simpa using hy
-  · simpa [hij] using (mem_productBox I x).mp hx i
+  · simpa [hij] using (mem_productRectangle I x).mp hx i
 
 private theorem root_slice_leaf (I : ∀ i, Box (Fin (d i)))
     (N : Fin m → ℕ) (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (j : Fin m) {x : ProductPoint d} (hx : x ∈ productBox I) :
+    (j : Fin m) {x : ProductPoint d} (hx : x ∈ productRectangle I) :
     ∀ Q ∈ leaves (I j) (N j), ∀ y ∈ Q, ∀ z ∈ Q,
       f (Function.update x j y) = f (Function.update x j z) := by
   intro Q hQ y hy z hz
@@ -51,33 +50,33 @@ private theorem cross_leaf (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
   exact productLeafConstant_coordinateAverage hf j Q
     (partitionCubes_subset_descendants he hQ)
 
-/-- Positivity is preserved on the top rectangle, with no assumption outside it. -/
+/-- Positivity is preserved on the top rectangle. -/
 theorem coordinateCrossAverage_pos_on_root
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (v : ProductPoint d → ℝ) (hv : ProductLeafConstant I N v)
-    (hvpos : ∀ x ∈ productBox I, 0 < v x)
+    (hvpos : ∀ x ∈ productRectangle I, 0 < v x)
     (j : Fin m) (eligible : Finset (Box (Fin (d j))))
     (he : eligible ⊆ descendants (I j) (N j))
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     0 < coordinateCrossAverage j (I j) (N j) eligible v x := by
   exact finiteCrossAverage_pos (I j) (N j) eligible he
     (fun y => v (Function.update x j y)) (root_slice_leaf I N v hv j hx)
     (fun y hy => hvpos _ (update_mem_root I hx j hy)) (x j)
-    ((mem_productBox I x).mp hx j)
+    ((mem_productRectangle I x).mp hx j)
 
 /-- Weighted cross-coordinate contraction for a signed numerator and a weight positive
 on the top rectangle, including `p = 2`. -/
 theorem coordinateCrossAverage_weighted_square_integral
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (u v : ProductPoint d → ℝ) (hu : ProductLeafConstant I N u)
-    (hv : ProductLeafConstant I N v) (hvpos : ∀ x ∈ productBox I, 0 < v x)
+    (hv : ProductLeafConstant I N v) (hvpos : ∀ x ∈ productRectangle I, 0 < v x)
     (j : Fin m) (eligible : Finset (Box (Fin (d j))))
     (he : eligible ⊆ descendants (I j) (N j))
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2) :
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
         (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
           Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p)) ≤
-      ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
+      ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
   have hXu := cross_leaf I N u hu j eligible he
   have hXv := cross_leaf I N v hv j eligible he
   have hH : ProductLeafConstant I N

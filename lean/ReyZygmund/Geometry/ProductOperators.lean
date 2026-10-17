@@ -15,39 +15,35 @@ open scoped BigOperators Classical
 
 namespace ReyZygmund.Geometry
 
-/-- The product of the paper's Euclidean coordinate factors. -/
-abbrev ProductPoint {m : ℕ} (d : Fin m → ℕ) := ∀ i, Fin (d i) → ℝ
+export ReyZygmund.MathlibOnly (ProductPoint productRectangle coordinateAverage coordinateDifference)
 
 variable {m : ℕ} {d : Fin m → ℕ}
 
-/-- The supported average in one coordinate, using Lebesgue integration. -/
-noncomputable def coordinateAverage (i : Fin m) (Q : Box (Fin (d i)))
-    (f : ProductPoint d → ℝ) (x : ProductPoint d) : ℝ :=
-  boxAverage Q (fun y => f (Function.update x i y)) (x i)
-
 /-- Child averages minus the parent average in one coordinate. -/
-noncomputable def coordinateDifference (i : Fin m) (Q : Box (Fin (d i)))
-    (f : ProductPoint d → ℝ) : ProductPoint d → ℝ :=
-  (∑ R ∈ (Prepartition.splitCenter Q).boxes, coordinateAverage i R f) -
-    coordinateAverage i Q f
+theorem coordinateDifference_eq_sum (i : Fin m) (Q : Box (Fin (d i)))
+    (f : ProductPoint d → ℝ) :
+    coordinateDifference i Q f =
+      (∑ R ∈ (Prepartition.splitCenter Q).boxes, coordinateAverage i R f) -
+        coordinateAverage i Q f := by
+  funext x
+  simp [coordinateDifference, cubeDifference, coordinateAverage, Finset.sum_apply]
 
 theorem coordinateAverage_of_mem (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (x : ProductPoint d) (hx : x i ∈ Q) :
     coordinateAverage i Q f x =
       (∫ y in (Q : Set (Fin (d i) → ℝ)), f (Function.update x i y)) /
         volume.real (Q : Set (Fin (d i) → ℝ)) := by
-  simp [coordinateAverage, boxAverage, hx]
+  simp [coordinateAverage, cubeAverage, cubeMean, hx]
 
 theorem coordinateAverage_of_notMem (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (x : ProductPoint d) (hx : x i ∉ Q) :
     coordinateAverage i Q f x = 0 := by
-  simp [coordinateAverage, boxAverage, hx]
+  simp [coordinateAverage, cubeAverage, hx]
 
 theorem coordinateDifference_slice (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (x : ProductPoint d) :
     coordinateDifference i Q f x =
-      boxDifference Q (fun y => f (Function.update x i y)) (x i) := by
-  simp [coordinateDifference, boxDifference, coordinateAverage]
+      cubeDifference Q (fun y => f (Function.update x i y)) (x i) := rfl
 
 theorem coordinateAverage_idempotent (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) :
@@ -58,12 +54,12 @@ theorem coordinateAverage_idempotent (i : Fin m) (Q : Box (Fin (d i)))
     have hc : ∀ y ∈ Q, coordinateAverage i Q f (Function.update x i y) =
         coordinateAverage i Q f x := by
       intro y hy
-      simp [coordinateAverage, boxAverage, hy, hx]
+      simp [coordinateAverage, cubeAverage, cubeMean, hy, hx]
     rw [setIntegral_congr_fun Q.measurableSet_coe hc, setIntegral_const, smul_eq_mul]
     exact mul_div_cancel_left₀ _ (ne_of_gt (box_volume_pos Q))
-  · simp [coordinateAverage, boxAverage, hx]
+  · simp [coordinateAverage, cubeAverage, hx]
 
-/-- Joint measurability comes from parameterized integration, not a choice of slices. -/
+/-- Joint measurability follows from parameterized integration. -/
 theorem coordinateAverage_measurable (i : Fin m) (Q : Box (Fin (d i)))
     (f : ProductPoint d → ℝ) (hf : Measurable f) :
     Measurable (coordinateAverage i Q f) := by
@@ -75,7 +71,7 @@ theorem coordinateAverage_measurable (i : Fin m) (Q : Box (Fin (d i)))
     hm.stronglyMeasurable.integral_prod_right'.measurable.div_const _
   convert hi.indicator (Q.measurableSet_coe.preimage (measurable_pi_apply i)) using 1
   funext x
-  by_cases hx : x i ∈ Q <;> simp [coordinateAverage, boxAverage, hx]
+  by_cases hx : x i ∈ Q <;> simp [coordinateAverage, cubeAverage, cubeMean, hx]
 
 theorem coordinateAverage_sub (i : Fin m) (Q : Box (Fin (d i)))
     (f g : ProductPoint d → ℝ)
@@ -88,7 +84,7 @@ theorem coordinateAverage_sub (i : Fin m) (Q : Box (Fin (d i)))
   by_cases hx : x i ∈ Q
   · simp only [Pi.sub_apply, coordinateAverage_of_mem i Q _ x hx]
     rw [integral_sub (hf x) (hg x), sub_div]
-  · simp [coordinateAverage, boxAverage, hx]
+  · simp [coordinateAverage, cubeAverage, hx]
 
 theorem coordinateAverage_finsetSum {κ : Type*} (s : Finset κ)
     (i : Fin m) (Q : Box (Fin (d i))) (f : κ → ProductPoint d → ℝ)
@@ -99,7 +95,7 @@ theorem coordinateAverage_finsetSum {κ : Type*} (s : Finset κ)
   by_cases hx : x i ∈ Q
   · simp only [coordinateAverage_of_mem i Q _ x hx, Finset.sum_apply]
     rw [integral_finsetSum s (fun k hk => hf k hk x), Finset.sum_div]
-  · simp [coordinateAverage, boxAverage, hx]
+  · simp [coordinateAverage, cubeAverage, hx]
 
 /-- Fubini in two different coordinates. The hypothesis is a local
 integrability condition, later supplied by the finite step-function realization. -/
@@ -118,12 +114,12 @@ theorem coordinateAverage_commute (i j : Fin m) (hij : i ≠ j)
     · have hs := integral_integral_swap
         (f := fun y z => f (Function.update (Function.update x i y) j z)) (hf x)
       simp_rw [Function.update_comm hij] at hs
-      simpa [coordinateAverage, boxAverage, hxQ, hxR, hij, hij.symm,
+      simpa [coordinateAverage, cubeAverage, cubeMean, hxQ, hxR, hij, hij.symm,
         integral_div, div_div, mul_comm, Function.update_comm hij] using
         congrArg (fun z : ℝ => z /
           (volume.real (Q : Set (Fin (d i) → ℝ)) *
             volume.real (R : Set (Fin (d j) → ℝ)))) hs
-    · simp [coordinateAverage, boxAverage, hxQ, hxR, hij, hij.symm]
-  · simp [coordinateAverage, boxAverage, hxQ, hij, hij.symm]
+    · simp [coordinateAverage, cubeAverage, cubeMean, hxQ, hxR, hij, hij.symm]
+  · simp [coordinateAverage, cubeAverage, cubeMean, hxQ, hij, hij.symm]
 
 end ReyZygmund.Geometry

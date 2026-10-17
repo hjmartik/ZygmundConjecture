@@ -16,10 +16,11 @@ import Mathlib.MeasureTheory.Measure.NullMeasurable
 These definitions use Mathlib and are independent of the proof library.
 `Fin m` indexes the `m` coordinate factors, of dimensions `d i`.
 The grid index `k` is the side-length exponent: cubes have side `2 ^ k`.
+Lean's `⊆` denotes inclusion and `⊂` strict inclusion of sets.
 
 The sets `rectangle R` use `(lower, upper]` in each scalar coordinate.
-For the explicit shifted grids, `rectangleIco R` uses `[lower, upper)`.
-The [consistency guide](../../../CONSISTENCY.md) explains the boundary identifications.
+For the explicit shifted grids, `cubeIco` and `rectangleIco` use `[lower, upper)`.
+The [definition guide](DEFINITIONS.md#boundary-conventions) explains the boundary identifications.
 All measures and integrals are with respect to Lebesgue measure.
 
 The type `ℝ≥0∞` denotes `[0, ∞]`, and `∫⁻` is the nonnegative Lebesgue integral.
@@ -62,6 +63,19 @@ def rectangle {m : ℕ} {d : Fin m → ℕ} (R : Rectangle d) :
   {x | ∀ i j, (R i).lower j < x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ∧
     x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ≤ (R i).upper j}
 
+/-- Append the last coordinate block to a point in the first blocks.
+`Fin.addCases` concatenates the two coordinate lists; `Fin.cast` uses the
+identity that the total dimension is the sum of their dimensions. -/
+def appendLastPoint {n : ℕ} {d : Fin (n + 1) → ℕ}
+    (x : Point (fun i : Fin n => d i.castSucc))
+    (t : Fin (d (Fin.last n)) → ℝ) : Point d :=
+  fun j => Fin.addCases x t (Fin.cast (Fin.sum_univ_castSucc d) j)
+
+/-- Projection of a rectangle onto its first `n` factors.
+`i.castSucc` regards an index of these factors as an index of all `n + 1`. -/
+def initialProjection {n : ℕ} {d : Fin (n + 1) → ℕ} (R : Rectangle d) :
+    Rectangle (fun i : Fin n => d i.castSucc) := fun i => R i.castSucc
+
 /-- All products of cubes in the supplied grids, at independently chosen scales. -/
 def gridRectangles {m : ℕ} {d : Fin m → ℕ} (D : ∀ i, CubeGrid (d i)) :
     Set (Rectangle d) :=
@@ -79,6 +93,14 @@ containing `x`, with values in `[0, ∞]`. -/
 def overlap {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
     (x : Point d) : ℝ≥0∞ :=
   ∑' R : G, (rectangle R.1).indicator (fun _ => (1 : ℝ≥0∞)) x
+
+/-- The slice above `t` in the last coordinate block: the projections of those
+rectangles whose last factor contains `t`. `Fin.last n` is the last index,
+and `''` denotes the image of a set. Repeated projections occur only once. -/
+def sliceFamily {n : ℕ} {d : Fin (n + 1) → ℕ}
+    (G : Set (Rectangle d)) (t : Fin (d (Fin.last n)) → ℝ) :
+    Set (Rectangle (fun i : Fin n => d i.castSucc)) :=
+  initialProjection '' {R | R ∈ G ∧ t ∈ R (Fin.last n)}
 
 /-- No distinct members contain one another. -/
 def Incomparable {m : ℕ} {d : Fin m → ℕ}
@@ -103,6 +125,7 @@ def Sparse {m : ℕ} {d : Fin m → ℕ} (eta : ℝ)
     G.Pairwise (fun R S => Disjoint (E R) (E S))
 
 /-- The supremum of the averages of `|f|` over rectangles containing `x`.
+`⨆ (_ : x ∈ rectangle R)` restricts the supremum to rectangles containing `x`.
 The supremum is zero when no rectangle contains `x`. -/
 def maximal {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
     (f : Point d → ℝ) (x : Point d) : ℝ≥0∞ :=
@@ -110,10 +133,10 @@ def maximal {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
     (∫⁻ y in rectangle R, ENNReal.ofReal |f y| ∂volume) /
       volume (rectangle R)
 
-/-- All rectangles with side lengths `(s₁, …, sₙ, phi s)`, at every position
+/-- The Zygmund rectangles with side lengths `(s₁, …, sₙ, phi s)`, at every position
 and for every positive tuple `s`. The type `Set.Ioi (0 : ℝ)` means `(0, ∞)`;
 `Fin.snoc` appends the prescribed last side length. -/
-def continuousRectangles {n : ℕ} (d : Fin (n + 1) → ℕ)
+def zygmundRectangles {n : ℕ} (d : Fin (n + 1) → ℕ)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
     Set (Rectangle d) :=
   {R | ∃ s : Fin n → Set.Ioi (0 : ℝ), ∀ i j,
@@ -133,7 +156,7 @@ def roundedScales {n : ℕ}
 
 /-- Corners of the cubes `2^k ([0,1)^d + z + (-1)^k tau/3)`.
 Each entry of `tau : Fin d → Fin 3` is `0`, `1` or `2`.
-The associated `[lower, upper)` sets are used by `maximalIco`. -/
+The associated `[lower, upper)` sets are used by the `Ico` definitions below. -/
 def shiftedCubes {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
     Set (Box (Fin d)) :=
   {Q | ∃ z : Fin d → ℤ, ∀ j,
@@ -142,7 +165,7 @@ def shiftedCubes {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
     Q.upper j = Q.lower j + (2 : ℝ) ^ k}
 
 /-- Products of shifted cubes whose side-length exponents belong to
-the full rounded family `roundedScales phi`. -/
+`roundedScales phi`. -/
 def roundedRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (tau : ∀ i, Fin (d i) → Fin 3)
     (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
@@ -155,8 +178,30 @@ def rectangleIco {m : ℕ} {d : Fin m → ℕ} (R : Rectangle d) :
   {x | ∀ i j, (R i).lower j ≤ x (finSigmaFinEquiv (n := d) ⟨i, j⟩) ∧
     x (finSigmaFinEquiv (n := d) ⟨i, j⟩) < (R i).upper j}
 
-/-- Supremum of absolute Lebesgue averages over the `[lower, upper)` rectangles
-containing the point. -/
+/-- The `[lower, upper)` cube with the given corners. -/
+def cubeIco {d : ℕ} (Q : Box (Fin d)) : Set (Fin d → ℝ) :=
+  {x | ∀ j, Q.lower j ≤ x j ∧ x j < Q.upper j}
+
+/-- Partition and nesting of the cubes of `D` with `[lower, upper)` boundaries. -/
+def IcoGrid {d : ℕ} (D : CubeGrid d) : Prop :=
+  (∀ k, (D.cubes k).Pairwise (fun Q R => Disjoint (cubeIco Q) (cubeIco R))) ∧
+  (∀ k x, ∃ Q ∈ D.cubes k, x ∈ cubeIco Q) ∧
+  ∀ k l Q R, Q ∈ D.cubes k → R ∈ D.cubes l →
+    Disjoint (cubeIco Q) (cubeIco R) ∨ cubeIco Q ⊆ cubeIco R ∨ cubeIco R ⊆ cubeIco Q
+
+/-- Overlap counting for rectangles with `[lower, upper)` boundaries. -/
+def overlapIco {m : ℕ} {d : Fin m → ℕ} (G : Set (Rectangle d))
+    (x : Point d) : ℝ≥0∞ :=
+  ∑' R : G, (rectangleIco R.1).indicator (fun _ => (1 : ℝ≥0∞)) x
+
+/-- A slice using `[lower, upper)` membership in the last factor. -/
+def sliceFamilyIco {n : ℕ} {d : Fin (n + 1) → ℕ}
+    (G : Set (Rectangle d)) (t : Fin (d (Fin.last n)) → ℝ) :
+    Set (Rectangle (fun i : Fin n => d i.castSucc)) :=
+  initialProjection '' {R | R ∈ G ∧ t ∈ cubeIco (R (Fin.last n))}
+
+/-- The supremum of the averages of `|f|` over the `[lower, upper)` rectangles
+containing `x`. -/
 def maximalIco {m : ℕ} {d : Fin m → ℕ}
     (G : Set (Rectangle d))
     (f : Point d → ℝ) (x : Point d) : ℝ≥0∞ :=
@@ -164,9 +209,9 @@ def maximalIco {m : ℕ} {d : Fin m → ℕ}
     (∫⁻ y in rectangleIco R, ENNReal.ofReal |f y| ∂volume) /
       volume (rectangleIco R)
 
-/-- All products of grid cubes with side lengths
+/-- The dyadic Φ-Zygmund rectangles: products of grid cubes with side lengths
 `(2^k₁, …, 2^kₙ, 2^(Phi k))`. -/
-def phiRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
+def dyadicZygmundRectangles {n : ℕ} {d : Fin (n + 1) → ℕ}
     (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
     Set (Rectangle d) :=
   {R | ∃ k : Fin n → ℤ,

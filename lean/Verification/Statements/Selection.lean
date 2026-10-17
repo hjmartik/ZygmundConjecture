@@ -3,13 +3,15 @@ import ReyZygmund.Selection.Shadow
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
+
 namespace ReyZygmundVerification
 
 open ReyZygmund.Geometry ReyZygmund.Overlap
 
 def selectedShadowComparisonContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (F G : Finset (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (F G : Finset (∀ i, Box (Fin (d i)))),
       ↑F ⊆ gridRectangles D →
       (∀ Q ∈ F, (1 / 2 : ℝ) * volume.real (flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) ≤
         volume.real ((flatProductBox Q : Set (Fin (∑ i, d i) → ℝ)) ∩ finiteShadow G)) →
@@ -24,7 +26,7 @@ def halfOverlapIncomparabilityContract : Prop :=
 
 def finiteSelectionContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ}, (∀ i, 0 < d i) →
-    ∀ (D : ∀ i, DyadicGrid (d i)) (F : Finset (∀ i, Box (Fin (d i)))),
+    ∀ (D : ∀ i, CubeGrid (d i)) (F : Finset (∀ i, Box (Fin (d i)))),
       ↑F ⊆ gridRectangles D →
       ∃ G : Finset (∀ i, Box (Fin (d i))), G ⊆ F ∧
         volume.real (finiteShadow F) ≤ (4 : ℝ) ^ (m + 1) * volume.real (finiteShadow G) ∧

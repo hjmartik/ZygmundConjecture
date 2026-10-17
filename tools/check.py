@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fresh 508-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
+"""Fresh registered-contract verification or ordinary replay. SPDX-License-Identifier: Apache-2.0"""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -78,6 +78,25 @@ def object_hashes(objects, modules):
                            for p in sorted(objects.rglob('*')) if p.is_file()}
     return result
 
+def replay_groups(modules):
+    """leanchecker treats each ordinary target as a module-name prefix."""
+    names = set(modules)
+    require(len(names) == len(modules), 'Duplicate replay module')
+    roots = [m for m in modules if not any(
+        '.'.join(m.split('.')[:i]) in names for i in range(1, len(m.split('.'))))]
+    groups = [(root, {m for m in names if m == root or m.startswith(root + '.')})
+              for root in roots]
+    covered = [m for _, group in groups for m in group]
+    require(len(covered) == len(names) and set(covered) == names, 'Replay plan coverage differs')
+    return groups
+
+def inspect_replay(output, expected):
+    reported = [line.removeprefix('replaying ') for line in output.splitlines()
+                if line.startswith('replaying ')]
+    require(bool(expected) and len(reported) == len(set(reported)) and
+            set(reported) == set(expected), 'Replay module coverage differs')
+    return sorted(reported)
+
 def execute(args):
     manifest = source_manifest()
     selected = targets()
@@ -128,12 +147,18 @@ def execute(args):
             run.record.update(fresh_project_rebuild=True, declarations_sha256=digest(run.path / 'declarations.json'),
                               object_sha256=object_hashes(run.objects, modules))
         else:
-            for i, module in enumerate(modules, 1):
+            replayed = set()
+            run.record['replay_batches'] = []
+            for module, expected in replay_groups(modules):
                 output = run.command([bindir / 'leanchecker', '-v', module], cwd=run.path)
-                reported = [line.removeprefix('replaying ') for line in output.splitlines()
-                            if line.startswith('replaying ')]
-                require(reported == [module], 'Replay did not report exactly the requested module')
-                print(f'Replayed {i}/{len(modules)}: {module}', flush=True)
+                reported = inspect_replay(output, expected)
+                require(not replayed.intersection(reported), 'Module replayed twice')
+                replayed.update(reported)
+                run.record['replay_batches'].append(dict(target=module, modules=reported))
+                run.record['replayed_modules'] = sorted(replayed)
+                run.save()
+                print(f'Replayed {len(replayed)}/{len(modules)}: {module}', flush=True)
+            require(replayed == set(modules), 'Incomplete ordinary replay')
             require(object_hashes(run.objects, modules) == previous['object_sha256'], 'Objects changed during replay')
             require(digest(args.run) == run.record['routine_sha256'], 'Routine report changed during replay')
             run.record['object_sha256'] = previous['object_sha256']

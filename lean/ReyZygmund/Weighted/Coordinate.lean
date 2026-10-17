@@ -1,3 +1,4 @@
+import ReyZygmund.Geometry.ProductIntegrability
 import ReyZygmund.Geometry.ProductIntegration
 import ReyZygmund.Geometry.ProductClosure
 import ReyZygmund.Geometry.ProductPartitions
@@ -22,19 +23,19 @@ open Geometry
 variable {m : ℕ} {d : Fin m → ℕ}
 
 private theorem update_mem_root (I : ∀ i, Box (Fin (d i)))
-    {x : ProductPoint d} (hx : x ∈ productBox I) (j : Fin m)
+    {x : ProductPoint d} (hx : x ∈ productRectangle I) (j : Fin m)
     {y : Fin (d j) → ℝ} (hy : y ∈ I j) :
-    Function.update x j y ∈ productBox I := by
-  apply (mem_productBox I _).mpr
+    Function.update x j y ∈ productRectangle I := by
+  apply (mem_productRectangle I _).mpr
   intro i
   by_cases hij : i = j
   · subst i
     simpa using hy
-  · simpa [hij] using (mem_productBox I x).mp hx i
+  · simpa [hij] using (mem_productRectangle I x).mp hx i
 
 private theorem product_leaf_slice (I : ∀ i, Box (Fin (d i)))
     (N : Fin m → ℕ) (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (j : Fin m) {x : ProductPoint d} (hx : x ∈ productBox I) :
+    (j : Fin m) {x : ProductPoint d} (hx : x ∈ productRectangle I) :
     ∀ Q ∈ leaves (I j) (N j), ∀ y ∈ Q, ∀ z ∈ Q,
       f (Function.update x j y) = f (Function.update x j z) := by
   intro Q hQ y hy z hz
@@ -50,38 +51,6 @@ private theorem coordinateDifference_zero_off_parent (j : Fin m)
   rw [coordinateDifference_slice]
   exact DifferenceAlgebra.boxDifference_eq_zero_of_notMem Q _ hx
 
-/-- The cylinder restricts every other coordinate to its top cube. Equality of the
-integrals follows from pointwise support of the integrand. -/
-private theorem coordinate_energy_integral_cylinder
-    (I : ∀ i, Box (Fin (d i))) (j : Fin m) (Q : Box (Fin (d j)))
-    (hQI : Q ≤ I j) (u v : ProductPoint d → ℝ) (p : ℝ) :
-    (∫ x in productBox I,
-      (coordinateDifference j Q u x) ^ 2 / Real.rpow (coordinateAverage j Q v x) (2 - p)) =
-    ∫ x in productBox (Function.update I j Q),
-      (coordinateDifference j Q u x) ^ 2 / Real.rpow (coordinateAverage j Q v x) (2 - p) := by
-  have hsub : productBox (Function.update I j Q) ⊆ productBox I := by
-    intro x hx
-    apply (mem_productBox I x).mpr
-    intro i
-    by_cases hij : i = j
-    · subst i
-      apply hQI
-      simpa using (mem_productBox (Function.update I j Q) x).mp hx j
-    · simpa [hij] using (mem_productBox (Function.update I j Q) x).mp hx i
-  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (measurableSet_productBox I) hsub
-  intro x hx
-  have hxQ : x j ∉ Q := by
-    intro hxQ
-    apply hx.2
-    apply (mem_productBox (Function.update I j Q) x).mpr
-    intro i
-    by_cases hij : i = j
-    · subst i
-      simpa using hxQ
-    · simpa [hij] using (mem_productBox I x).mp hx.1 i
-  rw [coordinateDifference_zero_off_parent j Q u x hxQ]
-  simp
-
 private theorem coordinate_energy_slice_integral
     (I : ∀ i, Box (Fin (d i))) (j : Fin m) (Q : Box (Fin (d j)))
     (hQI : Q ≤ I j) (u v : ProductPoint d → ℝ) (p : ℝ) (x : ProductPoint d) :
@@ -89,7 +58,7 @@ private theorem coordinate_energy_slice_integral
       (coordinateDifference j Q u (Function.update x j y)) ^ 2 /
         Real.rpow (coordinateAverage j Q v (Function.update x j y)) (2 - p)) =
     ∫ y in (Q : Set (Fin (d j) → ℝ)),
-      (boxDifference Q (fun z => u (Function.update x j z)) y) ^ 2 /
+      (cubeDifference Q (fun z => u (Function.update x j z)) y) ^ 2 /
         Real.rpow ((∫ z in (Q : Set (Fin (d j) → ℝ)), v (Function.update x j z)) /
           volume.real (Q : Set (Fin (d j) → ℝ))) (2 - p) := by
   calc
@@ -107,26 +76,7 @@ private theorem coordinate_energy_slice_integral
       apply setIntegral_congr_fun Q.measurableSet_coe
       intro y hy
       simp only [coordinateDifference_slice, coordinateAverage, Function.update_self,
-        Function.update_idem, boxAverage, Set.indicator_of_mem hy]
-
-private theorem product_leaf_integrable (I : ∀ i, Box (Fin (d i)))
-    (N : Fin m → ℕ) (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f) :
-    IntegrableOn f (productBox I) volume := by
-  have hvol : volume (productBox I) < ⊤ := by
-    change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ⊤
-    rw [Measure.pi_pi]
-    exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
-    isFiniteMeasure_restrict.mpr hvol.ne
-  obtain ⟨A, _, hA⟩ := bounded_product_localization I N f hf
-  have hloc : IntegrableOn ((productBox I).indicator f) (productBox I) volume :=
-    (integrable_const A).mono'
-      (measurable_product_localization I N f hf).aestronglyMeasurable
-      (Filter.Eventually.of_forall (fun x => by
-        simpa only [Real.norm_eq_abs] using hA x))
-  exact hloc.congr_fun (fun x hx => Set.indicator_of_mem hx f)
-    (measurableSet_productBox I)
+        Function.update_idem, cubeAverage, cubeMean, Set.indicator_of_mem hy]
 
 private theorem quotient_leaf_constant (I : ∀ i, Box (Fin (d i)))
     (N : Fin m → ℕ) (u v : ProductPoint d → ℝ) (p : ℝ)
@@ -140,9 +90,9 @@ private theorem quotient_leaf_constant (I : ∀ i, Box (Fin (d i)))
 private theorem coordinateAverage_pos_on_parent
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (v : ProductPoint d → ℝ) (hv : ProductLeafConstant I N v)
-    (hvpos : ∀ x ∈ productBox I, 0 < v x)
+    (hvpos : ∀ x ∈ productRectangle I, 0 < v x)
     (j : Fin m) (Q : Box (Fin (d j))) (hQI : Q ≤ I j)
-    (x : ProductPoint d) (hx : x ∈ productBox I) (hxQ : x j ∈ Q) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) (hxQ : x j ∈ Q) :
     0 < coordinateAverage j Q v x := by
   have hvi := integrableOn_of_leafConstant (I j) (N j)
     (fun y => v (Function.update x j y)) (product_leaf_slice I N v hv j hx)
@@ -166,9 +116,9 @@ private theorem coordinateAverage_pos_on_parent
 private theorem coordinate_energy_nonneg
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (u v : ProductPoint d → ℝ) (p : ℝ) (hv : ProductLeafConstant I N v)
-    (hvpos : ∀ x ∈ productBox I, 0 < v x)
+    (hvpos : ∀ x ∈ productRectangle I, 0 < v x)
     (j : Fin m) (Q : Box (Fin (d j))) (hQI : Q ≤ I j)
-    (x : ProductPoint d) (hx : x ∈ productBox I) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) :
     0 ≤ (coordinateDifference j Q u x) ^ 2 /
       Real.rpow (coordinateAverage j Q v x) (2 - p) := by
   by_cases hxQ : x j ∈ Q
@@ -179,16 +129,16 @@ private theorem coordinate_energy_nonneg
     simp
 
 /-- The exact one-coordinate weighted square estimate, lifted to
-integrals over the top rectangle. Only the selected dimension must be positive. -/
+integrals over the top rectangle. -/
 theorem coordinate_weighted_square
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ) (j : Fin m) (hd : 0 < d j)
     (u v : ProductPoint d → ℝ) (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2)
     (hu : ProductLeafConstant I N u) (hv : ProductLeafConstant I N v)
-    (hvpos : ∀ x ∈ productBox I, 0 < v x) :
-    (∑ Q ∈ interior (I j) (N j), ∫ x in productBox I,
+    (hvpos : ∀ x ∈ productRectangle I, 0 < v x) :
+    (∑ Q ∈ interior (I j) (N j), ∫ x in productRectangle I,
       (coordinateDifference j Q u x) ^ 2 / Real.rpow (coordinateAverage j Q v x) (2 - p)) ≤
       Real.rpow 2 ((d j : ℝ) * (2 - p)) * ((3 - p) / (p - 1)) *
-        ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
+        ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
   let E : Box (Fin (d j)) → ProductPoint d → ℝ := fun Q x =>
     (coordinateDifference j Q u x) ^ 2 / Real.rpow (coordinateAverage j Q v x) (2 - p)
   let H : ProductPoint d → ℝ := fun x => ∑ Q ∈ interior (I j) (N j), E Q x
@@ -206,20 +156,20 @@ theorem coordinate_weighted_square
       ∑ Q ∈ interior (I j) (N j), E Q y
     exact Finset.sum_congr rfl (fun Q hQ => hE Q hQ P hP x hx y hy)
   have hK : ProductLeafConstant I N K := quotient_leaf_constant I N u v p hu hv
-  have hH0 : ∀ x ∈ productBox I, 0 ≤ H x := by
+  have hH0 : ∀ x ∈ productRectangle I, 0 ≤ H x := by
     intro x hx
     change 0 ≤ ∑ Q ∈ interior (I j) (N j), E Q x
     apply Finset.sum_nonneg
     intro Q hQ
     exact coordinate_energy_nonneg I N u v p hv hvpos j Q
       (le_of_mem_descendants (interior_subset_descendants (I j) (N j) hQ)) x hx
-  have hK0 : ∀ x ∈ productBox I, 0 ≤ K x := by
+  have hK0 : ∀ x ∈ productRectangle I, 0 ≤ K x := by
     intro x hx
     exact div_nonneg (sq_nonneg _) (Real.rpow_pos_of_pos (hvpos x hx) (2 - p)).le
   have hC : 0 ≤ C :=
     mul_nonneg (Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 2) _).le
       (div_nonneg (by linarith) (by linarith))
-  have hslice : ∀ x ∈ productBox I,
+  have hslice : ∀ x ∈ productRectangle I,
       (∫ y in (I j : Set (Fin (d j) → ℝ)), H (Function.update x j y)) ≤
         C * (∫ y in (I j : Set (Fin (d j) → ℝ)), K (Function.update x j y)) := by
     intro x hx
@@ -233,7 +183,7 @@ theorem coordinate_weighted_square
           E Q (Function.update x j y) :=
         integral_finsetSum (interior (I j) (N j)) hEi
       _ = ∑ Q ∈ interior (I j) (N j), ∫ y in (Q : Set (Fin (d j) → ℝ)),
-          (boxDifference Q (fun z => u (Function.update x j z)) y) ^ 2 /
+          (cubeDifference Q (fun z => u (Function.update x j z)) y) ^ 2 /
             Real.rpow ((∫ z in (Q : Set (Fin (d j) → ℝ)), v (Function.update x j z)) /
               volume.real (Q : Set (Fin (d j) → ℝ))) (2 - p) := by
         apply Finset.sum_congr rfl
@@ -245,10 +195,10 @@ theorem coordinate_weighted_square
         (product_leaf_slice I N u hu j hx) (product_leaf_slice I N v hv j hx)
         (fun y hy => hvpos _ (update_mem_root I hx j hy))
   have h := integral_product_le_of_coordinate_le I N H K hH hK hH0 hK0 C hC j hslice
-  have hsum : (∫ x in productBox I, H x) =
-      ∑ Q ∈ interior (I j) (N j), ∫ x in productBox I, E Q x :=
+  have hsum : (∫ x in productRectangle I, H x) =
+      ∑ Q ∈ interior (I j) (N j), ∫ x in productRectangle I, E Q x :=
     integral_finsetSum (interior (I j) (N j))
-      (fun Q hQ => product_leaf_integrable I N (E Q) (hE Q hQ))
+      (fun Q hQ => integrableOn_productLeafConstant I N (E Q) (hE Q hQ))
   rw [hsum] at h
   exact h
 

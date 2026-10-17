@@ -2,11 +2,14 @@ import ReyZygmund.Maximal.GlobalCoordinateDefs
 
 /-! # Coordinate averages and maxima on the whole grid
 
-The operators keep extended nonnegative values. Their support, measurability,
-order and update identities require no finite-integral convention. -/
+Support, measurability, order and update identities for the extended nonnegative
+coordinate operators.
+-/
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
+
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles)
 
 namespace ReyZygmund
 
@@ -59,12 +62,12 @@ theorem coordinateGridAverage_update (j : Fin m) (Q : Box (Fin (d j)))
   · rw [coordinateGridAverage_of_notMem j Q F _ (by
         simpa only [Function.update_self] using hy), Set.indicator_of_notMem hy]
 
-theorem measurable_coordinateGridMaximal (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
+theorem measurable_coordinateGridMaximal (D : ∀ i, CubeGrid (d i)) (j : Fin m)
     (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F) :
     Measurable (coordinateGridMaximal D j F) := by
-  have hc : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubes n}.Countable := by
-    have heq : (⋃ n : ℤ, (D j).cubes n) =
-        {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubes n} := by
+  have hc : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n}.Countable := by
+    have heq : (⋃ n : ℤ, (D j).cubesAtGeneration n) =
+        {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n} := by
       ext Q
       simp
     rw [← heq]
@@ -72,43 +75,43 @@ theorem measurable_coordinateGridMaximal (D : ∀ i, DyadicGrid (d i)) (j : Fin 
   have := hc.to_subtype
   exact Measurable.iSup (fun Q => measurable_coordinateGridAverage j Q.1 F hF)
 
-theorem coordinateGridMaximal_mono (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
+theorem coordinateGridMaximal_mono (D : ∀ i, CubeGrid (d i)) (j : Fin m)
     (F G : ProductPoint d → ℝ≥0∞) (hFG : F ≤ G) :
     coordinateGridMaximal D j F ≤ coordinateGridMaximal D j G := by
   intro x
   exact iSup_mono (fun Q => coordinateGridAverage_mono j Q.1 F G hFG x)
 
-theorem coordinateGridAverage_le_maximal (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
-    (Q : Box (Fin (d j))) (hQ : ∃ n : ℤ, Q ∈ (D j).cubes n)
+theorem coordinateGridAverage_le_maximal (D : ∀ i, CubeGrid (d i)) (j : Fin m)
+    (Q : Box (Fin (d j))) (hQ : ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n)
     (F : ProductPoint d → ℝ≥0∞) (x : ProductPoint d) :
     coordinateGridAverage j Q F x ≤ coordinateGridMaximal D j F x :=
-  le_iSup (fun Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubes n} =>
+  le_iSup (fun Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n} =>
     coordinateGridAverage j Q.1 F x) ⟨Q, hQ⟩
 
-theorem coordinateGridMaximal_update (D : ∀ i, DyadicGrid (d i)) (j : Fin m)
+theorem coordinateGridMaximal_update (D : ∀ i, CubeGrid (d i)) (j : Fin m)
     (F : ProductPoint d → ℝ≥0∞) (x : ProductPoint d) (y : Fin (d j) → ℝ) :
     coordinateGridMaximal D j F (Function.update x j y) =
-      ⨆ Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubes n},
+      ⨆ Q : {Q : Box (Fin (d j)) | ∃ n : ℤ, Q ∈ (D j).cubesAtGeneration n},
         (Q.1 : Set (Fin (d j) → ℝ)).indicator
           (fun _ => (volume (Q.1 : Set (Fin (d j) → ℝ)))⁻¹ *
             ∫⁻ z in (Q.1 : Set (Fin (d j) → ℝ)), F (Function.update x j z)) y := by
   simp only [coordinateGridMaximal, coordinateGridAverage_update]
 
 theorem measurable_foldr_coordinateGridMaximal
-    (D : ∀ i, DyadicGrid (d i)) (order : List (Fin m))
+    (D : ∀ i, CubeGrid (d i)) (order : List (Fin m))
     (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F) :
     Measurable (order.foldr (fun j G => coordinateGridMaximal D j G) F) := by
   induction order with
   | nil => exact hF
   | cons j order ih => exact measurable_coordinateGridMaximal D j _ ih
 
-theorem measurable_iteratedGridMaximal (D : ∀ i, DyadicGrid (d i))
+theorem measurable_iteratedGridMaximal (D : ∀ i, CubeGrid (d i))
     (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F) :
     Measurable (iteratedGridMaximal D F) :=
   measurable_foldr_coordinateGridMaximal D (List.finRange m) F hF
 
 private theorem normalized_lmarginal_le_foldr
-    (D : ∀ i, DyadicGrid (d i)) (Q : ∀ i, Box (Fin (d i)))
+    (D : ∀ i, CubeGrid (d i)) (Q : ∀ i, Box (Fin (d i)))
     (hQ : Q ∈ gridRectangles D) (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F)
     (order : List (Fin m)) :
     order.Nodup → ∀ x : ProductPoint d, (∀ i ∈ order, x i ∈ Q i) →
@@ -157,38 +160,37 @@ private theorem normalized_lmarginal_le_foldr
             (order.foldr (fun i G => coordinateGridMaximal D i G) F) x := by
           symm
           exact coordinateGridAverage_of_mem j (Q j) _ x (hx j (by simp))
-        _ ≤ _ := coordinateGridAverage_le_maximal D j (Q j) (hQ j) _ x
+        _ ≤ _ := coordinateGridAverage_le_maximal D j (Q j)
+          ((mem_gridRectangles_iff D Q).mp hQ j) _ x
 
 /-- Every rectangular average is dominated by the ordered full-grid
 coordinate composition, including when the integral is infinite. -/
-theorem productAverage_le_iteratedGridMaximal (D : ∀ i, DyadicGrid (d i))
+theorem productAverage_le_iteratedGridMaximal (D : ∀ i, CubeGrid (d i))
     (F : ProductPoint d → ℝ≥0∞) (hF : Measurable F)
     (Q : ∀ i, Box (Fin (d i))) (hQ : Q ∈ gridRectangles D)
     (x : ProductPoint d) :
-    (productBox Q).indicator
-      (fun _ => (volume (productBox Q))⁻¹ * ∫⁻ y in productBox Q, F y) x ≤
+    (productRectangle Q).indicator
+      (fun _ => (volume (productRectangle Q))⁻¹ * ∫⁻ y in productRectangle Q, F y) x ≤
         iteratedGridMaximal D F x := by
-  by_cases hx : x ∈ productBox Q
+  by_cases hx : x ∈ productRectangle Q
   · rw [Set.indicator_of_mem hx]
     have hfin : (List.finRange m).toFinset = Finset.univ := by
       ext i
       simp
-    have hvol : volume (productBox Q) =
+    have hvol : volume (productRectangle Q) =
         ∏ i, volume (Q i : Set (Fin (d i) → ℝ)) :=
-      Measure.pi_pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-        (fun i => (Q i : Set (Fin (d i) → ℝ)))
-    have hinv : (volume (productBox Q))⁻¹ =
+      productRectangle_volume Q
+    have hinv : (volume (productRectangle Q))⁻¹ =
         ∏ i, (volume (Q i : Set (Fin (d i) → ℝ)))⁻¹ := by
       rw [hvol]
       apply ENNReal.prod_inv_distrib
       intro i _ j _ _
       exact Or.inr ((Q j).measure_coe_lt_top volume).ne
-    have hrestrict : volume.restrict (productBox Q) =
+    have hrestrict : volume.restrict (productRectangle Q) =
         Measure.pi (fun i => volume.restrict (Q i : Set (Fin (d i) → ℝ))) :=
-      Measure.restrict_pi_pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-        (fun i => (Q i : Set (Fin (d i) → ℝ)))
+      restrict_volume_productRectangle Q
     have h := normalized_lmarginal_le_foldr D Q hQ F hF (List.finRange m)
-      (List.nodup_finRange m) x (fun i _ => (mem_productBox Q x).mp hx i)
+      (List.nodup_finRange m) x (fun i _ => (mem_productRectangle Q x).mp hx i)
     simpa only [hfin, lmarginal_univ, hinv, hrestrict, iteratedGridMaximal] using h
   · rw [Set.indicator_of_notMem hx]
     exact zero_le

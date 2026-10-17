@@ -1,4 +1,4 @@
-import ReyZygmund.MathlibOnly.Proof.EstimateDefinitions
+import ReyZygmund.MathlibOnly.Proof.Definitions
 import ReyZygmund.Continuous.HalfOpenBoundary
 import ReyZygmund.Overlap.Countable
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -8,20 +8,26 @@ import Mathlib.Topology.Instances.ENNReal.Lemmas
 
 These supporting contracts state the measurability and integral identities directly.
 They use implementation definitions where an identification requires them;
-the six independent public specifications remain in MathlibOnly.Proof.
+the public specifications are in `MathlibOnly.Statements` and
+`MathlibOnly.SupportingStatements`.
 -/
 
 open BoxIntegral MeasureTheory Filter ReyZygmund
-open ReyZygmund.MathlibOnly.Proof ReyZygmund.MathlibOnly.Proof.Estimates
+open ReyZygmund.MathlibOnly
+open ReyZygmund.MathlibOnly.Proof
 open scoped BigOperators ENNReal Classical Topology
 
 namespace ReyZygmundVerification.MeasureBridge
 
 noncomputable section
 
-def sparse_iff_borelContract : Prop :=
+def sparse_iff_exists_measurableContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (eta : ℝ) (G : Set (∀ i, Box (Fin (d i)))),
-    MathlibOnly.Proof.Estimates.Sparse eta G ↔ MathlibOnly.Proof.Sparse eta G
+    MathlibOnly.Sparse eta G ↔
+      ∃ E : MathlibOnly.Rectangle d → Set (MathlibOnly.Point d),
+        (∀ R ∈ G, MeasurableSet (E R) ∧ E R ⊆ rectangle R ∧
+          ENNReal.ofReal eta * volume (rectangle R) ≤ volume (E R)) ∧
+        G.Pairwise (fun R S => Disjoint (E R) (E S))
 
 def rectangleIco_eqContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (R : ∀ i, Box (Fin (d i))),

@@ -1,3 +1,3 @@
-import ReyZygmund.MathlibOnly.Statements
+import ReyZygmund.MathlibOnly.SupportingStatements
 
-theorem ReyZygmund.MathlibOnly.rounded_endpoint : ReyZygmund.MathlibOnly.RoundedEndpoint := by sorry
+theorem ReyZygmund.MathlibOnly.rounded_dyadic_endpoint_estimate : ReyZygmund.MathlibOnly.RoundedDyadicEndpointEstimate := by sorry

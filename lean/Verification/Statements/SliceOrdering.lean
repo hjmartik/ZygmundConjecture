@@ -5,11 +5,13 @@ import ReyZygmund.Geometry.SliceOrdering
 open BoxIntegral
 open ReyZygmund.Geometry
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles initialProjection sliceFamily)
+
 namespace ReyZygmundVerification
 
 def sliceEnumerationContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
     (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D →
     ∀ t : Fin (d (Fin.last n)) → ℝ,
       ∃ N : ℕ, ∃ R : Fin N → (∀ i, Box (Fin (d i))),

@@ -6,11 +6,13 @@ open BoxIntegral MeasureTheory
 open ReyZygmund.Geometry ReyZygmund.Overlap
 open scoped BigOperators ENNReal Classical
 
+open ReyZygmund.MathlibOnly (CubeGrid gridRectangles sliceFamily)
+
 namespace ReyZygmundVerification
 
 def finiteSliceHalfSparseContract : Prop :=
   ∀ {n : ℕ} {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
+    (D : ∀ i, CubeGrid (d i)) (G : Finset (∀ i, Box (Fin (d i)))),
     (↑G : Set (∀ i, Box (Fin (d i)))) ⊆ gridRectangles D →
     (∀ R ∈ G,
       volume.real ((flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) ∩

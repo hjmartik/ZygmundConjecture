@@ -1,3 +1,4 @@
+import ReyZygmund.Geometry.ProductIntegrability
 import ReyZygmund.Weighted.CrossCoordinate
 import ReyZygmund.Geometry.ProductAverageProperties
 import ReyZygmund.Geometry.ProductOrthogonality
@@ -53,7 +54,7 @@ private theorem patched_weight_leaf (I : ∀ i, Box (Fin (d i))) (N : Fin m → 
     have hi (i : Fin m) (hi : i ∈ B) : x i ∈ Q i ↔ y i ∈ Q i :=
       descendant_membership_leaf (I i) (N i) (Q i) (P i) (hQ i hi)
         (Fintype.mem_piFinset.mp hP i) (x i) (y i)
-        ((mem_productBox P x).mp hx i) ((mem_productBox P y).mp hy i)
+        ((mem_productRectangle P x).mp hx i) ((mem_productRectangle P y).mp hy i)
     exact ⟨fun h i hiB => (hi i hiB).mp (h i hiB),
       fun h i hiB => (hi i hiB).mpr (h i hiB)⟩
   change (if ∀ i ∈ B, x i ∈ Q i then v x else 1) =
@@ -85,7 +86,7 @@ private theorem cross_zero_off_mixed (B : Finset (Fin m))
     exact hu _ (fun h => hx ((mixed_update_iff B Q j hj x y).mp h))
   change finiteCrossAverage I N eligible (fun y => u (Function.update x j y)) (x j) = 0
   rw [hzero]
-  simp [finiteCrossAverage, boxAverage]
+  simp [finiteCrossAverage, cubeAverage, cubeMean]
 
 private theorem cross_patch_eq (B : Finset (Fin m))
     (Q : ∀ i, Box (Fin (d i))) (j : Fin m) (hj : j ∉ B)
@@ -146,62 +147,20 @@ private theorem cross_leaf (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
 private theorem energy_integrable (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (u v : ProductPoint d → ℝ) (hu : ProductLeafConstant I N u)
     (hv : ProductLeafConstant I N v) (p : ℝ) :
-    IntegrableOn (fun x => (u x) ^ 2 / Real.rpow (v x) (2 - p)) (productBox I) volume := by
+    IntegrableOn (fun x => (u x) ^ 2 / Real.rpow (v x) (2 - p)) (productRectangle I) volume := by
   let g := fun x => (u x) ^ 2 / Real.rpow (v x) (2 - p)
   have hg : ProductLeafConstant I N g := by
     intro P hP x hx y hy
     dsimp only [g]
     rw [hu P hP x hx y hy, hv P hP x hx y hy]
-  have hvol : volume (productBox I) < ∞ := by
-    change Measure.pi (fun i => (volume : Measure (Fin (d i) → ℝ)))
-      (Set.pi Set.univ (fun i => (I i : Set (Fin (d i) → ℝ)))) < ∞
-    rw [Measure.pi_pi]
-    exact ENNReal.prod_lt_top (fun i _ => (I i).measure_coe_lt_top volume)
-  let : IsFiniteMeasure (volume.restrict (productBox I)) :=
-    isFiniteMeasure_restrict.mpr hvol.ne
-  obtain ⟨C, _, hC⟩ := bounded_product_localization I N g hg
-  have hloc : IntegrableOn ((productBox I).indicator g) (productBox I) volume :=
-    (integrable_const C).mono'
-      (measurable_product_localization I N g hg).aestronglyMeasurable
-      (Filter.Eventually.of_forall (fun x => by
-        simpa only [Real.norm_eq_abs] using hC x))
-  exact hloc.congr_fun (fun x hx => Set.indicator_of_mem hx g)
-    (measurableSet_productBox I)
-
-private theorem energy_integral_mixed (I : ∀ i, Box (Fin (d i)))
-    (B : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
-    (u v : ProductPoint d → ℝ) (p : ℝ)
-    (hu : ∀ x, (¬ ∀ i ∈ B, x i ∈ Q i) → u x = 0) :
-    (∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p)) =
-      ∫ x in {x ∈ productBox I | ∀ i ∈ B, x i ∈ Q i},
-        (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
-  apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (measurableSet_productBox I)
-    (fun _ hx => hx.1)
-  intro x hx
-  have hnot : ¬ ∀ i ∈ B, x i ∈ Q i := fun h => hx.2 ⟨hx.1, h⟩
-  rw [hu x hnot]
-  simp
-
-private theorem cross_energy_integral_mixed (I : ∀ i, Box (Fin (d i)))
-    (N : Fin m → ℕ) (B : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
-    (j : Fin m) (hj : j ∉ B) (eligible : Finset (Box (Fin (d j))))
-    (u v : ProductPoint d → ℝ) (p : ℝ)
-    (hu : ∀ x, (¬ ∀ i ∈ B, x i ∈ Q i) → u x = 0) :
-    (∫ x in productBox I,
-      (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
-        Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p)) =
-    ∫ x in {x ∈ productBox I | ∀ i ∈ B, x i ∈ Q i},
-      (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
-        Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p) := by
-  exact energy_integral_mixed I B Q _ _ p
-    (fun x hx => cross_zero_off_mixed B Q j hj u hu (I j) (N j) eligible x hx)
+  exact integrableOn_productLeafConstant I N g hg
 
 /-- The coefficient-one cross contraction with the other coordinate boxes
 fixed. Positivity of the product weight is derived only on its mixed support. -/
 theorem weighted_cross_product_step
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ) (hf : ProductLeafConstant I N f)
-    (hfpos : ∀ x ∈ productBox I, 0 < f x)
+    (hfpos : ∀ x ∈ productRectangle I, 0 < f x)
     (p : ℝ) (hp : 1 < p) (hp2 : p ≤ 2)
     (B : Finset (Fin m)) (j : Fin m) (hj : j ∉ B)
     (Q : ∀ i, Box (Fin (d i))) (hQ : ∀ i ∈ B, Q i ∈ interior (I i) (N i))
@@ -210,16 +169,16 @@ theorem weighted_cross_product_step
     let F := finiteInput I N f hf
     let u := (productDifferenceMap B Q F).1
     let v := (productAverageMap B Q F).1
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
       (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
         Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p)) ≤
-      ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
+      ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) := by
   let F := finiteInput I N f hf
   let u := (productDifferenceMap B Q F).1
   let v := (productAverageMap B Q F).1
   let w : ProductPoint d → ℝ := fun x => if ∀ i ∈ B, x i ∈ Q i then v x else 1
   have hF : ProductLeafConstant I N F.1 := productLeafConstant_indicator hf
-  have hFs : ∀ x, x ∉ productBox I → F.1 x = 0 :=
+  have hFs : ∀ x, x ∉ productRectangle I → F.1 x = 0 :=
     fun x hx => Set.indicator_of_notMem hx f
   have hQd : ∀ i ∈ B, Q i ∈ descendants (I i) (N i) :=
     fun i hi => interior_subset_descendants (I i) (N i) (hQ i hi)
@@ -228,12 +187,12 @@ theorem weighted_cross_product_step
   have hv : ProductLeafConstant I N v :=
     (productAverageMap_productStep_closure I N F hF hFs B Q hQd).1
   have hw : ProductLeafConstant I N w := patched_weight_leaf I N B Q hQd v hv
-  have hFpos : ∀ x ∈ productBox I, 0 < F.1 x := by
+  have hFpos : ∀ x ∈ productRectangle I, 0 < F.1 x := by
     intro x hx
-    change 0 < (productBox I).indicator f x
+    change 0 < (productRectangle I).indicator f x
     rw [Set.indicator_of_mem hx]
     exact hfpos x hx
-  have hwpos : ∀ x ∈ productBox I, 0 < w x := by
+  have hwpos : ∀ x ∈ productRectangle I, 0 < w x := by
     intro x hx
     by_cases hxQ : ∀ i ∈ B, x i ∈ Q i
     · change 0 < if ∀ i ∈ B, x i ∈ Q i then v x else 1
@@ -251,18 +210,18 @@ theorem weighted_cross_product_step
   have hright := energy_integrable I N u v hu hv p
   have hrightPatch := energy_integrable I N u w hu hw p
   calc
-    (∫ x in productBox I,
+    (∫ x in productRectangle I,
         (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
           Real.rpow (coordinateCrossAverage j (I j) (N j) eligible v x) (2 - p)) ≤
-        ∫ x in productBox I,
+        ∫ x in productRectangle I,
           (coordinateCrossAverage j (I j) (N j) eligible u x) ^ 2 /
             Real.rpow (coordinateCrossAverage j (I j) (N j) eligible w x) (2 - p) :=
-      setIntegral_mono_on hleft hleftPatch (measurableSet_productBox I)
+      setIntegral_mono_on hleft hleftPatch (measurableSet_productRectangle I)
         (fun x _ => (cross_patched_energy_eq B Q j hj u v p hus (I j) (N j) eligible x).symm.le)
-    _ ≤ ∫ x in productBox I, (u x) ^ 2 / Real.rpow (w x) (2 - p) :=
+    _ ≤ ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (w x) (2 - p) :=
       coordinateCrossAverage_weighted_square_integral I N u w hu hw hwpos j eligible he p hp hp2
-    _ ≤ ∫ x in productBox I, (u x) ^ 2 / Real.rpow (v x) (2 - p) :=
-      setIntegral_mono_on hrightPatch hright (measurableSet_productBox I)
+    _ ≤ ∫ x in productRectangle I, (u x) ^ 2 / Real.rpow (v x) (2 - p) :=
+      setIntegral_mono_on hrightPatch hright (measurableSet_productRectangle I)
         (fun x _ => (patched_energy_eq B Q u v p hus x).le)
 
 end ReyZygmund

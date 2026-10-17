@@ -11,6 +11,8 @@ finite sum. This leaves the side function, grid, input and level arbitrary.
 open BoxIntegral MeasureTheory
 open scoped BigOperators Classical ENNReal
 
+open ReyZygmund.MathlibOnly (CubeGrid)
+
 namespace ReyZygmund.Continuous
 
 open Geometry Overlap Selection
@@ -21,7 +23,7 @@ dimension vector with the prescribed total dimension. -/
 theorem rounded_grid_endpoint_theorem (n totalDim : ℕ) (hn : 2 ≤ n) :
     ∃ C : ℝ, 0 < C ∧
       ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) → (∑ i, d i) = totalDim →
-      ∀ (D : ∀ i, DyadicGrid (d i))
+      ∀ (D : ∀ i, CubeGrid (d i))
         (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)), Monotone phi →
       ∀ (f : (Fin (∑ i, d i) → ℝ) → ℝ), LocallyIntegrable f volume →
       ∀ (lam : ℝ), 0 < lam →

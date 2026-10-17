@@ -1,4 +1,4 @@
-import ReyZygmund.Geometry.PhiRectangles
+import ReyZygmund.Geometry.FlatRectangles
 import ReyZygmund.Geometry.Grids
 import ReyZygmund.Maximal.Euclidean
 import Mathlib.Analysis.SpecialFunctions.Log.Base
@@ -15,6 +15,8 @@ side-length exponents.
 
 open BoxIntegral
 open scoped BigOperators Classical
+
+open ReyZygmund.MathlibOnly (CubeGrid zygmundRectangles dyadicZygmundRectangles)
 
 namespace ReyZygmund.Continuous
 
@@ -38,7 +40,7 @@ theorem dyadicPhiExtension_mono (Phi : (Fin n → ℤ) → ℤ) (hPhi : Monotone
   intro j
   exact Int.floor_mono (Real.logb_le_logb_of_le (by norm_num) (s j).2 (hst j))
 
-/-- Exact recovery holds for every integer exponent, not just nonnegative ones. -/
+/-- Exact recovery holds for every integer exponent. -/
 theorem dyadicPhiExtension_zpow (Phi : (Fin n → ℤ) → ℤ) (k : Fin n → ℤ) :
     (dyadicPhiExtension Phi
       (fun j => ⟨(2 : ℝ) ^ k j, zpow_pos (by norm_num : (0 : ℝ) < 2) _⟩)).1 =
@@ -48,19 +50,10 @@ theorem dyadicPhiExtension_zpow (Phi : (Fin n → ℤ) → ℤ) (k : Fin n → �
   funext j
   rw [← Real.rpow_intCast, Real.logb_rpow (by norm_num) (by norm_num), Int.floor_intCast]
 
-/-- Grid rectangles with the paper's prescribed integer side exponents.
-The generation of a cube of side `2 ^ k` is `-k`. -/
-def dyadicPhiRectangles {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
-    Set (∀ i, Box (Fin (d i))) :=
-  {R | ∃ k : Fin n → ℤ,
-    ∀ i, R i ∈ (D i).cubes (-((Fin.snoc k (Phi k) : Fin (n + 1) → ℤ) i))}
-
-/-- No monotonicity or positive-dimension premise is needed for the
-inclusion; monotonicity is needed when applying the continuous endpoint. -/
-theorem dyadicPhiRectangles_subset_continuous {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
-    dyadicPhiRectangles D Phi ⊆ continuousPhiRectangles d (dyadicPhiExtension Phi) := by
+/-- The dyadic family is contained in the continuous family defined by the extension. -/
+theorem phiRectangles_subset_continuous {d : Fin (n + 1) → ℕ}
+    (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ) :
+    dyadicZygmundRectangles D Phi ⊆ zygmundRectangles d (dyadicPhiExtension Phi) := by
   rintro R ⟨k, hk⟩
   let s : Fin n → Set.Ioi (0 : ℝ) :=
     fun j => ⟨(2 : ℝ) ^ k j, zpow_pos (by norm_num : (0 : ℝ) < 2) _⟩
@@ -76,23 +69,21 @@ theorem dyadicPhiRectangles_subset_continuous {d : Fin (n + 1) → ℕ}
       rfl
   refine ⟨s, ?_⟩
   intro i a
-  have hwidth := (D i).width
-    (-((Fin.snoc k (Phi k) : Fin (n + 1) → ℤ) i)) (R i) (hk i) a
-  simp only [neg_neg] at hwidth
+  have hwidth := (D i).side_length
+    ((Fin.snoc k (Phi k) : Fin (n + 1) → ℤ) i) (R i) (hk i) a
   exact hwidth.trans (hside i)
 
-/-- Family inclusion gives domination of supported averages. The algebraic identity
-permits arbitrary input; applications to averages require local integrability. -/
+/-- Family inclusion gives pointwise domination by the continuous maximal function. -/
 theorem dyadic_maximal_le_continuous {d : Fin (n + 1) → ℕ}
-    (D : ∀ i, DyadicGrid (d i)) (Phi : (Fin n → ℤ) → ℤ)
+    (D : ∀ i, CubeGrid (d i)) (Phi : (Fin n → ℤ) → ℤ)
     (f : (Fin (∑ i, d i) → ℝ) → ℝ) (x : Fin (∑ i, d i) → ℝ) :
-    euclideanFamilyMaximal (dyadicPhiRectangles D Phi) f x ≤
-      euclideanFamilyMaximal (continuousPhiRectangles d (dyadicPhiExtension Phi)) f x := by
+    euclideanFamilyMaximal (dyadicZygmundRectangles D Phi) f x ≤
+      euclideanFamilyMaximal (zygmundRectangles d (dyadicPhiExtension Phi)) f x := by
   unfold euclideanFamilyMaximal
   apply iSup_le
   intro R
   exact le_iSup_of_le
-    (⟨R.1, dyadicPhiRectangles_subset_continuous D Phi R.2⟩ :
-      continuousPhiRectangles d (dyadicPhiExtension Phi)) le_rfl
+    (⟨R.1, phiRectangles_subset_continuous D Phi R.2⟩ :
+      zygmundRectangles d (dyadicPhiExtension Phi)) le_rfl
 
 end ReyZygmund.Continuous

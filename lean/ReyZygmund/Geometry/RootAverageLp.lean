@@ -7,8 +7,7 @@ import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 
 Jensen's inequality for normalized Lebesgue measure gives coefficient one.
 Constancy on the smallest cubes gives integrability of the input and its real
-powers. Values outside the top rectangle are unrestricted.
-
+powers.
 -/
 
 open BoxIntegral MeasureTheory
@@ -56,24 +55,23 @@ private theorem box_average_abs_rpow {d : ℕ}
 variable {m : ℕ} {d : Fin m → ℕ}
 
 private theorem update_mem_root (I : ∀ i, Box (Fin (d i)))
-    {x : ProductPoint d} (hx : x ∈ productBox I) (j : Fin m)
+    {x : ProductPoint d} (hx : x ∈ productRectangle I) (j : Fin m)
     {y : Fin (d j) → ℝ} (hy : y ∈ I j) :
-    Function.update x j y ∈ productBox I := by
-  apply (mem_productBox I _).mpr
+    Function.update x j y ∈ productRectangle I := by
+  apply (mem_productRectangle I _).mpr
   intro i
   by_cases hij : i = j
   · subst i
     simpa using hy
-  · simpa [hij] using (mem_productBox I x).mp hx i
+  · simpa [hij] using (mem_productRectangle I x).mp hx i
 
-/-- Averaging over a top cube contracts the Lp norm with coefficient one, without a
-support or positive-dimension assumption. -/
+/-- Averaging over a top cube contracts the Lp norm with coefficient one. -/
 theorem coordinateRootAverage_integral_rpow
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
     (j : Fin m) (p : ℝ) (hp : 1 ≤ p) :
-    (∫ x in productBox I, Real.rpow |(averageMap j (I j) F).1 x| p) ≤
-      ∫ x in productBox I, Real.rpow |F.1 x| p := by
+    (∫ x in productRectangle I, Real.rpow |(averageMap j (I j) F).1 x| p) ≤
+      ∫ x in productRectangle I, Real.rpow |F.1 x| p := by
   have hroot : I j ∈ descendants (I j) (N j) :=
     mem_descendants.mpr ⟨0, Nat.zero_le _, Prepartition.mem_top.mpr rfl⟩
   have hleaf := productLeafConstant_coordinateAverage hf j (I j) hroot
@@ -131,14 +129,14 @@ private theorem rootAverage_leaf
     exact productLeafConstant_coordinateAverage ih j (I j)
       (mem_descendants.mpr ⟨0, Nat.zero_le _, Prepartition.mem_top.mpr rfl⟩)
 
-/-- Averaging over top cubes in any set of coordinates contracts the Lp integral for
-real p ≥ 1. The empty set gives the identity. -/
+/-- Averaging over top cubes in any set of coordinates contracts the Lp integral
+for real p ≥ 1. -/
 theorem productRootAverage_integral_rpow
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
     (A : Finset (Fin m)) (p : ℝ) (hp : 1 ≤ p) :
-    (∫ x in productBox I, Real.rpow |(productAverageMap A I F).1 x| p) ≤
-      ∫ x in productBox I, Real.rpow |F.1 x| p := by
+    (∫ x in productRectangle I, Real.rpow |(productAverageMap A I F).1 x| p) ≤
+      ∫ x in productRectangle I, Real.rpow |F.1 x| p := by
   induction A using Finset.induction_on with
   | empty => simp
   | @insert j A hj ih =>

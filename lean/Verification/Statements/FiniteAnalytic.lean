@@ -15,19 +15,19 @@ namespace ReyZygmundVerification
 noncomputable def productStepRepresentationContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
-    (productBox I).indicator f =
+    (productRectangle I).indicator f =
       ∑ Q ∈ productLeaves I N,
-        (productBox Q).indicator (fun _ => f (fun i => (Q i).upper))
+        (productRectangle Q).indicator (fun _ => f (fun i => (Q i).upper))
 
 noncomputable def productStepMeasurabilityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
-    Measurable ((productBox I).indicator f)
+    Measurable ((productRectangle I).indicator f)
 
 noncomputable def productStepBoundednessContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x, |(productBox I).indicator f x| ≤ C
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x, |(productRectangle I).indicator f x| ≤ C
 
 noncomputable def coordinateAverageMeasurabilityContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (i : Fin m) (Q : Box (Fin (d i)))
@@ -37,8 +37,8 @@ noncomputable def finiteCoordinateCommutationContract : Prop :=
   ∀ {m : ℕ} {d : Fin m → ℕ} (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (f : ProductPoint d → ℝ), ProductLeafConstant I N f →
     ∀ (i j : Fin m), i ≠ j → ∀ (Q : Box (Fin (d i))) (R : Box (Fin (d j))),
-    coordinateAverage i Q (coordinateAverage j R ((productBox I).indicator f)) =
-      coordinateAverage j R (coordinateAverage i Q ((productBox I).indicator f))
+    coordinateAverage i Q (coordinateAverage j R ((productRectangle I).indicator f)) =
+      coordinateAverage j R (coordinateAverage i Q ((productRectangle I).indicator f))
 
 noncomputable def finiteCrossAverageContract : Prop :=
   ∀ (d : ℕ), 0 < d → ∀ (I : Box (Fin d)) (N : ℕ)
@@ -51,7 +51,7 @@ noncomputable def finiteCrossAverageContract : Prop :=
       (∫ x, finiteCrossAverage I N eligible g x) =
         (∫ x in (I : Set (Fin d → ℝ)), g x) ∧
       (I : Set (Fin d → ℝ)).indicator g - finiteCrossAverage I N eligible g =
-        ∑ L ∈ (interior I N).filter (fun L => ∃ J ∈ eligible, L ≤ J), boxDifference L g
+        ∑ L ∈ (interior I N).filter (fun L => ∃ J ∈ eligible, L ≤ J), cubeDifference L g
 
 noncomputable def crossAverageSupportContract : Prop :=
   ∀ {d : ℕ} {I : Box (Fin d)} {N : ℕ} {eligible : Finset (Box (Fin d))},

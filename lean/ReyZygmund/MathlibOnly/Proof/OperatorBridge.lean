@@ -1,14 +1,16 @@
-import ReyZygmund.MathlibOnly.Proof.Statements
-import Verification.Challenges.Endpoints
-import Verification.Challenges.PhiSparse
+import ReyZygmund.MathlibOnly.Definitions
+import ReyZygmund.MathlibOnly.Proof.MaximalFormulas
+import ReyZygmund.Maximal.Euclidean
+import ReyZygmund.Geometry.ShiftedGrid
+import ReyZygmund.Geometry.RoundedScales
 import ReyZygmund.Geometry.ProductJensen
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
-/-! # Equality of the independently defined operators
+/-! # Real-integral maximal functions and explicit shifted grids
 
-These lemmas identify the rectangle sets, extended averages, sparse subsets and
-prescribed scale families with those in the proof library. This file imports the
-proofs; the independent definition and statement files import only Mathlib.
+Local integrability identifies the nonnegative and real averages. The explicit
+shifted cubes agree with the corresponding grid constructor, so its rounded
+family is the specialization to those grids.
 
 -/
 
@@ -19,107 +21,67 @@ namespace ReyZygmund.MathlibOnly.Proof
 
 noncomputable section
 
-theorem rectangle_eq_challenge {m : ℕ} {d : Fin m → ℕ}
-    (R : ∀ i, Box (Fin (d i))) :
-    rectangle R = ReyZygmundVerification.Challenges.rectangle R := rfl
-
-theorem rectangle_eq_flat {m : ℕ} {d : Fin m → ℕ}
-    (R : ∀ i, Box (Fin (d i))) :
-    rectangle R = (Geometry.flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) := by
-  ext x
-  obtain ⟨y, rfl⟩ := (Geometry.flattenCoordinates d).surjective x
-  apply Iff.trans _ (Geometry.mem_flatProductBox R y).symm
-  simp only [rectangle, Set.mem_ofPred_eq, Geometry.mem_productBox,
-    Geometry.flattenCoordinates_apply]
-  rfl
-
-theorem shadow_eq_challenge {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) :
-    shadow G = ReyZygmundVerification.Challenges.shadow G := rfl
-
-theorem overlap_eq_challenge {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) :
-    overlap G = ReyZygmundVerification.Challenges.overlap G := rfl
-
-theorem sparse_iff_challenge {m : ℕ} {d : Fin m → ℕ} (eta : ℝ)
-    (G : Set (∀ i, Box (Fin (d i)))) :
-    Sparse eta G ↔ ReyZygmundVerification.Challenges.sparse eta G := by
-  constructor
-  · rintro ⟨E, hE, hdis⟩
-    exact ⟨E, (fun R hR => (hE R hR).1), (fun R hR => (hE R hR).2.1),
-      hdis, (fun R hR => (hE R hR).2.2)⟩
-  · rintro ⟨E, hm, hsub, hdis, hvol⟩
-    exact ⟨E, (fun R hR => ⟨hm R hR, hsub R hR, hvol R hR⟩), hdis⟩
-
-theorem maximal_eq_challenge {m : ℕ} {d : Fin m → ℕ}
-    (G : Set (∀ i, Box (Fin (d i)))) (f : (Fin (∑ i, d i) → ℝ) → ℝ) :
-    maximal G f = ReyZygmundVerification.Challenges.absoluteMaximal G f := rfl
-
-/-- Locally integrable input justifies every real average before identifying
-the extended supremum; this also covers infinite Orlicz integrals. -/
-theorem maximal_eq_endpoint {m : ℕ} {d : Fin m → ℕ}
+/-- Integrability on the selected rectangles identifies the nonnegative
+averages with real absolute means before taking their supremum. -/
+theorem maximal_eq_euclidean_of_integrableOn {m : ℕ} {d : Fin m → ℕ}
     (G : Set (∀ i, Box (Fin (d i)))) (f : (Fin (∑ i, d i) → ℝ) → ℝ)
-    (hf : LocallyIntegrable f volume) :
-    maximal G f = ReyZygmundVerification.Challenges.endpointMaximal G f := by
+    (hf : ∀ R ∈ G, IntegrableOn f
+      (Geometry.flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) volume) :
+    maximal G f = euclideanFamilyMaximal G f := by
+  rw [maximal_eq_iSup_indicator]
   funext x
-  unfold maximal ReyZygmundVerification.Challenges.endpointMaximal
+  unfold euclideanFamilyMaximal
   congr 1
   funext R
-  rw [rectangle_eq_flat]
+  rw [Geometry.rectangle_eq_flatProductBox]
   have hv : volume (Geometry.flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)) < ∞ := by
     rw [Geometry.volume_flatProductBox]
-    exact Geometry.productBox_volume_lt_top R.1
+    exact Geometry.productRectangle_volume_lt_top R.1
   have hvpos : 0 < volume.real
       (Geometry.flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)) := by
     rw [Measure.real, Geometry.volume_flatProductBox]
-    exact Geometry.productBox_volume_pos R.1
-  have hlocal : IntegrableOn f
-      (Geometry.flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ)) volume :=
-    (hf.integrableOn_isCompact (Geometry.flatProductBox R.1).isCompact_Icc).mono_set
-      Box.coe_subset_Icc
+    exact Geometry.productRectangle_volume_pos R.1
   by_cases hx : x ∈ (Geometry.flatProductBox R.1 : Set (Fin (∑ i, d i) → ℝ))
   · simp only [Set.indicator_of_mem hx]
     rw [ENNReal.ofReal_div_of_pos hvpos,
-      ofReal_integral_eq_lintegral_ofReal hlocal.abs
+      ofReal_integral_eq_lintegral_ofReal (hf R.1 R.2).abs
         (Filter.Eventually.of_forall (fun y => abs_nonneg (f y))),
       Measure.real, ENNReal.ofReal_toReal hv.ne]
   · simp only [Set.indicator_of_notMem hx, ENNReal.ofReal_zero]
 
-theorem continuousRectangles_eq {n : ℕ} (d : Fin (n + 1) → ℕ)
-    (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
-    continuousRectangles d phi = Geometry.continuousPhiRectangles d phi := rfl
+/-- For locally integrable inputs, the maximal function agrees with its
+real-integral formulation. -/
+theorem maximal_eq_euclidean_of_locallyIntegrable {m : ℕ} {d : Fin m → ℕ}
+    (G : Set (∀ i, Box (Fin (d i)))) (f : (Fin (∑ i, d i) → ℝ) → ℝ)
+    (hf : LocallyIntegrable f volume) :
+    maximal G f = euclideanFamilyMaximal G f := by
+  apply maximal_eq_euclidean_of_integrableOn G f
+  intro R _hR
+  exact (hf.integrableOn_isCompact (Geometry.flatProductBox R).isCompact_Icc).mono_set
+    Box.coe_subset_Icc
 
-theorem rounding_eq (s : ℝ) : rounding s = Geometry.roundedScale s := rfl
+/-- An `L^p` function with `p > 1` is integrable on every bounded rectangle. -/
+theorem maximal_eq_euclidean_of_memLp {m : ℕ} {d : Fin m → ℕ}
+    (G : Set (∀ i, Box (Fin (d i))))
+    (f : (Fin (∑ i, d i) → ℝ) → ℝ) (p : ℝ) (hp : 1 < p)
+    (hf : MemLp f (ENNReal.ofReal p) volume) :
+    maximal G f = euclideanFamilyMaximal G f := by
+  apply maximal_eq_euclidean_of_integrableOn G f
+  intro R _hR
+  have hv : volume (Geometry.flatProductBox R : Set (Fin (∑ i, d i) → ℝ)) < ∞ := by
+    rw [Geometry.volume_flatProductBox]
+    exact Geometry.productRectangle_volume_lt_top R
+  let : IsFiniteMeasure (volume.restrict
+      (Geometry.flatProductBox R : Set (Fin (∑ i, d i) → ℝ))) :=
+    isFiniteMeasure_restrict.mpr hv.ne
+  exact MemLp.integrable (by simpa using ENNReal.ofReal_le_ofReal hp.le) (hf.restrict _)
 
-theorem roundedScales_eq {n : ℕ}
-    (phi : (Fin n → Set.Ioi (0 : ℝ)) → Set.Ioi (0 : ℝ)) :
-    roundedScales phi = Geometry.roundedScales phi := rfl
-
-/-- The explicit side-exponent formula is exactly the implementation's
-alternating grid at the negative generation. -/
+/-- The explicit shifted cubes at side exponent `k` are the alternating
+grid cubes at generation `-k`. -/
 theorem shiftedCubes_eq {d : ℕ} (tau : Fin d → Fin 3) (k : ℤ) :
-    shiftedCubes tau k = (Geometry.shiftedDyadicGrid d tau).cubes (-k) := by
-  ext Q
-  change (∃ z : Fin d → ℤ, ∀ j, _ ∧ _) ↔
-    ∃ z : Fin d → ℤ, Geometry.shiftedDyadicCube tau (-k) z = Q
-  have hphase : (-1 : ℝ) ^ (-k) = (-1 : ℝ) ^ k := by
-    simp only [neg_one_zpow_eq_ite, even_neg]
-  constructor
-  · rintro ⟨z, hz⟩
-    refine ⟨z, ?_⟩
-    apply Box.ext
-    intro x
-    simp only [Box.mem_def]
-    apply forall_congr'
-    intro j
-    change (_ < x j ∧ x j ≤ _) ↔ _
-    simp only [Geometry.shiftedDyadicCube, Geometry.rootBox, neg_neg, hphase]
-    rw [← (hz j).1, ← (hz j).2]
-    rfl
-  · rintro ⟨z, rfl⟩
-    refine ⟨z, ?_⟩
-    intro j
-    simp [Geometry.shiftedDyadicCube, Geometry.rootBox, neg_neg, hphase]
+    shiftedCubes tau k = (Geometry.shiftedDyadicGrid d tau).cubesAtGeneration (-k) := by
+  simpa only [CubeGrid.cubesAtGeneration_neg] using
+    (Geometry.shiftedDyadicGrid_cubes d tau k).symm
 
 theorem roundedRectangles_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
     (tau : ∀ i, Fin (d i) → Fin 3)
@@ -127,7 +89,7 @@ theorem roundedRectangles_eq {n : ℕ} {d : Fin (n + 1) → ℕ}
     roundedRectangles tau phi = Geometry.roundedGridRectangles
       (fun i => Geometry.shiftedDyadicGrid (d i) (tau i)) phi := by
   simp only [roundedRectangles, Geometry.roundedGridRectangles,
-    roundedScales_eq, shiftedCubes_eq]
+    shiftedCubes_eq]
 
 end
 end ReyZygmund.MathlibOnly.Proof

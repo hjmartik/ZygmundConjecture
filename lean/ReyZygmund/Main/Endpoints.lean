@@ -14,8 +14,8 @@ namespace ReyZygmund.Main
 
 open Geometry
 
-/-- The paper's rounded endpoint, with the constant chosen before the
-dimension vector, side function, shift, locally integrable input and level. -/
+/-- The rounded dyadic endpoint estimate, with a constant depending only on
+the number of factors and total dimension. -/
 theorem rounded_endpoint_theorem :
   ∀ (n totalDim : ℕ), 2 ≤ n →
   ∃ C : ℝ, 0 < C ∧

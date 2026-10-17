@@ -20,11 +20,11 @@ variable {m : ℕ} {d : Fin m → ℕ}
 theorem productAverageMap_productStep_closure
     (I : ∀ i, Box (Fin (d i))) (N : Fin m → ℕ)
     (F : boundedMeasurableFunctions d) (hf : ProductLeafConstant I N F.1)
-    (hs : ∀ x, x ∉ productBox I → F.1 x = 0)
+    (hs : ∀ x, x ∉ productRectangle I → F.1 x = 0)
     (A : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i ∈ A, Q i ∈ descendants (I i) (N i)) :
     ProductLeafConstant I N (productAverageMap A Q F).1 ∧
-      ∀ x, x ∉ productBox I → (productAverageMap A Q F).1 x = 0 := by
+      ∀ x, x ∉ productRectangle I → (productAverageMap A Q F).1 x = 0 := by
   revert hQ
   induction A using Finset.induction_on with
   | empty =>
@@ -59,14 +59,14 @@ theorem coordinateAverage_pos (F : boundedMeasurableFunctions d)
   rw [hsupp, ← ofReal_measureReal (Q.measure_coe_lt_top volume).ne]
   exact ENNReal.ofReal_pos.mpr (box_volume_pos Q)
 
-/-- Strict positivity holds where selected coordinates lie in their averaging cubes and
-unselected coordinates lie in top cubes. Constancy on the smallest cubes is not needed. -/
+/-- Strict positivity holds where selected coordinates lie in their averaging cubes
+and unselected coordinates lie in top cubes. -/
 theorem productAverageMap_pos
     (I : ∀ i, Box (Fin (d i))) (F : boundedMeasurableFunctions d)
-    (hpos : ∀ x ∈ productBox I, 0 < F.1 x)
+    (hpos : ∀ x ∈ productRectangle I, 0 < F.1 x)
     (A : Finset (Fin m)) (Q : ∀ i, Box (Fin (d i)))
     (hQ : ∀ i ∈ A, Q i ≤ I i)
-    (x : ProductPoint d) (hx : x ∈ productBox I) (hxQ : ∀ i ∈ A, x i ∈ Q i) :
+    (x : ProductPoint d) (hx : x ∈ productRectangle I) (hxQ : ∀ i ∈ A, x i ∈ Q i) :
     0 < (productAverageMap A Q F).1 x := by
   revert hQ x
   induction A using Finset.induction_on with
@@ -81,12 +81,12 @@ theorem productAverageMap_pos
     intro y hy
     refine ih (fun j hj => hQ j (Finset.mem_insert_of_mem hj))
       (Function.update x i y) ?_ ?_
-    · apply (mem_productBox I _).mpr
+    · apply (mem_productRectangle I _).mpr
       intro j
       by_cases hji : j = i
       · subst j
         simpa using (hQ i (Finset.mem_insert_self i A)) hy
-      · simpa [hji] using (mem_productBox I x).mp hx j
+      · simpa [hji] using (mem_productRectangle I x).mp hx j
     · intro j hj
       have hji : j ≠ i := by
         intro h

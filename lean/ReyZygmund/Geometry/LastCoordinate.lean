@@ -11,10 +11,37 @@ equivalence preserves Lebesgue measure and the half-open boxes.
 
 open BoxIntegral MeasureTheory
 open scoped BigOperators ENNReal
+open ReyZygmund.MathlibOnly (initialProjection appendLastPoint Point)
 
 namespace ReyZygmund.Geometry
 
 variable {n : ℕ} (d : Fin (n + 1) → ℕ)
+
+/-- Concatenation preserves the scalar coordinates in each initial block. -/
+@[simp] theorem appendLastPoint_castSucc
+    (x : Point (fun i : Fin n => d i.castSucc)) (t : Fin (d (Fin.last n)) → ℝ)
+    (i : Fin n) (j : Fin (d i.castSucc)) :
+    appendLastPoint x t (finSigmaFinEquiv ⟨i.castSucc, j⟩) =
+      x (finSigmaFinEquiv ⟨i, j⟩) := by
+  have hindex : Fin.cast (Fin.sum_univ_castSucc d) (finSigmaFinEquiv ⟨i.castSucc, j⟩) =
+      Fin.castAdd (d (Fin.last n)) (finSigmaFinEquiv (n := fun i : Fin n => d i.castSucc)
+        ⟨i, j⟩) := by
+    apply Fin.ext
+    simp only [Fin.val_cast, Fin.val_castAdd, finSigmaFinEquiv_apply]
+    rfl
+  simp only [appendLastPoint, hindex, Fin.addCases_left]
+
+/-- Concatenation places the last block after all initial scalar coordinates. -/
+@[simp] theorem appendLastPoint_last
+    (x : Point (fun i : Fin n => d i.castSucc)) (t : Fin (d (Fin.last n)) → ℝ)
+    (j : Fin (d (Fin.last n))) :
+    appendLastPoint x t (finSigmaFinEquiv ⟨Fin.last n, j⟩) = t j := by
+  have hindex : Fin.cast (Fin.sum_univ_castSucc d) (finSigmaFinEquiv ⟨Fin.last n, j⟩) =
+      Fin.natAdd (∑ i : Fin n, d i.castSucc) j := by
+    apply Fin.ext
+    simp only [Fin.val_cast, Fin.val_natAdd, finSigmaFinEquiv_apply]
+    rfl
+  simp only [appendLastPoint, hindex, Fin.addCases_right]
 
 private def lastProductCoordinates : ProductPoint d ≃ᵐ
     ((Fin (d (Fin.last n)) → ℝ) × ProductPoint (fun i : Fin n => d i.castSucc)) where
@@ -99,10 +126,10 @@ theorem splitLastCoordinates_mem_rectangle
           (R (Fin.last n) : Set (Fin (d (Fin.last n)) → ℝ))) := by
   obtain ⟨y, rfl⟩ := (flattenCoordinates d).surjective x
   rw [splitLastCoordinates_apply, mem_flatProductBox, Set.mem_prod]
-  change y ∈ productBox R ↔
+  change y ∈ productRectangle R ↔
     flattenCoordinates (fun i : Fin n => d i.castSucc) (fun i => y i.castSucc) ∈
       flatProductBox (initialProjection R) ∧ y (Fin.last n) ∈ R (Fin.last n)
-  rw [mem_flatProductBox, mem_productBox, mem_productBox]
+  rw [mem_flatProductBox, mem_productRectangle, mem_productRectangle]
   constructor
   · intro h
     exact ⟨fun i => h i.castSucc, h (Fin.last n)⟩

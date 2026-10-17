@@ -5,7 +5,7 @@ import ReyZygmund.Sharpness.Growth
 
 /-! # Sharpness of the sparse Zygmund overlap exponent
 
-For each sparse parameter, we construct one sequence of finite families whose
+For each sparsity parameter, we construct one sequence of finite families whose
 exponential integrals diverge for every positive coefficient and every power above
 the stated threshold. The conclusion is expressed in Euclidean coordinates.
 -/
@@ -15,12 +15,30 @@ open scoped BigOperators Classical ENNReal Topology
 
 namespace ReyZygmund.Main
 
+open MathlibOnly.Proof.Estimates
+
 open Geometry Overlap Sharpness
 
-/-- Full sharpness for the sum side relation in arbitrary supplied grids.
-The individual integrals are finite, and their values tend to infinity. -/
+/-- Sharpness for the classical dyadic Zygmund family in the given grids:
+the finite exponential integrals tend to infinity. -/
 theorem phi_sparse_sharpness_theorem :
-    ReyZygmundVerification.Challenges.phiSparseSharpnessStatement := by
+    ∀ (n : ℕ), 2 ≤ n →
+    ∀ (d : Fin (n + 1) → ℕ), (∀ i, 0 < d i) →
+      ∀ (D : ∀ i, ReyZygmund.MathlibOnly.CubeGrid (d i))
+        (eta : ℝ), 0 < eta → eta < 1 →
+        ∃ G : ℕ → Finset (∀ i, Box (Fin (d i))),
+          (∀ N : ℕ, 2 ≤ N →
+            (G N : Set (∀ i, Box (Fin (d i)))) ⊆
+                ReyZygmund.MathlibOnly.dyadicZygmundRectangles D (fun k : Fin n → ℤ => ∑ i, k i) ∧
+              (∀ R ∈ G N, ∀ S ∈ G N, ReyZygmund.MathlibOnly.rectangle R ⊆ ReyZygmund.MathlibOnly.rectangle S → R = S) ∧
+              ReyZygmund.MathlibOnly.Sparse eta (G N : Set (∀ i, Box (Fin (d i)))) ∧
+              volume (ReyZygmund.MathlibOnly.shadow (G N : Set (∀ i, Box (Fin (d i))))) = 1) ∧
+          ∀ (c beta : ℝ), 0 < c → 1 / (n : ℝ) < beta →
+            Tendsto (fun N : ℕ =>
+              ∫⁻ x in ReyZygmund.MathlibOnly.shadow (G N : Set (∀ i, Box (Fin (d i)))),
+                ENNReal.ofReal (Real.exp (c * Real.rpow
+                  (ReyZygmund.MathlibOnly.overlap (G N : Set (∀ i, Box (Fin (d i)))) x).toReal beta)) - 1
+                    ∂volume) atTop (𝓝 ∞) := by
   intro n hn
   obtain ⟨r, rfl⟩ : ∃ r : ℕ, n = r + 2 := ⟨n - 2, by omega⟩
   intro d hd D eta heta heta1
@@ -38,14 +56,14 @@ theorem phi_sparse_sharpness_theorem :
     simp only [family, dite_eq_left hN]
     refine ⟨?_, ?_, ?_, ?_⟩
     · exact hgrid ⟨N, hN⟩
-    · simpa only [phiSparse_rectangle_eq] using hinc ⟨N, hN⟩
-    · refine ⟨E ⟨N, hN⟩, ?_, ?_, hdis ⟨N, hN⟩, ?_⟩
-      · exact fun R hR => (hE ⟨N, hN⟩ R hR).1
-      · intro R hR
-        rw [phiSparse_rectangle_eq]
+    · simpa only [Geometry.rectangle_eq_flatProductBox] using hinc ⟨N, hN⟩
+    · refine ⟨E ⟨N, hN⟩, ?_, hdis ⟨N, hN⟩⟩
+      intro R hR
+      refine ⟨(hE ⟨N, hN⟩ R hR).1.nullMeasurableSet, ?_, ?_⟩
+      · change E ⟨N, hN⟩ R ⊆ ReyZygmund.MathlibOnly.rectangle R
+        rw [Geometry.rectangle_eq_flatProductBox]
         exact (hE ⟨N, hN⟩ R hR).2.1
-      · intro R hR
-        rw [phiSparse_rectangle_eq]
+      · rw [Geometry.rectangle_eq_flatProductBox]
         have hvR := (flatProductBox R).measure_coe_lt_top volume
         have hvE : volume (E ⟨N, hN⟩ R) < ⊤ :=
           (measure_mono (hE ⟨N, hN⟩ R hR).2.1).trans_lt hvR
@@ -60,11 +78,11 @@ theorem phi_sparse_sharpness_theorem :
             rw [ENNReal.ofReal_mul heta.le, measureReal_def, ENNReal.ofReal_toReal hvR.ne]
           _ ≤ ENNReal.ofReal (volume.real (E ⟨N, hN⟩ R)) := ENNReal.ofReal_le_ofReal hreal
           _ = volume (E ⟨N, hN⟩ R) := ENNReal.ofReal_toReal hvE.ne
-    · rw [phiSparse_shadow_eq, shadow_finset]
+    · rw [shadow_eq, shadow_finset]
       exact hshadow ⟨N, hN⟩
   · intro c beta hc hbeta
     have hbeta0 : 0 < beta := lt_trans (one_div_pos.mpr (by positivity)) hbeta
-    simp only [phiSparse_shadow_eq, phiSparse_overlap_eq]
+    simp only [shadow_eq, overlap_eq]
     apply (tendsto_finite_overlap_exponential_iff family c beta hc hbeta0).mpr
     have hdiv := tendsto_retained_exp_lower_bound (r + 2) (by omega)
       delta c beta hdelta hdelta1 hc hbeta

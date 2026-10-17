@@ -29,7 +29,7 @@ noncomputable def localProductExpansionContract : Prop :=
     (∀ i, 0 < d i) → ∀ (R : ∀ i, Box (Fin (d i))),
     (∀ i, R i ∈ descendants (I i) (N i)) →
     ∀ (F : boundedMeasurableFunctions d), ProductLeafConstant I N F.1 →
-    (∀ x, x ∉ productBox I → F.1 x = 0) → ∀ (x : ProductPoint d), x ∈ productBox R →
+    (∀ x, x ∉ productRectangle I → F.1 x = 0) → ∀ (x : ProductPoint d), x ∈ productRectangle R →
     (∑ L ∈ (productInterior I N).filter (fun L => ∀ i, L i ≤ R i),
       (productDifferenceMap Finset.univ L F).1 x) =
       ∑ B ∈ (Finset.univ : Finset (Fin m)).powerset,
@@ -40,7 +40,7 @@ noncomputable def finiteRepresentationContract : Prop :=
     (∀ i, 0 < d i) → ∀ (G : Finset (∀ i, Box (Fin (d i)))) (R : ∀ i, Box (Fin (d i))),
     R ∈ averagingRectangles I N G →
     ∀ (F : boundedMeasurableFunctions d), ProductLeafConstant I N F.1 →
-    (∀ x, x ∉ productBox I → F.1 x = 0) → ∀ (x : ProductPoint d), x ∈ productBox R →
+    (∀ x, x ∉ productRectangle I → F.1 x = 0) → ∀ (x : ProductPoint d), x ∈ productRectangle R →
     (productAverageMap Finset.univ R F).1 x =
       ∑ B ∈ ((Finset.univ : Finset (Fin m)).powerset.erase Finset.univ),
         (-1 : ℝ) ^ (m + 1 + B.card) *

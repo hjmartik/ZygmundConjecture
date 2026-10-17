@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Challenge9",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ReyZygmund.MathlibOnly.product_weighted_square_function_estimate"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ]
+}
