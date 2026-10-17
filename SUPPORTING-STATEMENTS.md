@@ -12,13 +12,13 @@ setting defined below.
 
 ### Averages and martingale differences
 
-For a cube $`Q`$, let $`\operatorname{ch}(Q)`$ be its dyadic children,
+For a cube $`Q`$, let $`\mathrm{ch}(Q)`$ be its dyadic children,
 obtained by halving each side. Define
 
 ```math
 \langle u\rangle_Q=\frac1{|Q|}\int_Q u,
 \qquad E_Q u=\mathbf1_Q\langle u\rangle_Q,
-\qquad \Delta_Q u=\sum_{J\in\operatorname{ch}(Q)}E_Ju-E_Qu.
+\qquad \Delta_Q u=\sum_{J\in\mathrm{ch}(Q)}E_Ju-E_Qu.
 ```
 
 On the product space, the operators act in the indicated coordinate.

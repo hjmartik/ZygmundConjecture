@@ -132,7 +132,7 @@ the grouped coordinates above. The notation follows
 and [cubeAverage](SquareFunctions.lean#L44) is the operator
 $`E_Q u=\mathbf1_Q\langle u\rangle_Q`$.
 [cubeDifference](SquareFunctions.lean#L50) is
-$`\Delta_Q u=\sum_{J\in\operatorname{ch}(Q)}E_Ju-E_Qu`$.
+$`\Delta_Q u=\sum_{J\in\mathrm{ch}(Q)}E_Ju-E_Qu`$.
 It uses Mathlib's midpoint subdivision; for grid cubes, this is
 [proved to give exactly the dyadic children](../Geometry/CubeGridChildren.lean).
 
